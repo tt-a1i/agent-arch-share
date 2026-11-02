@@ -1,0 +1,71 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>会话越开越多，会发生什么</title>
+<link rel="stylesheet" href="../assets/theme.css"><link rel="stylesheet" href="../assets/detail.css">
+<style>
+.wrap{display:grid;grid-template-columns:380px 1fr;gap:24px}
+.me{text-align:center}
+.face{width:150px;height:150px;border-radius:50%;margin:10px auto;display:grid;place-items:center;font-size:76px;background:radial-gradient(circle at 40% 35%,#24305e,#121936);border:3px solid var(--cyan);transition:.3s}
+.face.stress{border-color:var(--coral);box-shadow:0 0 30px rgba(251,113,133,.5)}
+.slots{display:flex;gap:8px;justify-content:center;margin:12px 0}
+.slots i{width:44px;height:16px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid var(--line);transition:.25s}
+.slots i.on{background:var(--cyan)}
+.field{position:relative;min-height:470px}
+.router{display:none;margin:0 auto 14px;width:360px;text-align:center;padding:12px;border-radius:14px;border:2px solid var(--cyan);background:#0f2a33;font-weight:800;font-size:18px}
+.field.sa .router{display:block}
+.ss{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.s{border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid var(--line);font-size:14px;position:relative;animation:pop .4s both;transition:border-color .2s,background .2s}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.s .pb{height:6px;border-radius:3px;background:rgba(255,255,255,.08);margin-top:8px;overflow:hidden}.s .pb i{display:block;height:100%;background:var(--mint);width:0}
+.s.need{border-color:var(--amber);background:rgba(251,191,36,.1)}
+.s.need:after{content:"等你";position:absolute;right:8px;top:8px;color:var(--amber);font-size:12px;font-weight:800}
+.s.watched{border-color:var(--cyan)}
+.s.starve{border-color:var(--coral);background:rgba(251,113,133,.12)}
+.s.starve:after{content:"没人看";color:var(--coral)}
+.s.done{opacity:.45}.s.done:after{content:"完成 ✓";position:absolute;right:8px;top:8px;color:var(--mint);font-size:12px}
+.stats{display:flex;gap:26px;margin-top:16px;justify-content:center}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+</style></head><body>
+<header class="dh"><a class="back" data-def="2" href="../index.html#/2">← 回到第 2 页</a><div><h1>会话越开越多，会发生什么？</h1><div class="sub">示意模拟：参数为假设，只为演示机制，不是实测</div></div>
+<div class="right"><button class="btn on" id="mA">你直接盯每个会话</button><button class="btn" id="mB">Super-agent：入口替你盯</button></div></header>
+<main class="dm"><div class="wrap">
+  <div class="panel me">
+    <div class="face" id="face">🙂</div>
+    <div style="font-weight:800;font-size:20px">你的注意力</div>
+    <div class="slots" id="slots"></div>
+    <div class="c-dim" style="font-size:14px">最多同时盯 5 个（原文：一般 3–5 个）</div>
+    <div class="stats"><div class="stat"><b id="sW" class="c-cyan">0</b><span>正在盯</span></div><div class="stat"><b id="sQ" class="c-coral">0</b><span>排队等你</span></div><div class="stat"><b id="sD" class="c-mint">0</b><span>已完成</span></div></div>
+    <div class="ctrl"><button class="btn" id="add">+ 新任务</button><button class="btn" id="add5">+5</button><button class="btn" id="reset">重置</button></div>
+    <p class="note" id="explain"></p>
+  </div>
+  <div class="panel field" id="field"><div class="router">Router：接话 · 分派 · 转达<br><span style="font-weight:400;font-size:13px" class="c-dim">只把“需要你处理”的事交给你</span></div><div class="ss" id="ss"></div></div>
+</div></main>
+<script src="../assets/detail.js"></script>
+<script>
+const CAP=5, names=['修 PR','调研 dots','写周报','排查 CI','审 issue','回邮件','改文档','跑评测','看新闻','对账','做 PPT','发版本','复现 bug','整理笔记','回群消息','查依赖'];
+let mode='A', sess=[], id=0, done=0;
+const ss=document.getElementById('ss'), slots=document.getElementById('slots');
+for(let i=0;i<CAP;i++)slots.appendChild(document.createElement('i'));
+function add(){const s={id:id++,name:names[id%names.length]+' #'+id,p:0,need:false,wait:0,el:document.createElement('div')};s.el.className='s';s.el.innerHTML='<b>'+s.name+'</b><div class="pb"><i></i></div>';ss.appendChild(s.el);sess.push(s);}
+function reset(){sess=[];ss.innerHTML='';done=0;id=0;for(let i=0;i<4;i++)add();}
+function setMode(m){mode=m;document.getElementById('mA').classList.toggle('on',m==='A');document.getElementById('mB').classList.toggle('on',m==='B');document.getElementById('field').classList.toggle('sa',m==='B');
+ document.getElementById('explain').textContent=m==='A'?'单会话模式：每个会话走几步就停下来等你确认。超过 5 个，多出来的只能干等。':'Super-agent 模式：Worker 自己往下跑，入口把大部分“确认”消化掉，只有少数真正需要你拍板的才上来（示意参数：远少于单会话模式）。';}
+function tick(){
+  const active=sess.filter(s=>s.p<100);
+  // who needs attention
+  active.forEach(s=>{ if(!s.need && Math.random()<(mode==='A'?0.45:0.06)) s.need=true; });
+  const needing=active.filter(s=>s.need);
+  const watched=needing.slice(0,CAP);
+  watched.forEach(s=>{ if(Math.random()<0.3){s.need=false;s.wait=0;} });
+  needing.slice(CAP).forEach(s=>s.wait++);
+  active.forEach(s=>{ if(!s.need){ s.p=Math.min(100,s.p+(mode==='A'?2.5:4)+Math.random()*2); if(s.p>=100)done++; } });
+  sess.forEach(s=>{const e=s.el;e.querySelector('i').style.width=s.p+'%';e.className='s'+(s.p>=100?' done':s.need?(watched.includes(s)?' need watched':' need starve'):'');});
+  [...slots.children].forEach((x,i)=>x.classList.toggle('on',i<watched.length));
+  document.getElementById('sW').textContent=watched.length;document.getElementById('sQ').textContent=Math.max(0,needing.length-CAP);document.getElementById('sD').textContent=done;
+  document.getElementById('face').textContent=needing.length>CAP?'😵':needing.length>=3?'😐':'🙂';
+  document.getElementById('face').classList.toggle('stress',needing.length>CAP);
+}
+document.getElementById('add').onclick=add;document.getElementById('add5').onclick=()=>{for(let i=0;i<5;i++)add();};
+document.getElementById('reset').onclick=reset;document.getElementById('mA').onclick=()=>setMode('A');document.getElementById('mB').onclick=()=>setMode('B');
+reset();setMode('A');for(let i=0;i<4;i++)add();setInterval(tick,600);
+// 会话自己越开越多：每 2.5 秒多一个，直到 24 个
+setInterval(()=>{if(sess.filter(s=>s.p<100).length<24)add();},1500);
+</script></body></html>

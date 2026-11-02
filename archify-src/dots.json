@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": { "title": "ChatGPT dots：公开信息拼出的结构（虚线框内为未公开）", "locale": "zh-CN", "output": "archify/dots.html", "quality_profile": "showcase" },
+  "components": [
+    { "id": "you", "type": "external", "label": "你", "sublabel": "ChatGPT·Slack·Teams·语音", "pos": [40, 220], "size": [170, 60], "explanation": "换渠道不会新开一个 dot，也不会重置记忆。" },
+    { "id": "memory", "type": "database", "label": "记忆", "sublabel": "dot 笔记 + ChatGPT 记忆", "pos": [300, 40], "size": [170, 60] },
+    { "id": "dot", "type": "backend", "label": "主 dot", "sublabel": "常驻对话入口", "tag": "GPT-6 Astra 驱动", "pos": [300, 220], "size": [170, 64], "explanation": "官方称由 GPT-6 Astra 驱动（上下文 1,050,000 token）。主会话与后台 agent 是否用不同模型、是否存在轻量路由层：官方未公开。" },
+    { "id": "unknown", "type": "external", "label": "分层模型 / 路由层？", "sublabel": "官方未公开", "tag": "未知", "pos": [300, 560], "size": [170, 60] },
+    { "id": "research", "type": "backend", "label": "主动研究", "sublabel": "proactive research", "tag": "只读工具", "pos": [300, 400], "size": [170, 64], "explanation": "不能发消息、不能改应用内容、不能操控浏览器或电脑。" },
+    { "id": "review", "type": "security", "label": "自动审查", "sublabel": "直接做 / 需批准 / 本人做", "tag": "+ Custom Rules", "pos": [570, 220], "size": [170, 64], "explanation": "改密码这类敏感操作始终留给用户；内置安全要求不可被覆盖。" },
+    { "id": "bg", "type": "backend", "label": "后台 agent", "sublabel": "并行处理多件事", "pos": [840, 110], "size": [170, 60] },
+    { "id": "tasks", "type": "backend", "label": "云端线程 · 任务", "sublabel": "Work / Codex 任务", "pos": [840, 330], "size": [170, 60], "explanation": "dot 可新开云端线程、创建 Work 或 Codex 任务，并对自己创建的任务检查结果、追加指令。" },
+    { "id": "pc", "type": "cloud", "label": "云电脑 + 浏览器", "sublabel": "每个 dot 一台", "pos": [1100, 220], "size": [170, 60], "explanation": "凭证通过私密表单直接交给浏览器，不进入对话，不暴露给模型。" },
+    { "id": "apps", "type": "external", "label": "4,000+ 应用", "sublabel": "插件连接", "pos": [1100, 40], "size": [170, 60] },
+    { "id": "mypc", "type": "external", "label": "你的个人电脑", "sublabel": "可选授权 · 同时一台", "pos": [1100, 420], "size": [170, 60] }
+  ],
+  "boundaries": [
+    { "kind": "security-group", "label": "未公开", "wraps": ["unknown"] }
+  ],
+  "connections": [
+    { "id": "you-dot", "from": "you", "to": "dot", "label": "对话", "variant": "emphasis" },
+    { "id": "dot-mem", "from": "dot", "to": "memory", "label": "读写" },
+    { "id": "dot-research", "from": "dot", "to": "research", "label": "后台调研", "variant": "dashed" },
+    { "id": "dot-review", "from": "dot", "to": "review", "label": "动作" },
+    { "id": "review-bg", "from": "review", "to": "bg", "label": "放行" },
+    { "id": "review-tasks", "from": "review", "to": "tasks", "label": "放行" },
+    { "id": "bg-pc", "from": "bg", "to": "pc", "label": "操作" },
+    { "id": "pc-apps", "from": "pc", "to": "apps", "label": "插件" },
+    { "id": "pc-mypc", "from": "pc", "to": "mypc", "label": "授权连接", "variant": "security" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "已公开", "items": ["2026-09-29 发布", "后台 agent 并行，可边聊边干活", "主动研究只用只读工具", "已保存密码可用，但不暴露给模型"] },
+    { "dot": "amber", "title": "GPT-6 Astra API 价格（每百万 token）", "items": ["输入 $10 · 缓存输入 $1 · 缓存写入 $12.5 · 输出 $50", "单次输入超 272K：输入 2 倍、输出 1.5 倍"] },
+    { "dot": "rose", "title": "未公开（不作推断）", "items": ["主会话与后台 agent 是否用不同模型", "是否存在轻量路由层", "dots 是否默认运行在 Fast 模式"] },
+    { "dot": "slate", "title": "来源", "items": ["openai.com/index/introducing-dots", "learn.chatgpt.com/docs/dots", "developers.openai.com/api/docs/models/gpt-6-astra"] }
+  ]
+}

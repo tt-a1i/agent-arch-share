@@ -1,0 +1,59 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>交接成本：经路由转达 vs 代码直送</title>
+<link rel="stylesheet" href="../assets/theme.css"><link rel="stylesheet" href="../assets/detail.css">
+<style>
+svg text{font-family:var(--font)}
+.cn{display:flex;gap:30px;margin-top:8px}
+.tl{margin-top:10px}
+.tl .row2{display:flex;align-items:center;gap:12px;margin:10px 0}
+.tl .row2>span{width:150px;font-size:15px;color:var(--dim);flex:none}
+.tl .track{flex:1;display:flex;gap:3px;height:34px}
+.tl .track i{font-style:normal;font-size:13px;display:grid;place-items:center;border-radius:6px;color:#081022;font-weight:700;transform-origin:left;opacity:0}
+.tl.play .track i{animation:seg .5s forwards}
+@keyframes seg{from{opacity:0;transform:scaleX(0)}to{opacity:1;transform:none}}
+</style></head><body>
+<header class="dh"><a class="back" data-def="13" href="../index.html#/13">← 回到第 13 页</a><div><h1>交接成本：一条后续消息，要过几道手？</h1><div class="sub">示意动画：调用次数、时间单位都是为了演示机制，非实测</div></div><div class="right"><button class="btn on" id="play">▶ 播放 5 条后续消息</button></div></header>
+<main class="dm">
+<div class="grid2">
+  <div class="panel"><h3 style="font-size:20px" class="c-coral">经 Router 转达</h3><svg id="L" viewBox="0 0 640 380" width="100%"></svg>
+    <div class="cn"><div class="stat"><b class="c-coral" id="Lr">0</b><span>Router 模型调用</span></div><div class="stat"><b class="c-coral" id="Lt">0</b><span>Router 读入 token（示意单位）</span></div><div class="stat"><b class="c-coral" id="Lh">0</b><span>经手次数</span></div></div></div>
+  <div class="panel"><h3 style="font-size:20px" class="c-mint">代码直送（Thread 订阅）</h3><svg id="R" viewBox="0 0 640 380" width="100%"></svg>
+    <div class="cn"><div class="stat"><b class="c-mint" id="Rr">0</b><span>Router 模型调用</span></div><div class="stat"><b class="c-mint" id="Rt">0</b><span>Router 读入 token（示意单位）</span></div><div class="stat"><b class="c-mint" id="Rh">0</b><span>经手次数</span></div></div></div>
+</div>
+<div class="panel" style="margin-top:20px">
+  <h3 style="font-size:20px">再看“拆太细”：一个两分钟的小改动</h3>
+  <div class="tl" id="tl">
+    <div class="row2"><span>派给新会话</span><div class="track"><i style="flex:1.2;background:#22d3ee;animation-delay:.1s">派单</i><i style="flex:2;background:#a78bfa;animation-delay:.5s">新会话加载背景</i><i style="flex:2;background:#34d399;animation-delay:.9s">执行</i><i style="flex:1.2;background:#fbbf24;animation-delay:1.3s">汇报</i><i style="flex:1.2;background:#fb7185;animation-delay:1.7s">转述</i></div></div>
+    <div class="row2"><span>主会话顺手做</span><div class="track"><i style="flex:2;background:#34d399;animation-delay:.1s">执行</i><i style="flex:5.6;background:transparent;color:var(--mint);animation-delay:.5s">✓ 已经做完了</i></div></div>
+  </div>
+  <p class="note">原文对照：“优先委派”的单会话设计 p50 13.8 分钟、接近 Super-agent 的 12.4，但 p95 拉长到 29.0 —— 委派与否本身要权衡。原则：按完整任务拆，不按步骤拆。</p>
+</div>
+<p class="note">原文消融（合成负载，仅供参考）：去掉直送，cache-read token 多约 37%（23.2M→31.8M），Router 决策多约 30%；完成时间几乎一样 —— 直送不让任务更快更好，只省路由的 token。</p>
+</main>
+<script src="../assets/detail.js"></script>
+<script>
+const NS='http://www.w3.org/2000/svg';
+const N={ev:[70,300],you:[320,50],rt:[320,190],wk:[560,300]};
+function draw(svg,direct){
+  svg.innerHTML='<defs><marker id="m'+svg.id+'" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#46507a"/></marker></defs>';
+  const line=(a,b,c,dash)=>{const l=document.createElementNS(NS,'line');l.setAttribute('x1',a[0]);l.setAttribute('y1',a[1]);l.setAttribute('x2',b[0]);l.setAttribute('y2',b[1]);l.setAttribute('stroke',c||'#46507a');l.setAttribute('stroke-width',2);if(dash)l.setAttribute('stroke-dasharray','7 6');svg.appendChild(l);};
+  line(N.ev,N.rt,direct?'#2a3050':'#46507a');line(N.rt,N.wk);line(N.rt,N.you);if(direct)line(N.ev,N.wk,'#34d399',true);
+  const box=(p,t,s,c)=>{const g=document.createElementNS(NS,'g');g.innerHTML=`<rect x="${p[0]-70}" y="${p[1]-32}" width="140" height="64" rx="14" fill="#141b38" stroke="${c}" stroke-width="2"/><text x="${p[0]}" y="${p[1]-2}" text-anchor="middle" fill="#eef2ff" font-size="18" font-weight="800">${t}</text><text x="${p[0]}" y="${p[1]+20}" text-anchor="middle" fill="#a5b0cf" font-size="12">${s}</text>`;svg.appendChild(g);return g.querySelector('rect');};
+  box(N.ev,'后续消息','同一 PR 的新评论','#6f7a9b');box(N.you,'你','看转述','#6f7a9b');const r=box(N.rt,'Router',direct?'看得到，只转述结果':'先判断：这条给谁？','#22d3ee');box(N.wk,'Worker','负责这个 PR','#a78bfa');
+  if(direct){const t=document.createElementNS(NS,'text');t.setAttribute('x',315);t.setAttribute('y',338);t.setAttribute('text-anchor','middle');t.setAttribute('fill','#34d399');t.setAttribute('font-size',14);t.setAttribute('font-weight',700);t.textContent='代码查订阅表，直接送达';svg.appendChild(t);}
+  return r;
+}
+const rL=draw(document.getElementById('L'),false), rR=draw(document.getElementById('R'),true);
+function dot(svg,c){const d=document.createElementNS(NS,'circle');d.setAttribute('r',9);d.setAttribute('fill',c);svg.appendChild(d);return d;}
+function move(d,a,b,ms){return new Promise(res=>{const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/ms);d.setAttribute('cx',a[0]+(b[0]-a[0])*k);d.setAttribute('cy',a[1]+(b[1]-a[1])*k);k<1?requestAnimationFrame(f):res();})(t0);});}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function blink(r){r.setAttribute('stroke-width',6);setTimeout(()=>r.setAttribute('stroke-width',2),250);}
+const st={L:{r:0,t:0,h:0},R:{r:0,t:0,h:0}};
+function show(){for(const s of ['L','R'])for(const k of ['r','t','h'])document.getElementById(s+k).textContent=st[s][k];}
+async function runL(){const svg=document.getElementById('L');for(let i=0;i<5;i++){const d=dot(svg,'#22d3ee');await move(d,N.ev,N.rt,600);blink(rL);st.L.r++;st.L.t+=8;st.L.h++;show();await wait(500);
+  await move(d,N.rt,N.wk,500);st.L.h++;show();await wait(300);d.setAttribute('fill','#fbbf24');await move(d,N.wk,N.rt,500);blink(rL);st.L.r++;st.L.t+=5;st.L.h++;show();await wait(400);await move(d,N.rt,N.you,500);st.L.h++;show();d.remove();}}
+async function runR(){const svg=document.getElementById('R');for(let i=0;i<5;i++){const d=dot(svg,'#34d399');await move(d,N.ev,N.wk,700);st.R.h++;show();await wait(300);
+  d.setAttribute('fill','#fbbf24');await move(d,N.wk,N.rt,500);blink(rR);st.R.r++;st.R.t+=5;st.R.h++;show();await wait(400);await move(d,N.rt,N.you,500);st.R.h++;show();d.remove();await wait(500);}}
+let busy=false;
+async function play(){if(busy)return;busy=true;st.L={r:0,t:0,h:0};st.R={r:0,t:0,h:0};show();const tl=document.getElementById('tl');tl.classList.remove('play');void tl.offsetWidth;tl.classList.add('play');await Promise.all([runL(),runR()]);busy=false;}
+document.getElementById('play').onclick=play;setTimeout(play,600);
+</script></body></html>

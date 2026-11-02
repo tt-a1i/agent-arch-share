@@ -1,0 +1,49 @@
+body{overflow:hidden}
+#viewport{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(1200px 700px at 15% 0%,#162050 0,transparent 60%),radial-gradient(900px 600px at 100% 100%,#2a1240 0,transparent 55%),var(--bg)}
+#stage{width:1600px;height:900px;position:relative;transform-origin:center center;flex:none}
+.slide{position:absolute;inset:0;padding:70px 90px 80px;opacity:0;visibility:hidden;transition:opacity .45s ease, transform .45s ease;transform:translateY(14px)}
+.slide.active{opacity:1;visibility:visible;transform:none}
+.act{position:absolute;top:34px;left:90px;font-size:17px;letter-spacing:.18em;color:var(--mute);font-weight:700}
+.act b{color:var(--cyan);font-weight:800;margin-right:10px}
+.slide h1{font-size:76px;line-height:1.15;font-weight:800;letter-spacing:-.01em}
+.slide h2{font-size:50px;line-height:1.22;font-weight:800;margin-top:26px;margin-bottom:12px;letter-spacing:-.005em}
+.slide .lead{font-size:26px;color:var(--dim);line-height:1.6}
+.slide p,.slide li{font-size:24px;line-height:1.6}
+.slide ul{list-style:none}
+.slide ul.dots li{position:relative;padding-left:26px;margin:8px 0}
+.slide ul.dots li:before{content:"";position:absolute;left:4px;top:.68em;width:9px;height:9px;border-radius:50%;background:var(--cyan)}
+.foot{position:absolute;left:90px;right:300px;bottom:30px;font-size:15px;color:var(--mute);line-height:1.5}
+.chips{position:absolute;right:90px;bottom:84px;display:flex;gap:14px}
+.row{display:flex;gap:28px}
+.col{display:flex;flex-direction:column;gap:20px}
+.big{font-size:150px;font-weight:900;line-height:1;letter-spacing:-.03em}
+.k{font-weight:800}
+/* chrome */
+#bar{position:fixed;left:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--cyan),var(--violet),var(--coral));transition:width .4s;z-index:5}
+#counter{position:fixed;right:22px;bottom:16px;font:600 14px var(--mono);color:var(--dim);z-index:5;display:flex;gap:8px;align-items:center}
+#counter button{background:rgba(255,255,255,.07);border:1px solid var(--line);color:var(--ink);width:34px;height:30px;border-radius:8px;cursor:pointer;font-size:15px}
+#counter button:hover{background:rgba(34,211,238,.2)}
+#toc{position:fixed;left:18px;bottom:14px;font:600 13px var(--font);color:var(--mute);z-index:5}
+/* cover */
+.cover h1{font-size:96px;margin-top:150px}
+.cover .sub{font-size:30px;color:var(--dim);margin-top:26px;max-width:900px;line-height:1.5}
+.cover .who{margin-top:46px;font-size:22px;color:var(--ink)}
+.acts{display:flex;gap:14px;margin-top:40px}
+.acts span{padding:10px 18px;border-radius:12px;background:var(--panel);border:1px solid var(--line);font-size:19px;color:var(--dim)}
+.acts span b{color:var(--ink);margin-right:8px}
+.orbit{position:absolute;right:70px;top:120px;width:620px;height:620px}
+/* animations shared */
+@keyframes pop{0%{transform:scale(.3);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+.slide.active .rise{animation:fadeUp .6s both}
+.slide.active .rise.d1{animation-delay:.15s}.slide.active .rise.d2{animation-delay:.3s}.slide.active .rise.d3{animation-delay:.45s}.slide.active .rise.d4{animation-delay:.6s}.slide.active .rise.d5{animation-delay:.75s}.slide.active .rise.d6{animation-delay:.9s}
+/* session grid (slide 2) */
+.sess{display:grid;grid-template-columns:repeat(4,150px);gap:16px}
+.sess div{height:92px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.05);padding:12px;font:600 15px var(--mono);color:var(--dim);opacity:0;position:relative}
+.sess div i{display:block;height:7px;border-radius:4px;background:var(--mint);margin-top:12px;width:60%}
+.sess div.lost{border-color:rgba(251,113,133,.5);background:rgba(251,113,133,.07)}
+.sess div.lost i{background:var(--coral);animation:pulse 1.2s infinite}
+.sess div.lost:after{content:"没人看";position:absolute;right:10px;top:10px;font-size:13px;color:var(--coral)}
+.slide.active .sess div{animation:pop .45s both}

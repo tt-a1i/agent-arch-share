@@ -1,0 +1,1 @@
+(function(){const a=document.querySelector('a.back');if(!a)return;const m=location.search.match(/from=(\d+)/);const n=m?m[1]:a.dataset.def;a.href='../index.html#/'+n;a.textContent='← 回到第 '+n+' 页';})();
