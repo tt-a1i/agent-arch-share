@@ -1,84 +1,76 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>强路由还是弱路由</title>
-<link rel="stylesheet" href="../assets/theme.css"><link rel="stylesheet" href="../assets/detail.css">
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>路由用强模型还是弱模型？</title>
+<link rel="stylesheet" href="../assets/d.css">
 <style>
-.lay{display:grid;grid-template-columns:420px 1fr;gap:22px}
-.opt{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}
-.big{font-size:64px;font-weight:900;line-height:1}
-.meters{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.m{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:18px}
-.m .lbl{font-size:15px;color:var(--dim)}
-.gauge{height:12px;border-radius:6px;background:rgba(255,255,255,.07);margin-top:12px;overflow:hidden}.gauge i{display:block;height:100%;border-radius:6px;transition:width .3s,background .3s}
-#q{height:120px;position:relative;margin-top:16px;border-radius:14px;background:#070b17;border:1px solid var(--line);overflow:hidden}
-#q .r{position:absolute;right:20px;top:20px;width:120px;height:80px;border-radius:14px;border:2px solid var(--cyan);background:#0f2a33;display:grid;place-items:center;font-weight:800}
-#q .msg{position:absolute;top:52px;width:16px;height:16px;border-radius:50%;background:var(--violet)}
-.as{font-size:13px;color:var(--mute);line-height:1.7}
-.as td{padding:3px 12px 3px 0;vertical-align:top}.as td:first-child{white-space:nowrap}
-.warn{color:var(--coral);font-weight:800}
-</style></head><body>
-<header class="dh"><a class="back" data-def="12" href="../index.html#/12">← 回到第 12 页</a><div><h1>互动：路由用强模型还是弱模型？</h1><div class="sub">拖动消息频率，看“每条消息要等多久”和“每小时花多少”怎么变 · <span class="c-amber">示意模型，参数为假设，非实测</span></div></div></header>
-<main class="dm"><div class="lay">
-<div class="panel">
-  <label>消息频率（需要 Router 决策的消息 / 分钟）</label>
-  <div style="display:flex;align-items:baseline;gap:10px"><span class="big c-cyan" id="lv">6</span><span class="c-dim">条/分钟</span></div>
-  <input type="range" id="lam" min="1" max="40" value="6">
-  <div style="display:flex;justify-content:space-between;font-size:13px" class="c-mute"><span>1：安静的一天</span><span>40：原文压测上限量级</span></div>
-  <div style="margin-top:18px"><label>路由模型</label><div class="opt" id="models"></div></div>
-  <label><input type="checkbox" id="batch" checked> 批处理（忙的时候到达的事件，下一轮合并处理）</label>
-  <div id="q"><div class="r">Router</div></div><div class="note" style="margin-top:4px">队列动画按 10 倍速播放，和左边同一套假设。</div>
-  <table class="as" style="margin-top:14px"><tr><td colspan="2" style="color:var(--dim)">假设（示意）</td></tr>
-  <tr><td>轻量模型</td><td>单次决策 1.5s · $0.002</td></tr><tr><td>最强模型</td><td>单次决策 6s · $0.02</td></tr><tr><td>最强 + Fast</td><td>单次决策 3s · $0.04（Fast 按 2 倍计费是公开规则；时延为假设）</td></tr>
-  <tr><td>批处理</td><td>每轮合并处理排队事件；每轮耗时随批大小增长，系数由原文压测推得（批 1.0→2.8 时单次 2.5s→3.9s，摊到每个决策 6.4s→1.6s）</td></tr><tr><td>等待</td><td>不批处理按 M/D/1 排队估算；批处理按“约 1.5 轮”估算</td></tr></table>
-</div>
-<div class="col" style="display:flex;flex-direction:column;gap:18px">
-  <div class="meters">
-    <div class="m"><div class="lbl">每条消息大约要等</div><div class="big" id="wait">–</div><div class="gauge"><i id="gW"></i></div><div class="note" id="waitN"></div></div>
-    <div class="m"><div class="lbl">每小时路由花费（示意）</div><div class="big c-amber" id="cost">–</div><div class="gauge"><i id="gC" style="background:var(--amber)"></i></div><div class="note">只算路由，不含 Worker</div></div>
-    <div class="m"><div class="lbl">判断质量（定性）</div><div class="big" id="qual">–</div><div class="gauge"><i id="gQ"></i></div><div class="note">弱模型的坑：拆错派错、该不该打扰、转述漏前提</div></div>
+.big{font-size:96px;font-weight:900;letter-spacing:-.04em;line-height:.85}
+.mt{border-top:6px solid var(--ink);padding-top:22px}
+.mt .v{font-size:96px;font-weight:900;letter-spacing:-.04em;line-height:.9;margin-top:18px}
+.mt .g{height:10px;background:var(--g4);margin-top:24px;position:relative}.mt .g i{position:absolute;left:0;top:0;bottom:0;background:var(--ink);transition:width .4s,background .4s}
+.mt .n{font-size:19px;font-weight:600;color:var(--g1);margin-top:14px;min-height:54px;line-height:1.4}
+#q{position:relative;height:64px;border:3px solid var(--ink);margin-top:16px;overflow:hidden}
+#q .r{position:absolute;right:0;top:0;bottom:0;width:150px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900}
+#q .msg{position:absolute;top:22px;width:14px;height:14px;background:var(--red)}
+table.as{width:100%;border-collapse:collapse;font-size:17px;margin-top:22px}
+table.as td{padding:8px 0;border-top:2px solid var(--ink);vertical-align:top;line-height:1.45}
+table.as td:first-child{width:130px;font-weight:800}
+#verdict{font-size:28px;font-weight:700;line-height:1.55}
+#verdict b{font-weight:900}
+</style></head>
+<body><div class="stage">
+ <div class="rule"></div>
+ <div class="dhead"><a class="back" data-def="12" href="../index.html#/12"><span>回到第 12 页</span></a><h1>互动：路由用强模型还是弱模型？</h1><span class="tag"><span class="red">示意模型，参数为假设，非实测</span></span></div>
+ <div class="abs" style="left:96px;top:230px;width:706px">
+  <div class="lbl">消息频率 · 需要路由决策的消息 / 分钟</div>
+  <div style="display:flex;align-items:baseline;gap:16px;margin-top:8px"><span class="big red" id="lv">6</span><span class="lbl">条 / 分钟</span></div>
+  <input type="range" id="lam" min="1" max="40" value="6" style="margin-top:18px">
+  <div style="display:flex;justify-content:space-between;margin-top:10px" class="small"><span>1 · 安静的一天</span><span>40 · 原文压测上限量级</span></div>
+  <div class="lbl" style="margin-top:24px">路由模型</div>
+  <div id="models" style="display:flex;gap:10px;margin-top:12px"></div>
+  <label class="chk" style="margin-top:22px"><input type="checkbox" id="batch" checked>批处理：忙时到达的事件，下一轮合并处理</label>
+  <div id="q"><div class="r">Router</div></div>
+  <table class="as"><tr><td>轻量模型</td><td>单次决策 1.5s · $0.002</td></tr><tr><td>最强模型</td><td>单次决策 6s · $0.02</td></tr><tr><td>最强 + Fast</td><td>单次 3s · $0.04（Fast 按 2 倍计费是公开规则；时延为假设）</td></tr><tr><td>批处理</td><td>系数由原文压测推得（批 1.0 → 2.8：单次 2.5s → 3.9s）</td></tr></table>
+ </div>
+ <div class="abs" style="left:972px;top:230px;width:852px">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);column-gap:24px">
+   <div class="mt"><div class="lbl">每条消息要等</div><div class="v" id="wait">–</div><div class="g"><i id="gW"></i></div><div class="n" id="waitN"></div></div>
+   <div class="mt"><div class="lbl">每小时路由花费</div><div class="v" id="cost">–</div><div class="g"><i id="gC"></i></div><div class="n">只算路由，不含 Worker</div></div>
+   <div class="mt"><div class="lbl">判断质量（定性）</div><div class="v" id="qual">–</div><div class="g"><i id="gQ"></i></div><div class="n">弱模型的坑：拆错派错、该不该打扰、转述漏前提</div></div>
   </div>
-  <div class="panel" id="verdict" style="font-size:19px;line-height:1.7"></div>
-  <div class="panel" style="font-size:16px;line-height:1.8;color:var(--dim)"><b style="color:var(--ink)">怎么读：</b>Router 在每条消息的必经路径上。下层慢一点你感觉不到；路由慢一点，你每说一句都要等。批处理能撑住吞吐，但<b class="c-cyan">单条响应速度仍取决于模型本身</b>。我们的折中：默认轻量，拿不准（低置信、对外/不可逆、要合并多个结果）时升级到强模型或问人 —— 这是我们的建议，原文未描述。</div>
+  <div id="verdict" style="margin-top:44px;border-left:10px solid var(--red);padding-left:28px"></div>
+  <p class="small" style="margin-top:36px;color:var(--ink);font-size:21px">路由在每条消息的必经路径上：下层慢一点你感觉不到，路由慢一点你每句话都要等。批处理撑得住吞吐，但<b>单条响应速度仍取决于模型本身</b>。默认轻量、拿不准再升级 —— 是我们的建议，原文未描述。</p>
+ </div>
+ <div class="rule b"></div>
+ <div class="foot"><span class="src">队列动画按 10 倍速播放。等待：不批处理按 M/D/1 排队估算；批处理按约 1.5 轮估算。全部为示意</span></div>
 </div>
-</div></main>
 <script src="../assets/detail.js"></script>
 <script>
-const M={light:{n:'轻量',s:1.5,c:.002,q:55,col:'var(--mint)'},strong:{n:'最强',s:6,c:.02,q:95,col:'var(--violet)'},fast:{n:'最强 + Fast',s:3,c:.04,q:95,col:'var(--coral)'}};
-let cur='light';const box=document.getElementById('models');
-for(const k in M){const b=document.createElement('button');b.className='btn';b.textContent=M[k].n;b.onclick=()=>{cur=k;calc();};b.dataset.k=k;box.appendChild(b);}
-const $=id=>document.getElementById(id);
-function calc(){
-  const lam=+$('lam').value, m=M[cur], batch=$('batch').checked; $('lv').textContent=lam;
-  [...box.children].forEach(b=>b.classList.toggle('on',b.dataset.k===cur));
-  // batching: each round handles everything queued; round time grows with batch size.
-  // k fitted from DeepSeek stress test: batch 1.0 -> 2.8 made a single request 2.5s -> 3.9s  => k ~= 0.31
-  const k=0.31; let wait, note, sEff, calls;
-  if(batch){const x=lam*m.s/60;
-    if(x*k>=0.97){wait=Infinity;note='批越攒越大，每轮越来越慢：撑不住';sEff=m.s;calls=lam;}
-    else{const bsz=Math.max(1,x*(1-k)/(1-x*k)), T=m.s*(1+k*(bsz-1));wait=1.5*T;sEff=T/bsz;calls=lam/bsz*(1+k*(bsz-1));note='平均每轮合并约 '+bsz.toFixed(1)+' 条 · 每轮约 '+T.toFixed(1)+'s';}}
-  else{const rho=lam/60*m.s;sEff=m.s;calls=lam;
-    if(rho>=.98){wait=Infinity;note='利用率 ≥ 100%：队列只会越排越长';}
-    else{wait=m.s+rho*m.s/(2*(1-rho));note='Router 利用率约 '+Math.round(rho*100)+'%';}}
-  window._sEff=sEff;
-  $('wait').textContent=wait===Infinity?'∞':wait.toFixed(1)+'s';$('wait').className='big '+(wait===Infinity||wait>10?'warn':wait>4?'c-amber':'c-mint');
-  $('waitN').textContent=note;$('gW').style.width=Math.min(100,(wait===Infinity?100:wait/20*100))+'%';$('gW').style.background=wait===Infinity||wait>10?'var(--coral)':wait>4?'var(--amber)':'var(--mint)';
-  const cost=calls*60*m.c; $('cost').textContent='$'+cost.toFixed(cost<10?2:0);$('gC').style.width=Math.min(100,cost/96*100)+'%';
-  $('qual').textContent=m.q>80?'高':'中';$('qual').style.color=m.col;$('gQ').style.width=m.q+'%';$('gQ').style.background=m.col;
-  let v;
-  if(wait===Infinity) v='<b class="warn">排队爆炸。</b>这个频率下 '+m.n+'模型'+(batch?'即使批处理也':'不批处理')+'处理不过来：要么开批处理、要么换更快的档位，要么用代码规则和直送把消息挡在 Router 之外。';
-  else if(cur==='light') v='<b class="c-mint">又快又省。</b>但判断空间大时会出错 —— 用代码规则、订阅直送、结构化结果把判断空间压小，再把拿不准的升级出去。';
-  else if(cur==='strong') v='<b class="c-violet">判断最好，但你要等。</b>'+(wait>4?'消息一多，每句话的等待已经明显。':'消息少的时候还能接受。')+'“不计成本上最强”只算了钱，没算时间。';
-  else v='<b class="c-coral">用钱换时间。</b>Fast 按 2 倍价格计费；dots 产品是否默认用 Fast，官方未公开。';
-  $('verdict').innerHTML=v;
-  spd=lam;
-}
+const M={light:{n:'轻量',s:1.5,c:.002,q:55},strong:{n:'最强',s:6,c:.02,q:95},fast:{n:'最强 + Fast',s:3,c:.04,q:95}};
+let cur='light';const box=document.getElementById('models'),$=id=>document.getElementById(id);
+for(const k in M){const b=document.createElement('button');b.className='btn';b.textContent=M[k].n;b.onclick=()=>{cur=k;calc()};b.dataset.k=k;box.appendChild(b)}
+let spd=6;
+function calc(){const lam=+$('lam').value,m=M[cur],batch=$('batch').checked;$('lv').textContent=lam;
+ [...box.children].forEach(b=>b.classList.toggle('on',b.dataset.k===cur));
+ const k=0.31;let wait,note,sEff,calls;
+ if(batch){const x=lam*m.s/60;if(x*k>=0.97){wait=Infinity;note='批越攒越大，每轮越来越慢：撑不住';sEff=m.s;calls=lam}
+  else{const bsz=Math.max(1,x*(1-k)/(1-x*k)),T=m.s*(1+k*(bsz-1));wait=1.5*T;sEff=T/bsz;calls=lam/bsz*(1+k*(bsz-1));note='每轮合并约 '+bsz.toFixed(1)+' 条 · 每轮约 '+T.toFixed(1)+'s'}}
+ else{const rho=lam/60*m.s;sEff=m.s;calls=lam;if(rho>=.98){wait=Infinity;note='利用率 ≥ 100%：队列只会越排越长'}else{wait=m.s+rho*m.s/(2*(1-rho));note='路由利用率约 '+Math.round(rho*100)+'%'}}
+ window._sEff=sEff;const bad=wait===Infinity||wait>10;
+ $('wait').textContent=wait===Infinity?'∞':wait.toFixed(1)+'s';$('wait').style.color=bad?'var(--red)':'var(--ink)';
+ $('waitN').textContent=note;$('gW').style.width=Math.min(100,(wait===Infinity?100:wait/20*100))+'%';$('gW').style.background=bad?'var(--red)':'var(--ink)';
+ const cost=calls*60*m.c;$('cost').textContent='$'+cost.toFixed(cost<10?2:0);$('gC').style.width=Math.min(100,cost/96*100)+'%';
+ $('qual').textContent=m.q>80?'高':'中';$('gQ').style.width=m.q+'%';
+ let v;if(wait===Infinity)v='<b class="red">排队爆炸。</b>这个频率下'+m.n+'模型'+(batch?'即使批处理也':'不批处理')+'处理不过来：开批处理、换更快的档位，或用代码规则和直送把消息挡在路由之外。';
+ else if(cur==='light')v='<b>又快又省。</b>但判断空间大时会出错 —— 用代码规则、订阅直送、结构化结果把判断空间压小，拿不准的升级出去。';
+ else if(cur==='strong')v='<b>判断最好，但你要等。</b>'+(wait>4?'消息一多，每句话的等待已经明显。':'消息少的时候还能接受。')+'「不计成本上最强」只算了钱，没算时间。';
+ else v='<b>用钱换时间。</b>Fast 按 2 倍价格计费；dots 产品是否默认用 Fast，官方未公开。';
+ $('verdict').innerHTML=v;spd=lam}
 $('lam').oninput=calc;$('batch').onchange=calc;
-// queue animation
-let spd=6;const q=$('q');let acc=0,last=performance.now(),msgs=[];
-function fr(now){const dt=(now-last)/1000;last=now;acc+=dt*spd/6;/* 10x time-lapse: lam/min -> lam/6 per real sec */if(acc>1){acc=0;const d=document.createElement('div');d.className='msg';d.style.left='-20px';q.appendChild(d);msgs.push({el:d,x:-20});}
-  const m=M[cur];
-  const stopX=q.clientWidth-160; let slot=0;
-  msgs.sort((a,b)=>b.x-a.x).forEach(o=>{const target=stopX-slot*22;slot++;o.x=Math.min(target,o.x+dt*180);o.el.style.left=o.x+'px';});
-  if(msgs.length&&msgs[0].x>=stopX-1){msgs[0].t=(msgs[0].t||0)+dt;if(msgs[0].t>(window._sEff||m.s)/10){msgs[0].el.remove();msgs.shift();}}
-  if(msgs.length>40){msgs.pop().el.remove();}
-  requestAnimationFrame(fr);}
-calc();requestAnimationFrame(fr);
+const q=$('q');let acc=0,last=performance.now(),msgs=[];
+function fr(now){const dt=(now-last)/1000;last=now;acc+=dt*spd/6;if(acc>1){acc=0;const d=document.createElement('div');d.className='msg';d.style.left='-20px';q.appendChild(d);msgs.push({el:d,x:-20})}
+ const stopX=q.clientWidth-180;let slot=0;msgs.sort((a,b)=>b.x-a.x).forEach(o=>{const t=stopX-slot*22;slot++;o.x=Math.min(t,o.x+dt*180);o.el.style.left=o.x+'px'});
+ if(msgs.length&&msgs[0].x>=stopX-1){msgs[0].t=(msgs[0].t||0)+dt;if(msgs[0].t>(window._sEff||1.5)/10){msgs[0].el.remove();msgs.shift()}}
+ if(msgs.length>40)msgs.pop().el.remove();requestAnimationFrame(fr)}
+calc();
+if(document.documentElement.classList.contains('shot')){for(let i=0;i<6;i++){const d=document.createElement('div');d.className='msg';d.style.left=(q.clientWidth-180-i*22)+'px';q.appendChild(d)}}else requestAnimationFrame(fr);
 </script></body></html>

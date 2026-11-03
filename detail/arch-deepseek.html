@@ -1,5 +1,45 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DeepSeek Super-agent 架构图</title>
-<link rel="stylesheet" href="../assets/theme.css"><link rel="stylesheet" href="../assets/detail.css"></head><body>
-<header class="dh"><a class="back" data-def="4" href="../index.html#/4">← 回到第 4 页</a><div><h1>DeepSeek Super-agent 架构图</h1><div class="sub">由 Archify 生成 · 点击节点可看说明 · 来源：DeepSeek 原文与开源原型（研究原型，非正式产品）</div></div><div class="right"><a class="btn" href="../archify/deepseek.html" target="_blank" style="text-decoration:none">新窗口打开 ↗</a></div></header>
-<iframe class="arch" src="../archify/deepseek.html" title="DeepSeek Super-agent 架构图"></iframe>
-<script src="../assets/detail.js"></script></body></html>
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DeepSeek Super-agent 架构图</title>
+<link rel="stylesheet" href="../assets/d.css"></head>
+<body><div class="stage">
+ <div class="rule"></div>
+ <div class="dhead"><a class="back" data-def="4" href="../index.html#/4"><span>回到第 4 页</span></a><h1>DeepSeek Super-agent 架构图</h1><span class="tag">点击节点看说明 · 研究原型，非正式产品</span></div>
+ <div id="note">点击任一节点看说明。<span class="red" style="font-weight:800">红线</span> = 同一 Thread 的后续消息由代码直送：路由看得到，但不判断、不转发。虚线 = Watchdog 独立巡检。</div>
+ <div class="rule b"></div>
+ <div class="foot"><span class="src">来源：DeepSeek Harness《Exploring Super-agent Design》，2026-10-31；github.com/deepseek-ai/dsh-superagent-prototype。各角色用什么模型可配置</span></div>
+</div>
+<script>window.ARCH={
+nodes:[
+ {x:96,y:250,w:220,h:80,t:'IM',s:'私聊 · 群聊 · 话题',note:'IM 消息作为事件进入系统；人不用开会话、盯会话。'},
+ {x:96,y:360,w:220,h:80,t:'GitHub',s:'PR · issue · 评论',note:'PR、issue 与评论都是事件；一个 PR 就是一个 Thread。'},
+ {x:96,y:470,w:220,h:80,t:'邮件',s:'邮件链',note:'异步渠道：可以给结构化、高密度的输出。一封邮件链就是一个 Thread。'},
+ {x:96,y:580,w:220,h:80,t:'定时消息',s:'驱动 Watchdog 等',note:'定时消息也是事件，用来驱动巡检等周期性工作。'},
+ {x:396,y:300,w:240,h:100,k:'Fast Path',t:'代码规则',s:'来源 · 群 · 白名单',note:'按来源、群、用户、bot 设白名单；每个来源可设「只响应显式请求 / 作为候选 / 忽略」。能用代码判断的，不交给模型。'},
+ {x:396,y:450,w:240,h:100,k:'慢速路径',t:'LLM 语义判断',s:'值得处理吗？',note:'代码规则挡不住、又需要语义判断的事件，才交给 LLM。'},
+ {x:396,y:600,w:240,h:70,c:'q',t:'丢弃',s:'',note:'无关消息不进模型，不花 token。'},
+ {x:396,y:730,w:240,h:90,k:'订阅表',t:'Thread',s:'同一 PR · 话题 · 邮件链',note:'Thread = 同一件事的一串消息。会话在第一条事件时订阅；之后该 Thread 的消息由代码直送。不带话题的新消息自成新 Thread，交给路由判断；只有明确指向某个任务才挂上。挂错了可以交还路由。'},
+ {x:806,y:250,w:120,h:64,t:'你',note:'人只和一个对象说话：路由。IM 回复每条 ≤100 词。'},
+ {x:716,y:420,w:300,h:160,c:'b big',k:'常驻',t:'Router',s:'通常轻量模型 · 不持有 Bash',note:'负责所有人机交互、协调和记忆；只派发、不拆解 —— 这是它和 Agent Team 的区别。忙时到达的事件，下一轮合并注入（批处理）。'},
+ {x:716,y:650,w:300,h:100,k:'状态',t:'数据库',s:'ID + 摘要 · 引用图',note:'上下文当缓存用：先只给 ID 和摘要，按需展开；超长截断留指针。对象组成引用图，路由可逐跳召回（Chain of Recall）。计算 / 状态 / 环境分离：云端无状态循环 + 数据库 + 端上 daemon。'},
+ {x:1096,y:250,w:300,h:100,k:'Worker',t:'任务会话 A',s:'通常最强模型 · 全套工具',note:'一个任务一个隔离会话，通常配最强模型和全套工具，不直接和人说话。耗时工具改成异步，结果作为新事件回送。'},
+ {x:1096,y:400,w:300,h:100,k:'Worker',t:'任务会话 B',s:'通常最强模型 · 全套工具',note:'多个任务会话并行推进；路由腾出手继续接话。'},
+ {x:1096,y:550,w:300,h:100,k:'Worker',t:'任务会话 C',s:'订阅了某个 Thread',note:'订阅 Thread 的会话直接收到后续消息；路由看得到，但不判断、不转发。'},
+ {x:1476,y:240,w:348,h:120,k:'独立于主系统',t:'Watchdog',s:'定时消息驱动',note:'独立的「巡夜人」：既处理 API 报错这类基础设施故障，也用模型判断任务有没有实质进展、有没有偏离目标。主链路挂了，它还在。'},
+ {x:1476,y:700,w:348,h:100,k:'环境',t:'端上轻量 daemon',s:'本机文件 · 工具 · 设备',note:'计算 / 状态 / 环境分离：设备离线不影响云端循环继续。'}
+],
+edges:[
+ {d:'M316 290 H356',noarrow:1},{d:'M316 400 H356',noarrow:1},{d:'M316 510 H356',noarrow:1},{d:'M316 620 H356',noarrow:1},
+ {d:'M356 290 V775',noarrow:1},{d:'M356 350 H393'},
+ {d:'M516 400 V447'},{d:'M516 550 V597'},
+ {d:'M636 350 H676 V460 H713'},{d:'M636 500 H713'},
+ {d:'M866 317 V417',both:1},{d:'M866 583 V647',both:1},
+ {d:'M1016 500 H1056 V300 H1093'},{d:'M1016 500 H1056 V450 H1093'},{d:'M1016 500 H1056 V600 H1093',c:''},
+ {d:'M1476 300 H1399',c:'d'},{d:'M1476 300 H1436 V450 H1399',c:'d'},{d:'M1476 300 H1436 V600 H1399',c:'d'},
+ {d:'M1246 650 V750 H1473',c:'g'},
+ {d:'M356 775 H393',c:'r'},{d:'M636 775 H1036 V630 H1093',c:'r'}
+],
+labels:[{x:96,y:232,t:'事件源',c:'g'},{x:660,y:812,t:'同一 Thread → 代码直送',c:'r'},{x:536,y:588,t:'无关',c:'g'},{x:1268,y:738,t:'环境',c:'g'}]
+};</script>
+<script src="../assets/detail.js"></script><script src="../assets/arch.js"></script>
+</body></html>

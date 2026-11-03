@@ -1,5 +1,48 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hive 与我们的 bot 团队</title>
-<link rel="stylesheet" href="../assets/theme.css"><link rel="stylesheet" href="../assets/detail.css"></head><body>
-<header class="dh"><a class="back" data-def="10" href="../index.html#/10">← 回到第 10 页</a><div><h1>Hive 与我们的 bot 团队</h1><div class="sub">由 Archify 生成 · 左：Hive（本地工作台）；右：Grok Bot 上的 bot 团队</div></div><div class="right"><a class="btn" href="../archify/ours.html" target="_blank" style="text-decoration:none">新窗口打开 ↗</a></div></header>
-<iframe class="arch" src="../archify/ours.html" title="Hive 与我们的 bot 团队"></iframe>
-<script src="../assets/detail.js"></script></body></html>
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>并排看：Hive 与我们的 bot 团队</title>
+<link rel="stylesheet" href="../assets/d.css"></head>
+<body><div class="stage">
+ <div class="rule"></div>
+ <div class="dhead"><a class="back" data-def="8" href="../index.html#/8"><span>回到第 8 页</span></a><h1>并排看：Hive 与我们的 bot 团队</h1><span class="tag">点击节点看说明</span></div>
+ <div class="abs" style="left:96px;top:222px;font-size:30px;font-weight:900">Hive <span class="g1" style="font-size:22px;font-weight:700;margin-left:12px">当场指挥一个开发小队</span></div>
+ <div class="abs" style="left:1010px;top:222px;font-size:30px;font-weight:900">我们的 bot 团队 <span class="g1" style="font-size:22px;font-weight:700;margin-left:12px">常驻的分工团队</span></div>
+ <div class="abs" style="left:958px;top:222px;width:2px;height:620px;background:var(--ink)"></div>
+ <div id="note">点击任一节点看说明。两边是同一副骨架：一个入口 + 多个执行者 + 共享状态；差别在入口干不干活、后续消息怎么走。</div>
+ <div class="rule b"></div>
+ <div class="foot"><span class="src">来源：Hive README、docs/design-decisions.md、CONTEXT.md；bot 团队只讲平台上看得见的能力</span></div>
+</div>
+<script>window.ARCH={
+frames:[{x:96,y:300,w:820,h:540,t:'本机 · 只绑定 127.0.0.1'}],
+nodes:[
+ {x:126,y:340,w:180,h:72,t:'你',s:'浏览器里看团队',note:'在浏览器里组成一个「看得见的团队」。'},
+ {x:386,y:320,w:330,h:112,c:'b big',k:'入口 · 真实 CLI 进程',t:'Orchestrator',s:'规划 · 拆解 · 选人 · 验收',note:'Hive 的 Orchestrator 会规划、拆解、选人、验收 —— 更像原文说的 Agent Team，适合当场指挥一个开发小队。'},
+ {x:126,y:520,w:180,h:90,k:'PTY',t:'Claude Code',note:'CLI agent 作为真实 PTY 进程跑在本机。'},
+ {x:326,y:520,w:180,h:90,k:'PTY',t:'Codex',note:'CLI agent 作为真实 PTY 进程跑在本机。'},
+ {x:526,y:520,w:180,h:90,k:'PTY',t:'Gemini',note:'CLI agent 作为真实 PTY 进程跑在本机。'},
+ {x:726,y:520,w:170,h:90,k:'PTY',t:'OpenCode',note:'CLI agent 作为真实 PTY 进程跑在本机。'},
+ {x:126,y:700,w:370,h:100,k:'状态',t:'SQLite + tasks.md',s:'按派单 team send',note:'状态存在 SQLite 与 tasks.md；后续消息按派单 team send。'},
+ {x:526,y:700,w:370,h:100,k:'协议事件',t:'working · idle · stopped',s:'刻意不做卡死检测',note:'状态只由协议事件推进。刻意不做心跳和卡死检测：慢构建、长思考和真卡死，从外面看一模一样。'},
+ {x:1010,y:340,w:150,h:72,t:'你',s:'和大内总管聊',note:'人只和一个对象说话。'},
+ {x:1240,y:320,w:300,h:112,c:'b big',k:'唯一入口',t:'大内总管',s:'只路由，不研究、不写代码',note:'对应路由：接话、分派、转达。后续消息目前经大内总管读后转 —— 这是我们的差距之一。'},
+ {x:1620,y:340,w:204,h:72,k:'事件触发',t:'routine',note:'定时 / 事件触发：每日同步、每日分析。'},
+ {x:1010,y:520,w:190,h:90,k:'bot',t:'仓库维护',note:'每个仓库的日常维护。'},
+ {x:1220,y:520,w:190,h:90,k:'bot',t:'邮件',note:'收件与提醒。'},
+ {x:1430,y:520,w:190,h:90,k:'bot',t:'研究类 ×5',note:'调研与学习。'},
+ {x:1640,y:520,w:184,h:90,k:'≈ Watchdog',t:'架构观察员',note:'我们的类比：每天一次审查、只提建议 —— 不是持续运行的看门狗。'},
+ {x:1010,y:700,w:390,h:100,k:'状态 / 交接',t:'共享文件夹',s:'inbox · repos · scout · knowledge · daily',note:'交接写文件，不走聊天；交接必须带验证（目标、产出、测过什么、已知缺口）；一个文件同一时间一个写入者，追加不覆盖。'},
+ {x:1430,y:700,w:394,h:100,c:'rb',k:'权限',t:'审批关卡',s:'对外动作逐次批准',note:'对外动作逐次批准：已登录 ≠ 被允许。'}
+],
+edges:[
+ {d:'M306 376 H383'},
+ {d:'M551 432 V470 H216 V517',noarrow:0},{d:'M416 470 V517'},{d:'M616 470 V517'},{d:'M551 470 H811 V517'},
+ {d:'M216 610 V697',c:'g'},{d:'M711 610 V697',c:'g'},
+ {d:'M1160 376 H1237'},
+ {d:'M1390 432 V470 H1105 V517'},{d:'M1315 470 V517'},{d:'M1525 470 V517'},{d:'M1390 470 H1732 V517'},
+ {d:'M1722 412 V470',noarrow:1},
+ {d:'M1105 610 V697',c:'g',both:1},{d:'M1525 610 V697',c:'r'}
+],
+labels:[]
+};</script>
+<script src="../assets/detail.js"></script><script src="../assets/arch.js"></script>
+</body></html>
