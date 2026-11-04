@@ -110,3 +110,11 @@ input[type=range]::-moz-range-thumb{width:28px;height:28px;background:var(--red)
 .frame span{position:absolute;left:16px;top:-14px;background:var(--paper);padding:0 10px;font-size:18px;font-weight:800;color:var(--g1)}
 #note{position:absolute;left:96px;right:96px;top:872px;height:96px;border-top:6px solid var(--ink);padding-top:18px;font-size:22px;font-weight:600;line-height:1.55;color:#2a2926}
 #note b{font-weight:900;color:var(--ink);margin-right:18px;font-size:24px}
+/* presenter view (P) */
+body.presenter{background:#1b1b1a}
+#pv{position:fixed;left:var(--w,1200px);right:0;top:0;bottom:0;color:#f3f2ee;font-family:var(--sans);display:flex;flex-direction:column;padding:20px 28px 24px 0}
+#pv .pv-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;font-size:18px;font-weight:700;color:#a9a69f;border-bottom:3px solid var(--red);padding-bottom:14px}
+#pv-no{font-size:22px;color:#fff;width:100%}
+#pv-clock{margin-left:auto;font:800 26px var(--sans);color:#fff;background:transparent;border:2px solid #55524c;padding:4px 12px;cursor:pointer}
+#pv-notes{flex:1;overflow:auto;white-space:pre-line;font-size:21px;line-height:1.7;font-weight:500;padding-top:16px}
+body.presenter::after{content:"演讲者视图 · ← → 翻页 · 另一个窗口会同步";position:fixed;left:24px;top:22px;color:#8d8a83;font:700 18px var(--sans)}

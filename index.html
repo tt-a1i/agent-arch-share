@@ -21,7 +21,7 @@
 .dv-n{position:absolute;left:96px;top:300px;font-size:380px;font-weight:900;line-height:.8;color:var(--red);letter-spacing:-.06em}
 .dv-t{position:absolute;left:800px;top:330px;font-size:120px;font-weight:900;line-height:1}
 .dv-s{position:absolute;left:800px;top:500px;font-size:40px;font-weight:600;color:#a9a69f;line-height:1.4}
-.dv-l{position:absolute;left:800px;top:640px;display:flex;flex-wrap:wrap;gap:16px 40px;font-size:30px;font-weight:800;width:1000px}
+.dv-l{position:absolute;left:800px;top:640px;display:flex;flex-wrap:wrap;gap:16px 34px;font-size:26px;font-weight:800;width:1100px}
 .dv-l span i{font-style:normal;color:var(--red);margin-right:10px}
 /* fragments */
 .f{opacity:0;transform:translateY(18px);transition:opacity .55s,transform .55s cubic-bezier(.2,.8,.2,1)}
@@ -54,6 +54,10 @@ html.shot .hb,html.shot .vb{animation:none!important;transform:none!important}
 .sq{height:90px;border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800}
 .sq.on{background:var(--ink);color:#fff}.sq.w{border-color:var(--red);color:var(--red)}
 /* list rows */
+.rc{display:grid;grid-template-columns:90px 1fr 220px;align-items:center;border-top:2px solid var(--g3);padding:34px 0}
+.rc b{font-size:72px;font-weight:900;color:var(--red);line-height:1}
+.rc span{font-size:44px;font-weight:900;line-height:1.3}.rc em{font-style:normal;color:var(--red)}
+.rc i{font-style:normal;justify-self:end;font-size:20px;font-weight:800;color:var(--g1);border:2px solid var(--g3);padding:6px 14px}
 .li{display:flex;gap:36px;align-items:baseline;border-top:2px solid var(--g3);padding:22px 0}
 .li b{font-size:40px;font-weight:900;color:var(--red);width:40px}
 .li span{font-size:34px;font-weight:700;line-height:1.4}
@@ -126,7 +130,7 @@ table.cmp{border-collapse:collapse;table-layout:fixed}
 <div class="rv" style="--d:4"><div class="chip" style="left:1150px;top:340px;width:120px;height:56px;justify-content:center">IM</div><div class="chip" style="left:1150px;top:430px;width:120px;height:56px;justify-content:center">PR</div><div class="chip" style="left:1150px;top:520px;width:120px;height:56px;justify-content:center">邮件</div><div class="chip" style="left:1150px;top:610px;width:120px;height:56px;justify-content:center">CI</div><div class="chip" style="left:1150px;top:700px;width:120px;height:56px;justify-content:center">群聊</div><div class="chip" style="left:1150px;top:790px;width:120px;height:56px;justify-content:center">日程</div>
 <div class="bx blk c" style="left:1420px;top:518px;width:150px;height:150px"><div class="t" style="font-size:26px">Router</div></div>
 <div class="bx c" style="left:1660px;top:413px;width:164px;height:100px"><div class="t" style="font-size:24px">Worker</div></div><div class="bx c" style="left:1660px;top:543px;width:164px;height:100px"><div class="t" style="font-size:24px">Worker</div></div><div class="bx c" style="left:1660px;top:673px;width:164px;height:100px"><div class="t" style="font-size:24px">Worker</div></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">← → 翻页 · N 演讲者备注 · F 全屏</span></div>
+<div class="rule b"></div><div class="foot"><span class="src">← → 翻页 · P 演讲者视图 · N 备注 · F 全屏</span></div>
 <div class="notes">开场：这次就是一起读一篇文章。DeepSeek Harness 团队 10 月 31 日发了一篇讨论 agent 系统架构的长文，同时开源了一个研究原型。
 文章自己说明：这是在讨论架构思路，不是 DeepSeek Harness 的现有功能介绍；原型也只是研究用途。
 右边这张小图，就是今天要讲的整体样子：各种消息进来，一个前台接住，后面几个 Worker 干活。</div>
@@ -141,7 +145,7 @@ table.cmp{border-collapse:collapse;table-layout:fixed}
 <div class="pt rv" style="--d:2"><div class="pk2 red">02</div><p style="color:var(--ink);font-weight:800;font-size:34px">思路</p><p>想要一个什么样的 Agent</p></div>
 <div class="pt rv" style="--d:3"><div class="pk2 red">03</div><p style="color:var(--ink);font-weight:800;font-size:34px">五个模块</p><p>具体怎么拆</p></div>
 <div class="pt rv" style="--d:4"><div class="pk2 red">04</div><p style="color:var(--ink);font-weight:800;font-size:34px">实验与原型</p><p>数字和代码</p></div>
-<div class="pt rv" style="--d:5"><div class="pk2 red">05</div><p style="color:var(--ink);font-weight:800;font-size:34px">我们的思考</p><p>疑问，和能先试的</p></div></div>
+<div class="pt rv" style="--d:5"><div class="pk2 red">05</div><p style="color:var(--ink);font-weight:800;font-size:34px">我们的思考</p><p>疑问和延伸</p></div></div>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
 <div class="notes">先讲问题，再讲他们的思路和五个模块，然后看实验数字和开源原型，最后是我们自己的几个疑问和可以马上试的小做法。
 第三段最长，每个模块右上角会标当前讲到第几个。</div>
@@ -1049,83 +1053,27 @@ Agent 系统又比传统的存活探针、监控脚本多一层：很多异常�
 别说过头：不要说「我们早就做了 Super-agent」。DeepSeek 的增量在常驻、事件驱动、直送和状态外置这些运行层面的工程整合。</div>
 </section>
 
-<!-- 走向团队 -->
-<section class="slide" data-title="从一个人到一个团队">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>我们的思考</span></div>
-<h2 class="ttl rv">从一个人的 Agent，到一个团队的 Agent</h2>
-<div class="abs rv" style="--d:1;left:96px;top:380px;width:760px">
-<div class="pt"><div class="pk2" style="font-size:34px">先卡住的是：信息本来就拿不全</div></div>
-<div class="tgs" style="margin-top:28px"><span class="tg ok">群聊</span><span class="tg ok">会议纪要</span><span class="tg ok">文档</span><span class="tg ok">PR / CI</span></div>
-<div class="tgs" style="margin-top:16px"><span class="tg no" style="border-style:dashed">私聊</span><span class="tg no" style="border-style:dashed">线下一句话</span><span class="tg no" style="border-style:dashed">只在某人脑子里</span></div>
-<p class="small" style="margin-top:24px">拿到了也要分清：哪些是正式决定，<br>哪些只是讨论和猜测</p></div>
-<div class="abs f" data-f="1" style="left:1000px;top:380px;width:824px;display:grid;grid-template-columns:1fr 1fr;gap:28px 24px">
-<div class="pt"><div class="pk2" style="font-size:34px">知识</div><p style="margin-top:6px">谁能看、能存、能分享</p></div>
-<div class="pt"><div class="pk2" style="font-size:34px">执行</div><p style="margin-top:6px">谁能动哪些工具和环境</p></div>
-<div class="pt r"><div class="pk2 red" style="font-size:34px">决策</div><p style="margin-top:6px">谁能承诺、改优先级、批发布</p></div>
-<div class="pt"><div class="pk2" style="font-size:34px">责任</div><p style="margin-top:6px">出了事谁复核、谁接手</p></div></div>
-<p class="abs cap f" data-f="2" style="left:96px;top:850px;width:1728px">共享文档 ≠ 共享一个 Agent ≠ <span class="red">共享决定权</span></p>
-<div class="rule b"></div><div class="foot"><span class="src">接原文 8.3 节「上下文边界与 A2A」· 我们的看法与疑问</span></div>
-<div class="notes">原文 8.3 节提了一句很关键的话：组织变大以后，「怎么部署 Super-agent」本质上是在决定哪些上下文共享、哪些隔离。隔离的实例之间协作，就是 A2A，比如每个人的个人 Agent 和团队共享的 Agent 之间。原文也明确说这里还没解决。
-一句话：Agent 进组织，最先卡住的往往不是「它们怎么通信」，而是项目状态不完整、隐含的知识拿不到，以及谁有权作决定。
-左边：以前就有人试过从群聊、会议纪要、文档里分析项目进度和风险。最大的问题是信息根本拿不全——项目调整可能发生在私聊、线下，或者只在某人脑子里。即使拿到了，候选事实、正式决定、未确认的假设也得分开。
-（按 →）右边：几百个人、每人一个长期在线的 Agent，要分开想四道边界：知识（谁能看、存、分享）、执行（谁能动哪些工具）、决策（谁能承诺、改优先级、批准发布）、责任（出了事谁复核、接手、担责）。
-（按 →）所以共享项目文档，不等于共享一个 Agent 实例，更不等于共享决定权。
-一个可能的渐进路线（是推演，不是已有方案）：个人侧在授权下记录工作线索 → 生成候选的任务状态 → 用 PR、CI、文档或本人确认来核验 → 进入团队共享状态 → 在权限边界内让 Agent 之间协作 → 重大授权和目标冲突交给人。要注意：观察到「在忙」不等于「做完了」，也不该默认把个人原始数据集中到组织服务器上。
-最终拓扑不预设：中心化的团队 Agent、个人 Agent 直接协作、共享状态系统、分层混合，都要按信息完整度、任务依赖和冲突密度去比。</div>
-</section>
-
-<!-- 38 可以先试 -->
-<section class="slide" data-title="现在就可以试">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>可以先试</span></div>
-<h2 class="ttl rv">有几件小事，现在就可以试</h2>
-<div class="abs" style="left:96px;top:400px;width:1728px">
-<div class="li f"><b>1</b><span>负责接话的 Agent 不给它干活的工具，只让它派活</span></div>
-<div class="li f"><b>2</b><span>后续消息按话题直接送到在做的那个</span></div>
-<div class="li f"><b>3</b><span>IM 回复定个长度上限，比如 100 词</span></div>
-<div class="li f"><b>4</b><span>想让 Agent 主动做事，先从「只记录、不动手」开始</span></div>
-<div class="li f" style="border-bottom:2px solid var(--g3)"><b>5</b><span>要它守的规矩，尽量写进代码和权限，而不只是 prompt</span></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">都来自文章和原型，成本不高，也容易撤回</span></div>
-<div class="notes">（按 → 一条条出）
-这几条都来自文章和原型，成本都不高，也容易撤回。
-第 5 条是我最想强调的：实验里「记得委派」靠 prompt 不稳；原型里「等人确认」靠 prompt 也被人挑出问题。能放进结构的，就别只写在 prompt 里。</div>
-</section>
-
-<!-- 39 原文的开放问题 -->
-<section class="slide" data-title="原文留下的四个问题">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>开放问题</span></div>
-<h2 class="ttl rv">原文自己留下的四个问题</h2>
-<div class="abs" style="left:96px;right:96px;top:400px;display:grid;grid-template-columns:1fr 1fr;gap:40px 24px">
-<div class="pt rv" style="--d:1"><div class="pk2" style="font-size:38px">规模和记忆</div><p>前台什么时候拆？Worker 何时直连？<br>跑上几个月，长期记忆怎么办</p></div>
-<div class="pt rv" style="--d:2"><div class="pk2" style="font-size:38px">没有「会话」之后</div><p>任务怎么呈现给人？<br>中途怎么插手、接管</p></div>
-<div class="pt rv" style="--d:3"><div class="pk2" style="font-size:38px">边界和 A2A</div><p>哪些人共享一个实例？<br>不同权限的 Agent 怎么安全协作</p></div>
-<div class="pt r rv" style="--d:4"><div class="pk2 red" style="font-size:38px">安全和隐私</div><p>不可信输入变多了；<br>要「能用凭证，但看不到凭证」</p></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文 · 第 8 节</span></div>
-<div class="notes">原文第 8 节自己列了四类开放问题：
-一、两层架构怎么扩展：任务变大、耦合变紧以后，前台什么时候拆、拆多细，Worker 之间什么时候直连、用什么拓扑；也可以为前台的工作专门训练模型。记忆也是扩展的上限：引用图主要解决近期任务的按需召回，跑上几个月，长期记忆会成为主要瓶颈。
-二、没有会话之后怎么和 Agent 协作：界面上的对话不再对应底层会话，任务怎么展示、项目怎么管理；作者认为聊天窗口成为中心部分是路径依赖，更多交互可能会移到 GitHub 这类领域界面里。还要让人能在后台执行中随时插手、接管。
-三、上下文边界和 A2A：组织变大以后，「怎么部署 Super-agent」本质上是在决定哪些上下文共享、哪些隔离。隔离的实例之间协作，就是 A2A——比如每个人的个人 Agent 和团队共享的 Super-agent。我们自己补一句：要分开想知识、执行、决策、责任四道边界，共享文档不等于共享实例，更不等于共享决定权。
-四、安全和隐私：事件驱动让更多不可信输入能驱动 Agent；云端循环一旦被入侵或注入，所有连着的端设备都可能被接管；就算云端没出事，凭证只要能进模型上下文，正常执行也可能泄露。所以要「能用凭证，但看不到凭证」。</div>
-</section>
-
-<!-- 40 讨论 -->
-<section class="slide" data-title="留给大家的问题">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>讨论</span></div>
-<h2 class="ttl rv">留给大家的几个问题</h2>
-<div class="abs" style="left:96px;top:400px;width:1728px">
-<div class="li rv" style="--d:1"><b>?</b><span>入口合成一个之后，你在几件事之间切换，真的轻松了吗？</span></div>
-<div class="li rv" style="--d:2"><b>?</b><span>几个 Worker 冲突时，谁来拍板？前台够格吗？</span></div>
-<div class="li rv" style="--d:3"><b>?</b><span>换成我们真实的群聊和 PR，这些结论还成立吗？</span></div>
-<div class="li rv" style="--d:4"><b>?</b><span>Agent 会主动做事之后，哪些事必须留给人？</span></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">欢迎随便聊</span></div>
-<div class="notes">前两条来自我们刚才的疑问；第三条文章自己也提醒了；第四条接着原文的安全和协作问题。欢迎随便聊，也欢迎拿自己的使用经验来反驳。
-后面的分享可以挑其中一个问题，拿我们自己的数据做一次小实验。</div>
+<!-- 回顾 -->
+<section class="slide" data-title="带走三句话">
+<div class="rule"></div><div class="meta"><span><b class="no"></b>回顾</span></div>
+<h2 class="ttl rv">如果只记住三句话</h2>
+<div class="abs" style="left:96px;top:390px;width:1728px">
+<div class="rc f"><b>1</b><span>瓶颈从模型，换到了人的注意力</span><i>原文</i></div>
+<div class="rc f"><b>2</b><span>要它守的规矩，放进结构，别只写在 prompt 里</span><i>实验与原型</i></div>
+<div class="rc f" style="border-bottom:2px solid var(--g3)"><b>3</b><span>入口统一只是第一步，接下来是<em>组织交互、减少决策</em></span><i>我们的看法</i></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型 · 我们的看法</span></div>
+<div class="notes">（按 → 一条条出）最后收一下，今天只想留下三句话。
+一、瓶颈换了地方：单任务等模型，多任务等人。DeepSeek 的整套设计，都是为了少占人的注意力。
+二、规矩放进结构：实验里靠 prompt 让模型「记得委派」，5 次里有 1 次没守住；原型里「先等人确认」只写在 prompt 里，也被人挑出了问题。前台不给 Bash、话题直送、权限由宿主强制，这些才是靠得住的。顺带一提，原型里几件马上能试的小事：接话的 Agent 不给干活的工具、后续消息按话题直送、IM 回复限长、主动先从「只记录」开始。
+三、入口统一只是第一步：原文自己也把「没有会话之后人怎么协作」、上下文边界与 A2A、安全和凭证列为开放问题。我们觉得下一步值得做的，是怎么组织多任务交互、怎么减少人真正要拍板的事。</div>
 </section>
 
 <!-- 41 谢谢 -->
 <section class="slide" data-title="谢谢">
 <div class="rule"></div>
-<div class="abs" style="left:96px;top:300px;right:96px"><h1 class="t1 rv">谢谢，欢迎讨论</h1>
-<div class="rv small" style="--d:3;margin-top:64px;font-size:24px;line-height:1.9;color:var(--ink)">原文：DeepSeek Harness《Exploring Super-agent Design: Towards a More Autonomous Agent System》，2026-10-31<br>开源原型：github.com/deepseek-ai/dsh-superagent-prototype（MIT，研究用途）</div></div>
+<div class="abs" style="left:96px;top:300px;right:96px"><h1 class="t1 rv" style="font-size:160px">谢谢<span class="red">.</span></h1>
+<div class="rv" style="--d:2;margin-top:40px;font-size:40px;font-weight:700;color:var(--g1)">欢迎一起讨论</div>
+<div class="rv small" style="--d:3;margin-top:72px;font-size:24px;line-height:1.9;color:var(--ink);border-top:2px solid var(--g3);padding-top:28px">原文：DeepSeek Harness《Exploring Super-agent Design: Towards a More Autonomous Agent System》，2026-10-31<br>开源原型：github.com/deepseek-ai/dsh-superagent-prototype（MIT，研究用途）<br>幻灯片：agent-arch-share.pages.dev</div></div>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
 <div class="notes">资料都在这两个链接里。原型的 docs 目录写得很清楚，推荐先看 000-philosophy。</div>
 </section>
