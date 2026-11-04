@@ -67,25 +67,7 @@ body.show-notes .slide.on .notes{display:block;position:absolute;left:0;right:0;
 .draw{stroke-dasharray:var(--len,2400);stroke-dashoffset:var(--len,2400)}
 .slide.on .draw{animation:draw 1.1s cubic-bezier(.6,0,.2,1) both;animation-delay:calc(var(--d,0)*90ms + 200ms)}
 @keyframes draw{to{stroke-dashoffset:0}}
-.flow-ln{stroke-dasharray:10 10;animation:dashflow 1.4s linear infinite}
-.flow-ln.r{stroke:var(--red);stroke-width:5;stroke-dasharray:14 10;animation:dashflow .95s linear infinite}
-@keyframes dashflow{to{stroke-dashoffset:-48}}
-.pulse-dot{animation:pdot 2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
-@keyframes pdot{0%,100%{transform:scale(1);opacity:.95}50%{transform:scale(1.28);opacity:1}}
-.bar-fill{transform:scaleX(0);transform-origin:left}
-.slide.on .bar-fill{animation:wipe 1s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--d,0)*90ms + 220ms)}
-.ov{position:fixed;inset:0;background:rgba(17,17,17,.94);color:#f3f2ee;z-index:80;display:none;overflow:auto;padding:48px 64px}
-body.show-ov .ov{display:block}
-.ov-hd{display:flex;justify-content:space-between;align-items:center;border-bottom:4px solid var(--red);padding-bottom:16px;margin-bottom:28px}
-.ov-hd h3{font-size:26px;font-weight:900}
-.ov-hd span{font-size:16px;color:#bdbab3;font-weight:600}
-.ov-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-.ov-item{border:2px solid #3a3935;padding:14px 16px;background:#22211f;cursor:pointer;transition:border-color .15s,transform .15s}
-.ov-item:hover,.ov-item.cur{border-color:var(--red);background:#2b2926;transform:translateY(-2px)}
-.ov-item b{color:var(--red);font-size:15px;font-weight:900;margin-right:8px}
-.ov-item .ot{font-size:17px;font-weight:800;color:#fff;margin-top:4px;line-height:1.35}
-.ov-item .oc{font-size:13px;font-weight:700;color:#9e9b93;text-transform:uppercase;letter-spacing:.05em}
-html.shot .rv,html.shot .wipe,html.shot .draw,html.shot .bar-fill,html.shot .flow-ln,html.shot .pulse-dot{animation:none!important;opacity:1!important;transform:none!important;stroke-dashoffset:0!important}
+html.shot .rv,html.shot .wipe,html.shot .draw{animation:none!important;opacity:1!important;transform:none!important;stroke-dashoffset:0!important}
 html.shot *{transition:none!important}
 .prog{position:absolute;left:0;bottom:0;height:6px;background:var(--red);transition:width .5s cubic-bezier(.2,.8,.2,1)}
 html.shot .prog{display:none}

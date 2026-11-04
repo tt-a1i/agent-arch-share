@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>一条消息是怎么走的 · 8 步动画与同构变形</title>
+<title>一条消息是怎么走的 · 7 步</title>
 <link rel="stylesheet" href="../assets/d.css">
 <style>
 .mode{margin-left:auto;display:flex;align-items:center;gap:14px;font-size:20px;font-weight:700;color:var(--g1)}
 .mode b{display:inline-flex;align-items:center;height:44px;padding:0 16px;border:3px solid var(--ink);color:var(--ink);font-weight:900;transition:background .6s,color .6s,border-color .6s}
-.mode b.team{background:var(--red);border-color:var(--red);color:#fff}
+.mode b.team{background:var(--ink);color:#fff}
 #ed{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
 .e{fill:none;stroke:var(--g3);stroke-width:3;transition:stroke .5s,stroke-width .5s,opacity .7s}
 .e.dash{stroke-dasharray:9 9}
@@ -34,16 +34,19 @@
 .nd.ping .ring{animation:ping 1.8s cubic-bezier(.2,.8,.2,1) infinite}
 @keyframes ping{0%{opacity:1;transform:scale(.97)}100%{opacity:0;transform:scale(1.12)}}
 .pk{fill:var(--red)}
-.bub{position:absolute;width:340px;white-space:nowrap;padding:16px 20px;background:#fff;border:3px solid var(--ink);border-left:10px solid var(--red);font-size:21px;font-weight:800;line-height:1.45;opacity:0;transform:translateY(12px);transition:opacity .45s,transform .45s}
+.bub{position:absolute;width:330px;white-space:nowrap;padding:16px 20px;background:#fff;border:3px solid var(--ink);border-left:10px solid var(--red);font-size:21px;font-weight:800;line-height:1.45;opacity:0;transform:translateY(12px);transition:opacity .45s,transform .45s}
 .bub small{display:block;font-size:16px;font-weight:600;color:var(--g1);margin-top:4px}
 .bub.show{opacity:1;transform:none}
 .cap{position:absolute;left:96px;right:96px;top:800px;bottom:40px;border-top:6px solid var(--ink);display:grid;grid-template-columns:268px 1fr 268px;column-gap:24px;padding-top:26px}
 .cap .no{font-size:150px;font-weight:900;line-height:.8;letter-spacing:-.05em;color:var(--red)}
 .cap .no span{font-size:28px;letter-spacing:0;color:var(--ink);margin-left:8px}
 #ctxt{transition:opacity .25s}
-#ctxt h2{font-size:36px;font-weight:900;line-height:1.2}
-#ctxt p{font-size:22px;font-weight:500;line-height:1.55;margin-top:10px;color:#2a2926}
+#ctxt h2{font-size:38px;font-weight:900;line-height:1.2}
+#ctxt p{font-size:23px;font-weight:500;line-height:1.6;margin-top:10px;color:#2a2926}
 #ctxt .sr{font-size:19px;font-weight:800;color:var(--red);margin-top:8px}
+.map{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;column-gap:40px;row-gap:10px;margin-top:16px}
+.map span{font-size:22px;font-weight:700;white-space:nowrap}.map span em{font-style:normal;color:var(--red);margin:0 10px;font-weight:900}
+.map span.anl{color:var(--g1)}
 .ctl{display:flex;flex-direction:column;align-items:flex-end;gap:16px}
 .ctl .row{display:flex;gap:10px}.ctl .btn{white-space:nowrap}
 .ticks{display:flex;gap:6px}
@@ -54,12 +57,12 @@
 </style></head>
 <body><div class="stage">
  <div class="rule"></div>
- <div class="dhead"><a class="back" data-def="7" href="../index.html#/7"><span>回到第 7 页</span></a><h1>一条消息是怎么走的 · 8 步动画</h1>
-  <div class="mode">当前骨架<b id="modeB">DeepSeek Super-agent（研究原型）</b></div></div>
+ <div class="dhead"><a class="back" data-def="12" href="../index.html#/12"><span>回到第 12 页</span></a><h1>一条消息是怎么走的 · 7 步</h1>
+  <div class="mode">骨架<b id="modeB">DeepSeek Super-agent（研究原型）</b></div></div>
  <svg id="ed" viewBox="0 0 1920 1080"><defs><marker id="ah" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="13" markerHeight="13" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0L12 6L0 12z" fill="context-stroke"/></marker></defs><g id="edges"></g><g id="pks"></g></svg>
  <div id="nodes"></div><div id="bubs"></div>
  <div class="cap">
-  <div class="no" id="cn">01<span>/ 08</span></div>
+  <div class="no" id="cn">01<span>/ 07</span></div>
   <div id="ctxt"></div>
   <div class="ctl"><div class="row"><button class="btn" id="bp" aria-label="上一步">←</button><button class="btn" id="bn" aria-label="下一步">→</button><button class="btn" id="ba">自动</button></div>
    <div class="ticks" id="ticks"></div><div class="hint">← → 翻步 · A 自动 · Esc 返回</div></div>
@@ -70,16 +73,16 @@
 (()=>{
 const SHOT=document.documentElement.classList.contains('shot');
 const N={
- im:    {w:250,h:120,ds:{x:96, y:425,k:'IM / GitHub',t:'你',s:'私聊 · 群聊 · 话题'},team:{x:96,y:425,k:'唯一入口',t:'你',s:'和总管 bot 说话'}},
- drop:  {w:260,h:100,ds:{x:446,y:240,k:'丢弃',t:'无关消息',s:'不进模型，不花 token'},team:{x:446,y:240,k:'安全红线',t:'审批关卡',s:'对外动作停下等你点头',red:1}},
- filter:{w:260,h:110,ds:{x:446,y:430,k:'Fast / Slow Path',t:'两道过滤',s:'代码规则 → LLM 语义'},team:{x:446,y:630,k:'定时 / 事件',t:'routine',s:'驱动例行巡检与同步'}},
+ im:    {w:250,h:120,ds:{x:96, y:425,k:'IM',t:'你',s:'私聊 · 群聊 · 话题'},team:{x:96,y:425,k:'入口',t:'你',s:'和前台聊天'}},
+ drop:  {w:260,h:100,ds:{x:446,y:240,k:'丢弃',t:'无关消息',s:'不进模型，不花 token'},team:{x:446,y:240,k:'权限',t:'审批关卡',s:'对外动作停下等你点头',red:1}},
+ filter:{w:260,h:110,ds:{x:446,y:430,k:'Fast Path',t:'代码规则过滤',s:'来源 · 群 · 白名单'},team:{x:446,y:630,k:'事件触发',t:'routine',s:'定时 / 事件触发'}},
  thread:{w:260,h:110,ds:{x:446,y:630,k:'订阅表',t:'Thread',s:'同一 PR · 话题 · 邮件链'},team:{x:446,y:630,k:'订阅表',t:'Thread',s:'',gone:1}},
- router:{w:300,h:140,cls:'router',ds:{x:806,y:415,k:'常驻 · 通常轻量模型',t:'Router',s:'只派发，不拆解',tg:'可不给 Bash'},team:{x:806,y:415,k:'唯一入口',t:'前台总管 bot',s:'只路由与汇总',tg:'不研究 · 不写代码'}},
- state: {w:300,h:100,ds:{x:806,y:240,k:'持久化上下文',t:'#ID + 摘要',s:'状态入库 · Chain of Recall'},team:{x:806,y:240,k:'外置状态',t:'共享文件夹',s:'交接写文件，不走聊天'}},
- wA:    {w:300,h:110,ds:{x:1206,y:230,k:'Worker',t:'任务会话 A',s:'最强模型 · 全套工具'},team:{x:1206,y:230,k:'专职 bot',t:'仓库维护 ×3',s:'每个仓库的日常维护'}},
- wB:    {w:300,h:110,ds:{x:1206,y:430,k:'Worker',t:'任务会话 B',s:'最强模型 · 异步命令'},team:{x:1206,y:430,k:'专职 bot',t:'邮件管家',s:'收件筛选与提醒'}},
- wC:    {w:300,h:110,ds:{x:1206,y:630,k:'Worker',t:'任务会话 C',s:'已订阅当前 Thread'},team:{x:1206,y:630,k:'专职 bot',t:'调研与精读 ×5',s:'搜索、核实与整理'}},
- wd:    {w:238,h:140,ds:{x:1586,y:415,k:'独立于主系统',t:'Watchdog',s:'定时巡检错误与进展'},team:{x:1586,y:415,k:'≈ Watchdog',t:'架构观察员',s:'每天巡检一次，只提建议'}}
+ router:{w:300,h:140,cls:'router',ds:{x:806,y:415,k:'常驻 · 通常轻量模型',t:'路由',s:'只派发，不拆解',tg:'不持有 Bash'},team:{x:806,y:415,k:'唯一入口',t:'前台',s:'只路由',tg:'不研究 · 不写代码'}},
+ state: {w:300,h:100,ds:{x:806,y:240,k:'上下文',t:'ID + 摘要',s:'会话状态 · 引用图'},team:{x:806,y:240,k:'状态 / 交接',t:'共享文件夹',s:'交接写文件，不走聊天'}},
+ wA:    {w:300,h:110,ds:{x:1206,y:230,k:'Worker',t:'任务会话 A',s:'通常最强模型 · 全套工具'},team:{x:1206,y:230,k:'bot',t:'仓库维护',s:'每个仓库的日常'}},
+ wB:    {w:300,h:110,ds:{x:1206,y:430,k:'Worker',t:'任务会话 B',s:'通常最强模型 · 全套工具'},team:{x:1206,y:430,k:'bot',t:'邮件',s:'收件与提醒'}},
+ wC:    {w:300,h:110,ds:{x:1206,y:630,k:'Worker',t:'任务会话 C',s:'通常最强模型 · 全套工具'},team:{x:1206,y:630,k:'bot',t:'研究类 ×5',s:'调研与学习'}},
+ wd:    {w:238,h:140,ds:{x:1586,y:415,k:'独立于主系统',t:'Watchdog',s:'定时消息驱动'},team:{x:1586,y:415,k:'≈ Watchdog（类比）',t:'架构观察员',s:'每天审查，只提建议'}}
 };
 const E={
  'im-filter':['M346 485 H443','ds'],
@@ -99,44 +102,40 @@ const E={
  'router-gate':['M806 445 H766 V290 H709','team'],
  'gate-you':['M446 290 H221 V422','team'],
  'routine-wC':['M706 700 H1203','team'],
- 'wA-state':['M1206 285 H1109','team']
+ 'wA-state':['M1206 320 H1109','team']
 };
 const S=[
  {mode:'ds',act:['im','filter'],focus:['im'],edges:['im-filter'],hot:[],
   pk:[{p:['im-filter'],every:1500}],
-  bub:[[96,270,'帮我看看 PR #42 里那个回归失败','你在 IM 或 GitHub 发话']],
-  h:'第 1 步 · 事件进场：你说完就可以走开',p:'每条消息、评论、CI 结果都是一个半结构化的环境事件（Trigger）。系统常驻在线，你不用守着聊天窗口等它一步步跑完。'},
+  bub:[[96,270,'帮我看看 PR 里那个 bug','IM 消息']],
+  h:'事件进场：你说完就可以走开',p:'每条消息都是一个“事件”，不是一次要你守着的会话。系统一直在线，你不用开窗口、盯窗口。'},
  {mode:'ds',act:['filter','drop','router'],focus:['filter'],edges:['im-filter','filter-drop','filter-router'],hot:[],
-  pk:[{p:['im-filter','filter-drop'],every:1300},{p:['im-filter','filter-router'],every:2500,delay:600}],
-  bub:[[96,250,'群聊日常闲聊 → 第一道直接挡掉','不进模型，不花一个 token']],
-  h:'第 2 步 · 两道筛子：能用代码挡掉的，绝不惊动大模型',p:'第一道 Fast Path 用代码查来源、群和白名单，挡掉绝大多数闲聊；拿不准的候选才进第二道 Slow Path 让模型按 prompt 规则判断。'},
- {mode:'ds',act:['router','state','wC'],focus:['router'],edges:['filter-router','router-state','router-wC'],hot:[],badge:{wC:'新建并订阅'},
-  pk:[{p:['filter-router','router-wC'],every:2300},{p:['router-state'],every:1600,speed:240},{p:['-router-state'],every:1600,delay:800,speed:240}],
-  bub:[[806,572,'新任务 → 建 Worker C 并订阅该话题','Router 只派发、不拆解']],
-  h:'第 3 步 · 前台 Router：登记状态，派一个干净的 Worker 会话',p:'Router 把对象 ID 与摘要写入数据库，为这项任务拉起隔离的 Worker C，并让 Worker C 自动订阅当前话题（Thread）。'},
+  pk:[{p:['im-filter','filter-drop'],every:1300},{p:['im-filter','filter-router'],every:2600,delay:650}],
+  bub:[[96,250,'群聊闲聊、无关通知 → 忽略','不进模型，不花 token']],
+  h:'第一道筛子：能用代码挡掉的，就别让模型看',p:'先按来源、群、白名单筛一遍；需要理解语义的，才交给模型判断。'},
+ {mode:'ds',act:['router','state','wC'],focus:['router'],edges:['filter-router','router-state','router-wC'],hot:[],badge:{wC:'新会话'},
+  pk:[{p:['filter-router','router-wC'],every:2400},{p:['router-state'],every:1600,speed:240},{p:['-router-state'],every:1600,delay:800,speed:240}],
+  bub:[[806,572,'新任务 → 开一个新会话','路由的判断']],
+  h:'前台 Router：看一眼，派给合适的 Worker',p:'Router 通常用轻一点的模型，不拿命令行工具，只派活、不拆任务。新任务就开一个新的 Worker 会话。'},
  {mode:'ds',act:['wA','wB','wC','router'],focus:['wA','wB','wC'],edges:['router-wA','router-wB','router-wC'],hot:[],work:['wA','wB','wC'],
   pk:[],
-  bub:[[806,572,'后台并行跑，前台随时接你下一句话','全双工异步']],
-  h:'第 4 步 · 多个 Worker 各自并行干活，前台立刻腾出手',p:'每个 Worker 有独立上下文、全套工具和最强模型，耗时命令异步 start() 执行。前台 Router 不被阻塞，忙时新事件自动排队批处理。'},
+  bub:[[806,572,'路由腾出手，接下一句话','并行']],
+  h:'几个 Worker 同时干活，前台腾出手接下一句',p:'每个任务一个干净的会话，带全套工具和更强的模型。Worker 不直接找你，做完向前台汇报。'},
  {mode:'ds',act:['im','filter','thread','wC','router'],focus:['thread'],edges:['im-filter','filter-thread','thread-wC'],hot:['filter-thread','thread-wC'],work:['wC'],half:['router'],
-  pk:[{p:['im-filter','filter-thread','thread-wC'],every:2400},{p:['im-filter','filter-router'],every:2400,ghost:1}],
-  bub:[[96,280,'↩ 在原话题下追问：「顺便补个单测」','同一 Thread 后续事件'],[806,572,'看得见，但不用再调工具转发','省下 30% 决策']],
-  h:'第 5 步 · 同话题后续消息：代码查订阅表直接送达 Worker',p:'你在同一 PR 或话题里继续追问，代码直接把事件送给已订阅的 Worker C。Router 依然看得见全局动态，但省掉了居中转发的轮次。',
-  src:'原文消融实验：去掉这一步完成时间几乎不变，但 Router 决策多约 30%，读缓存 token 多约 37%'},
- {mode:'ds',act:['wd','wA','wB','wC'],focus:['wd'],edges:['wd-wA','wd-wB','wd-wC'],hot:[],work:['wA','wC'],ping:['wd'],badge:{wB:'原地打转？'},
+  pk:[{p:['im-filter','filter-thread','thread-wC'],every:2600},{p:['im-filter','filter-router'],every:2600,ghost:1}],
+  bub:[[96,280,'↩ 原话题里回复：「补上测试」','同一 Thread'],[806,572,'看得到，但不判断、不转发','路由']],
+  h:'同一话题的后续消息，直接送到在做的 Worker',p:'Worker 订阅了这个话题，后面的回复由代码直接送过去。前台看得到，但不用再判断和转发。',
+  src:'他们的实验里，去掉这一步任务不会更慢，但读缓存的 token 多了约 37%'},
+ {mode:'ds',act:['wd','wA','wB','wC'],focus:['wd'],edges:['wd-wA','wd-wB','wd-wC'],hot:[],work:['wA','wC'],ping:['wd'],badge:{wB:'有进展吗？'},
   pk:[{p:['wd-wA'],every:2100,speed:320},{p:['wd-wB'],every:2100,delay:700,speed:320},{p:['wd-wC'],every:2100,delay:1400,speed:320}],
-  bub:[[1586,268,'进程活着 ≠ 真正在往前推进','独立 Watchdog']],
-  h:'第 6 步 · 独立 Watchdog：按时醒来巡检，看谁卡住或跑偏了',p:'跑在主系统之外的定时 Agent 会话：既查 API 报错和恢复失败，也用大模型阅读 Worker 进展，防止模型在死循环里空转。'},
+  bub:[[1586,280,'活着不等于在干正事','Watchdog']],
+  h:'Watchdog：按时巡一圈，看谁卡住了',p:'它独立于主系统，定时醒来，既查接口报错，也判断每个 Worker 有没有实质进展。'},
  {mode:'ds',act:['wC','router','im'],focus:['router'],edges:['router-wC','reply'],hot:['reply'],
-  pk:[{p:['-router-wC','reply'],every:2800,speed:420}],
-  bub:[[96,262,'已定位并修复，单测通过；<br>等你确认后合并 PR #42。','IM 回复硬上限 ≤ 100 词']],
-  h:'第 7 步 · 结果回到你面前：按渠道调密度，短到一眼能拍板',p:'Worker 向 Router 汇报结论，Router 按渠道组织回复：IM 聊天控制在 100 词以内只给结论与待确认项，GitHub PR 则写完整结构化说明。'},
- {mode:'team',act:['im','router','state','drop','filter','wA','wB','wC','wd'],focus:['router','drop','state'],edges:['you-router','router-state','wA-state','router-wA','router-wB','router-wC','router-gate','gate-you','routine-wC','wd-wA','wd-wB','wd-wC'],hot:['router-gate','gate-you'],work:['wA','wC'],
-  pk:[{p:['you-router','router-wA'],every:2600},{p:['router-gate','gate-you'],every:2800,delay:700}],
-  bub:[[806,572,'同一副骨架！差在话题直送与高频看门狗','对照我们的 bot 团队']],
-  h:'第 8 步 · 骨架变形：对照我们每天在跑的 bot 团队',p:'看节点怎么一一对应：Router → 前台总管 bot；状态库 → 共享文件夹落盘交接；Watchdog → 每日架构观察员；对外动作必过审批关卡。',
-  src:'一眼看清我们的三处升级点：① 补上话题键查表直送 ② 加高频轻量巡检 routine ③ 主动性从只读复现起步'}
+  pk:[{p:['-router-wC','reply'],every:3000,speed:420}],
+  bub:[[96,262,'已修复，测试通过；<br>等你确认后合并。','示例回复 · IM ≤100 词']],
+  h:'结果回到你这里：短到你愿意读',p:'IM 里每条最多 100 词；只在需要你行动、或结果能用上时才开口。'}
 ];
+/* build */
 const NS='http://www.w3.org/2000/svg',EG=document.getElementById('edges'),PG=document.getElementById('pks'),ND=document.getElementById('nodes');
 for(const id in E){const [d,m,cls]=E[id];const p=document.createElementNS(NS,'path');p.setAttribute('d',d);p.setAttribute('class','e'+(cls?' '+cls:''));p.setAttribute('marker-end','url(#ah)');EG.appendChild(p);E[id]={p,m,dash:!!cls,L:p.getTotalLength(),on:false};}
 for(const id in N){const n=N[id],el=document.createElement('div');el.className='nd '+(n.cls||'');el.style.width=n.w+'px';el.style.height=n.h+'px';
@@ -149,7 +148,7 @@ const ticks=document.getElementById('ticks');S.forEach((_,i)=>{const t=document.
 function setMode(m,anim){if(m===mode)return;mode=m;
  const tx=[...document.querySelectorAll('.nd .tx')];
  if(anim){tx.forEach(x=>x.style.opacity=0);setTimeout(()=>{paint(m);tx.forEach(x=>x.style.opacity=1)},560);}else paint(m);
- place(m);const b=document.getElementById('modeB');b.textContent=m==='team'?'我们的日常 bot 团队（同构对照）':'DeepSeek Super-agent（研究原型）';b.classList.toggle('team',m==='team');}
+ place(m);const b=document.getElementById('modeB');b.textContent=m==='team'?'DeepSeek Super-agent（研究原型）':'DeepSeek Super-agent（研究原型）';b.classList.toggle('team',m==='team');}
 function drawIn(e,delay){if(SHOT||e.dash)return;const p=e.p;p.style.transition='none';p.style.strokeDasharray=e.L;p.style.strokeDashoffset=e.L;p.getBoundingClientRect();
  p.style.transition=`stroke-dashoffset .9s cubic-bezier(.65,0,.35,1) ${delay}ms,stroke .5s,stroke-width .5s,opacity .7s`;p.style.strokeDashoffset=0;
  setTimeout(()=>{p.style.strokeDasharray='';p.style.strokeDashoffset='';p.style.transition=''},delay+950);}
@@ -177,6 +176,7 @@ function go(i){i=Math.max(0,Math.min(S.length-1,i));if(i===cur)return;const prev
  [...ticks.children].forEach((t,j)=>{t.classList.toggle('on',j===i);t.classList.toggle('done',j<i)});
  history.replaceState(null,'',location.pathname+location.search+'#step='+(i+1));
  if(SHOT)staticPk();}
+/* packets */
 function segs(r){return r.p.map(x=>{const rev=x[0]==='-',e=E[rev?x.slice(1):x];return{e,rev}})}
 function ptAt(sg,d){for(const s of sg){if(d<=s.e.L)return s.e.p.getPointAtLength(s.rev?s.e.L-d:d);d-=s.e.L}const s=sg[sg.length-1];return s.e.p.getPointAtLength(s.rev?0:s.e.L)}
 function mk(r){const g=document.createElementNS(NS,'rect');g.setAttribute('width',16);g.setAttribute('height',16);g.setAttribute('class','pk');if(r.ghost)g.setAttribute('opacity',.3);PG.appendChild(g);return g}

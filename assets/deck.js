@@ -1,28 +1,29 @@
 (()=>{const st=document.querySelector('.stage'),S=[...document.querySelectorAll('.slide')];let i=0;
-if(/[?&]shot/.test(location.search))document.documentElement.classList.add('shot');
+const SHOT=/[?&]shot/.test(location.search);if(SHOT)document.documentElement.classList.add('shot');
 const pg=document.createElement('div');pg.className='prog';st.appendChild(pg);
-const ov=document.createElement('div');ov.className='ov';
-ov.innerHTML='<div class="ov-hd"><h3>全部幻灯片目录（共 '+S.length+' 页）</h3><span>点击任一页跳转 · 按 O 或 Esc 关闭</span></div><div class="ov-grid"></div>';
-const og=ov.querySelector('.ov-grid');
-S.forEach((s,k)=>{const c=document.createElement('div');c.className='ov-item';
- const m=s.querySelector('.meta span');const cat=m?m.textContent.replace(/^\d+\s*/,''):'封面 / 尾页';
- c.innerHTML='<div class="oc"><b>'+String(k+1).padStart(2,'0')+'</b>'+cat+'</div><div class="ot">'+(s.dataset.title||('第 '+(k+1)+' 页'))+'</div>';
- c.onclick=e=>{e.stopPropagation();document.body.classList.remove('show-ov');go(k)};og.appendChild(c)});
-document.body.appendChild(ov);
+const MODS=['两层','事件','双工','分离','值守'];
+S.forEach((s,k)=>{const n=s.querySelector('.meta .no');if(n)n.textContent=String(k+1).padStart(2,'0');
+ s.querySelectorAll('a.go').forEach(a=>a.href=a.getAttribute('href').replace(/from=\d+/,'from='+(k+1)));
+ const m=+s.dataset.mod,meta=s.querySelector('.meta');if(m&&meta){const d=document.createElement('div');d.className='mm';
+  d.innerHTML=MODS.map((t,j)=>`<span class="${j+1===m?'on':''}"><i>${j+1}</i>${t}</span>`).join('');meta.appendChild(d)}});
 const fit=()=>{const k=Math.min(innerWidth/1920,innerHeight/1080);st.style.transform=`translate(${(innerWidth-1920*k)/2}px,${(innerHeight-1080*k)/2}px) scale(${k})`};
 const parse=()=>{const m=location.hash.match(/(\d+)/);return m?parseInt(m[1],10)-1:0};
-const go=n=>{i=Math.max(0,Math.min(S.length-1,n));S.forEach((s,k)=>s.classList.toggle('on',k===i));pg.style.width=((i+1)/S.length*100)+'%';
- [...og.children].forEach((c,k)=>c.classList.toggle('cur',k===i));
- const h='#/'+(i+1);if(location.hash!==h)history.replaceState(null,'',location.pathname+location.search+h);document.title=(S[i].dataset.title||'')+' · 当瓶颈从模型能力变成人的注意力';};
+const frags=s=>[...s.querySelectorAll('.f')];
+const count=s=>s.querySelectorAll('[data-count]').forEach(el=>{const to=parseFloat(el.dataset.count),dec=(el.dataset.count.split('.')[1]||'').length,pre=el.dataset.pre||'',suf=el.dataset.suf||'';
+ if(SHOT){el.textContent=pre+to.toFixed(dec)+suf;return}const t0=performance.now(),dl=+(el.dataset.delay||300);
+ (function f(t){const k=Math.max(0,Math.min(1,(t-t0-dl)/1100)),e=1-Math.pow(1-k,3);el.textContent=pre+(to*e).toFixed(dec)+suf;if(k<1)requestAnimationFrame(f)})(t0)});
+const go=(n,full)=>{const prev=i;i=Math.max(0,Math.min(S.length-1,n));S.forEach((s,k)=>s.classList.toggle('on',k===i));pg.style.width=((i+1)/S.length*100)+'%';
+ frags(S[i]).forEach(f=>f.classList.toggle('in',!!full||SHOT));if(prev!==i||!S[i].dataset.seen){S[i].dataset.seen=1;count(S[i])}
+ const h='#/'+(i+1);if(location.hash!==h)history.replaceState(null,'',location.pathname+location.search+h);document.title=(S[i].dataset.title||'')+' · 一个人，怎么同时带好几个 Agent？'};
+const next=()=>{const fs=frags(S[i]),f=fs.find(x=>!x.classList.contains('in'));if(!f)return go(i+1);
+ const g=f.dataset.f;fs.filter(x=>x===f||(g&&x.dataset.f===g)).forEach(x=>x.classList.add('in'))};
+const prev=()=>{if(i>0)go(i-1,true)};
 addEventListener('keydown',e=>{const k=e.key;if(e.metaKey||e.ctrlKey||e.altKey)return;
- if(k==='Escape'&&document.body.classList.contains('show-ov')){document.body.classList.remove('show-ov');return}
- if(k==='o'||k==='O'){document.body.classList.toggle('show-ov');return}
- if(document.body.classList.contains('show-ov'))return;
- if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault();go(i+1)}
- else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();go(i-1)}
+ if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault();next()}
+ else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();prev()}
  else if(k==='Home')go(0);else if(k==='End')go(S.length-1);
  else if(k==='n'||k==='N')document.body.classList.toggle('show-notes');
  else if(k==='f'||k==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
-addEventListener('click',e=>{if(e.target.closest('a,button,.notes,.ov'))return;go(e.clientX>innerWidth/2?i+1:i-1)});
-addEventListener('resize',fit);addEventListener('hashchange',()=>go(parse()));
+addEventListener('click',e=>{if(e.target.closest('a,button,.notes'))return;e.clientX>innerWidth/2?next():prev()});
+addEventListener('resize',fit);addEventListener('hashchange',()=>{const n=parse();if(n!==i)go(n)});
 fit();go(parse());})();
