@@ -1,6 +1,6 @@
 # 从单会话到 Super-agent
 
-面向团队的技术分享：读 DeepSeek《Super-agent》设计文和开源原型的笔记，共 41 页，分五段：
+面向团队的技术分享：读 DeepSeek《Super-agent》设计文和开源原型的笔记，共 47 页，分五段：
 
 1. **问题**：瓶颈从模型换到了人的注意力
 2. **思路**：四个特征，以及撑起它们的五个模块
@@ -10,7 +10,7 @@
 
 讲解细节都在演讲者备注里（按 `N`）。
 
-**在线观看：** https://tt-a1i.github.io/agent-arch-share/
+**在线观看：** https://agent-arch-share.pages.dev/（Cloudflare Pages）
 
 ![主幻灯片预览](shots/contact-main.jpg)
 
@@ -28,9 +28,12 @@ python3 -m http.server 8000
 # 打开 http://localhost:8000/
 ```
 
-## 回退
-本仓库 Pages 源为 `main` 根目录。若需回到上一版，可用：
+## 部署
+站点托管在 Cloudflare Pages（项目名 `agent-arch-share`），推送到 GitHub 不会自动发布，改完后手动部署：
 ```bash
-git revert HEAD
-# 或：git reset --hard <上一 commit> && git push
+rm -rf /tmp/deck-dist && mkdir /tmp/deck-dist && cp -R index.html assets detail /tmp/deck-dist/
+npx wrangler@3.114.17 pages deploy /tmp/deck-dist --project-name agent-arch-share --branch main
 ```
+
+## 回退
+在 Cloudflare 控制台的 Pages 项目里，找到上一次部署点「Rollback」；或者 `git revert` 后重新部署。
