@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>架构是怎么运转的 · 8 步</title>
+<title>一条消息是怎么走的 · 7 步</title>
 <link rel="stylesheet" href="../assets/d.css">
 <style>
 .mode{margin-left:auto;display:flex;align-items:center;gap:14px;font-size:20px;font-weight:700;color:var(--g1)}
@@ -57,7 +57,7 @@
 </style></head>
 <body><div class="stage">
  <div class="rule"></div>
- <div class="dhead"><a class="back" data-def="8" href="../index.html#/8"><span>回到第 4 页</span></a><h1>架构是怎么运转的 · 8 步</h1>
+ <div class="dhead"><a class="back" data-def="6" href="../index.html#/6"><span>回到第 6 页</span></a><h1>一条消息是怎么走的 · 7 步</h1>
   <div class="mode">骨架<b id="modeB">DeepSeek Super-agent（研究原型）</b></div></div>
  <svg id="ed" viewBox="0 0 1920 1080"><defs><marker id="ah" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="13" markerHeight="13" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0L12 6L0 12z" fill="context-stroke"/></marker></defs><g id="edges"></g><g id="pks"></g></svg>
  <div id="nodes"></div><div id="bubs"></div>
@@ -73,11 +73,11 @@
 (()=>{
 const SHOT=document.documentElement.classList.contains('shot');
 const N={
- im:    {w:250,h:120,ds:{x:96, y:425,k:'IM',t:'你',s:'私聊 · 群聊 · 话题'},team:{x:96,y:425,k:'入口',t:'你',s:'和大内总管聊天'}},
+ im:    {w:250,h:120,ds:{x:96, y:425,k:'IM',t:'你',s:'私聊 · 群聊 · 话题'},team:{x:96,y:425,k:'入口',t:'你',s:'和前台聊天'}},
  drop:  {w:260,h:100,ds:{x:446,y:240,k:'丢弃',t:'无关消息',s:'不进模型，不花 token'},team:{x:446,y:240,k:'权限',t:'审批关卡',s:'对外动作停下等你点头',red:1}},
  filter:{w:260,h:110,ds:{x:446,y:430,k:'Fast Path',t:'代码规则过滤',s:'来源 · 群 · 白名单'},team:{x:446,y:630,k:'事件触发',t:'routine',s:'定时 / 事件触发'}},
  thread:{w:260,h:110,ds:{x:446,y:630,k:'订阅表',t:'Thread',s:'同一 PR · 话题 · 邮件链'},team:{x:446,y:630,k:'订阅表',t:'Thread',s:'',gone:1}},
- router:{w:300,h:140,cls:'router',ds:{x:806,y:415,k:'常驻 · 通常轻量模型',t:'路由',s:'只派发，不拆解',tg:'不持有 Bash'},team:{x:806,y:415,k:'唯一入口',t:'大内总管',s:'只路由',tg:'不研究 · 不写代码'}},
+ router:{w:300,h:140,cls:'router',ds:{x:806,y:415,k:'常驻 · 通常轻量模型',t:'路由',s:'只派发，不拆解',tg:'不持有 Bash'},team:{x:806,y:415,k:'唯一入口',t:'前台',s:'只路由',tg:'不研究 · 不写代码'}},
  state: {w:300,h:100,ds:{x:806,y:240,k:'上下文',t:'ID + 摘要',s:'会话状态 · 引用图'},team:{x:806,y:240,k:'状态 / 交接',t:'共享文件夹',s:'交接写文件，不走聊天'}},
  wA:    {w:300,h:110,ds:{x:1206,y:230,k:'Worker',t:'任务会话 A',s:'通常最强模型 · 全套工具'},team:{x:1206,y:230,k:'bot',t:'仓库维护',s:'每个仓库的日常'}},
  wB:    {w:300,h:110,ds:{x:1206,y:430,k:'Worker',t:'任务会话 B',s:'通常最强模型 · 全套工具'},team:{x:1206,y:430,k:'bot',t:'邮件',s:'收件与提醒'}},
@@ -108,36 +108,32 @@ const S=[
  {mode:'ds',act:['im','filter'],focus:['im'],edges:['im-filter'],hot:[],
   pk:[{p:['im-filter'],every:1500}],
   bub:[[96,270,'帮我看看 PR 里那个 bug','IM 消息']],
-  h:'事件进场：你说完就可以走开',p:'【原文】消息是事件，不是一次同步会话。常驻 Runtime 让你不必开会话、盯会话。<br>【讨论】执行持续了，人的审核负担未必下降——吞吐↑可能意味着待确认↑。'},
+  h:'事件进场：你说完就可以走开',p:'每条消息都是一个“事件”，不是一次要你守着的会话。系统一直在线，你不用开窗口、盯窗口。'},
  {mode:'ds',act:['filter','drop','router'],focus:['filter'],edges:['im-filter','filter-drop','filter-router'],hot:[],
   pk:[{p:['im-filter','filter-drop'],every:1300},{p:['im-filter','filter-router'],every:2600,delay:650}],
   bub:[[96,250,'群聊闲聊、无关通知 → 忽略','不进模型，不花 token']],
-  h:'Fast Path：能用代码挡的，不进模型',p:'【原文】来源 / 群 / 白名单先过滤；需要语义的才走慢速路径。<br>【倾向】过滤规则本身也是 harness——轻 Router 能成立，往往因为判断空间已被工程压小。',src:'【实践】白名单误伤 / 漏放，都会直接变成 Router 质量问题'},
+  h:'第一道筛子：能用代码挡掉的，就别让模型看',p:'先按来源、群、白名单筛一遍；需要理解语义的，才交给模型判断。'},
  {mode:'ds',act:['router','state','wC'],focus:['router'],edges:['filter-router','router-state','router-wC'],hot:[],badge:{wC:'新会话'},
   pk:[{p:['filter-router','router-wC'],every:2400},{p:['router-state'],every:1600,speed:240},{p:['-router-state'],every:1600,delay:800,speed:240}],
   bub:[[806,572,'新任务 → 开一个新会话','路由的判断']],
-  h:'Router：只派发，还是也要判断？',p:'【原文】通常轻量模型、不持 Bash，只派发不拆解。<br>【质疑】直接问答、跨 Worker 冲突、该不该打扰人——这些判断空间并不小。<br>【倾向】我们更看好「较强 Router + 清晰职责边界」。',src:'能力可以强；职责仍应克制'},
+  h:'前台 Router：看一眼，派给合适的 Worker',p:'Router 通常用轻一点的模型，不拿命令行工具，只派活、不拆任务。新任务就开一个新的 Worker 会话。'},
  {mode:'ds',act:['wA','wB','wC','router'],focus:['wA','wB','wC'],edges:['router-wA','router-wB','router-wC'],hot:[],work:['wA','wB','wC'],
   pk:[],
   bub:[[806,572,'路由腾出手，接下一句话','并行']],
-  h:'Worker 并行：隔离换来的是什么？',p:'【原文】一任务一 Session，强模型 + 全工具，不直接对人。<br>【质疑】隔离降低干扰，也切断缓存与隐性上下文；成本转移到持久化与交接。<br>【未验证】拆多细才划算，取决于任务相关性和恢复成本。'},
+  h:'几个 Worker 同时干活，前台腾出手接下一句',p:'每个任务一个干净的会话，带全套工具和更强的模型。Worker 不直接找你，做完向前台汇报。'},
  {mode:'ds',act:['im','filter','thread','wC','router'],focus:['thread'],edges:['im-filter','filter-thread','thread-wC'],hot:['filter-thread','thread-wC'],work:['wC'],half:['router'],
   pk:[{p:['im-filter','filter-thread','thread-wC'],every:2600},{p:['im-filter','filter-router'],every:2600,ghost:1}],
   bub:[[96,280,'↩ 原话题里回复：「补上测试」','同一 Thread'],[806,572,'看得到，但不判断、不转发','路由']],
-  h:'Pass-through：省 token，不一定省时间',p:'【原文】订阅后代码直送；Router 可见但不转发。<br>【实验】去掉直送，cache-read ≈+37%；完成时间几乎不变。<br>【讨论】Token / 模型延迟 / 吞吐 / 端到端时间是四个指标——别混谈。',
-  src:'合成负载，仅供参考 · 详见 handoff 动效页'},
+  h:'同一话题的后续消息，直接送到在做的 Worker',p:'Worker 订阅了这个话题，后面的回复由代码直接送过去。前台看得到，但不用再判断和转发。',
+  src:'他们的实验里，去掉这一步任务不会更慢，但读缓存的 token 多了约 37%'},
  {mode:'ds',act:['wd','wA','wB','wC'],focus:['wd'],edges:['wd-wA','wd-wB','wd-wC'],hot:[],work:['wA','wC'],ping:['wd'],badge:{wB:'有进展吗？'},
   pk:[{p:['wd-wA'],every:2100,speed:320},{p:['wd-wB'],every:2100,delay:700,speed:320},{p:['wd-wC'],every:2100,delay:1400,speed:320}],
-  bub:[[1586,280,'活着 ≠ 正确工作','观察员逻辑']],
-  h:'Watchdog ≈ 架构观察员',p:'【原文】独立于主系统的定时会话，查卡住与跑偏。<br>【实践】我们的观察员每天审查、只提建议，不自动改架构。<br>【讨论】监督本身有 Token 与误报成本；消融时要问：去掉它，指标掉多少？'},
+  bub:[[1586,280,'活着不等于在干正事','Watchdog']],
+  h:'Watchdog：按时巡一圈，看谁卡住了',p:'它独立于主系统，定时醒来，既查接口报错，也判断每个 Worker 有没有实质进展。'},
  {mode:'ds',act:['wC','router','im'],focus:['router'],edges:['router-wC','reply'],hot:['reply'],
   pk:[{p:['-router-wC','reply'],every:3000,speed:420}],
   bub:[[96,262,'已修复，测试通过；<br>等你确认后合并。','示例回复 · IM ≤100 词']],
-  h:'回传：压缩到人还愿意读',p:'【原文】IM ≤100 词；只在必须行动或结果可用时说话。<br>【延伸】这是在保护注意力，不是在展示能力。<br>【未验证】压缩会不会丢掉关键前提，导致错误批准？'},
- {mode:'team',act:['im','drop','filter','router','state','wA','wB','wC','wd'],focus:['router'],edges:['you-router','router-gate','gate-you','routine-wC','router-wA','router-wB','router-wC','wA-state','router-state','wd-wA','wd-wB','wd-wC'],hot:['router-gate','gate-you'],work:['wA','wC'],
-  pk:[{p:['you-router','router-wB'],every:3200,delay:1500},{p:['routine-wC'],every:3000,delay:2300},{p:['wA-state'],every:2600,delay:2000,speed:260},{p:['router-gate','gate-you'],every:3600,delay:2900,speed:340}],
-  bub:[],h:'同一副骨架 → Hive / bot 团队 / DeepSeek',map:1,
-  src:'【判断】差异不在「能不能一对多」，而在控制平面：长期 Orchestrator vs 短时 Router；任务驱动 vs 事件驱动 Runtime'}
+  h:'结果回到你这里：短到你愿意读',p:'IM 里每条最多 100 词；只在需要你行动、或结果能用上时才开口。'}
 ];
 /* build */
 const NS='http://www.w3.org/2000/svg',EG=document.getElementById('edges'),PG=document.getElementById('pks'),ND=document.getElementById('nodes');
@@ -152,7 +148,7 @@ const ticks=document.getElementById('ticks');S.forEach((_,i)=>{const t=document.
 function setMode(m,anim){if(m===mode)return;mode=m;
  const tx=[...document.querySelectorAll('.nd .tx')];
  if(anim){tx.forEach(x=>x.style.opacity=0);setTimeout(()=>{paint(m);tx.forEach(x=>x.style.opacity=1)},560);}else paint(m);
- place(m);const b=document.getElementById('modeB');b.textContent=m==='team'?'我们的 bot 团队':'DeepSeek Super-agent（研究原型）';b.classList.toggle('team',m==='team');}
+ place(m);const b=document.getElementById('modeB');b.textContent=m==='team'?'DeepSeek Super-agent（研究原型）':'DeepSeek Super-agent（研究原型）';b.classList.toggle('team',m==='team');}
 function drawIn(e,delay){if(SHOT||e.dash)return;const p=e.p;p.style.transition='none';p.style.strokeDasharray=e.L;p.style.strokeDashoffset=e.L;p.getBoundingClientRect();
  p.style.transition=`stroke-dashoffset .9s cubic-bezier(.65,0,.35,1) ${delay}ms,stroke .5s,stroke-width .5s,opacity .7s`;p.style.strokeDashoffset=0;
  setTimeout(()=>{p.style.strokeDasharray='';p.style.strokeDashoffset='';p.style.transition=''},delay+950);}
@@ -174,8 +170,7 @@ function go(i){i=Math.max(0,Math.min(S.length-1,i));if(i===cur)return;const prev
   if(SHOT)b.classList.add('show');else setTimeout(()=>b.classList.add('show'),morph?1500:300);});
  const T=document.getElementById('ctxt');T.style.opacity=0;
  const fill=()=>{let h='<h2>'+s.h+'</h2>';
-  if(s.map)h+='<div class="map"><span>常驻路由<em>→</em>大内总管 / Hive Orchestrator</span><span>任务会话<em>→</em>职能 bot / CLI Worker</span><span>状态 / 交接<em>→</em>共享文件夹 · tasks.md</span><span>事件触发<em>→</em>routine（我们偏弱）</span><span>权限关卡<em>→</em>审批</span><span class="anl">Watchdog<em>≈</em>架构观察员</span></div>'+(s.src?'<div class="sr">'+s.src+'</div>':'');
-  else h+='<p>'+s.p+'</p>'+(s.src?'<div class="sr">'+s.src+'</div>':'');T.innerHTML=h;T.style.opacity=1;};
+  h+='<p>'+s.p+'</p>'+(s.src?'<div class="sr">'+s.src+'</div>':'');T.innerHTML=h;T.style.opacity=1;};
  if(SHOT)fill();else setTimeout(fill,220);
  document.getElementById('cn').firstChild.textContent=String(i+1).padStart(2,'0');
  [...ticks.children].forEach((t,j)=>{t.classList.toggle('on',j===i);t.classList.toggle('done',j<i)});

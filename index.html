@@ -1,674 +1,208 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>一个人，怎么带十个 Agent？</title>
+<title>一个人，怎么同时带好几个 Agent？</title>
 <link rel="stylesheet" href="assets/d.css">
 <style>
-/* v3 denser helpers */
-.slide table th{font-weight:800;font-size:18px;color:var(--g1)}
-.slide table td{font-weight:600}
+.ttl{position:absolute;left:96px;top:200px;right:96px;font-size:68px;line-height:1.2;font-weight:900;letter-spacing:-.015em;max-width:1700px}
+.pt{border-top:6px solid var(--ink);padding-top:24px}
+.pt .pk{font-size:50px;font-weight:900;line-height:1.25}
+.pt p{font-size:31px;line-height:1.6;font-weight:500;color:var(--g1);margin-top:18px}
+.tb{width:100%;border-collapse:collapse;font-size:36px}
+.tb th{text-align:left;font-size:22px;font-weight:800;color:var(--g1);padding:0 0 16px;border-bottom:6px solid var(--ink);line-height:1.3}
+.tb th small{font-weight:600;font-size:18px}
+.tb td{padding:22px 0;border-bottom:2px solid var(--g3);font-weight:700}
+.tb tr.hl td{color:var(--red)}
+.br{display:flex;align-items:center;gap:32px;margin-bottom:40px}
+.br span{width:260px;font-size:32px;font-weight:800}
+.br i{display:block;height:72px}
+.br b{font-size:44px;font-weight:900}
+.li{display:flex;gap:36px;align-items:baseline;border-top:2px solid var(--g3);padding:22px 0}
+.li b{font-size:40px;font-weight:900;color:var(--red);width:40px}
+.li span{font-size:34px;font-weight:700;line-height:1.4}
+.bx .s{white-space:normal}
+.bx.c .t,.bx.c .s{text-align:center}
 </style>
 </head><body><div class="stage">
 <section class="slide" data-title="封面" id="s1">
 <div class="rule"></div>
-
-<div class="abs" style="left:96px;top:200px;right:96px">
-  <div class="lbl red rv" style="--d:0">技术分享 · 研究讨论稿 · 非产品发布</div>
-  <h1 class="t1 rv" style="--d:1;margin-top:28px;max-width:1600px">一个人，怎么带<br>十个 Agent？</h1>
-  <p class="lede rv" style="--d:3;margin-top:36px;max-width:1400px">不是复述 DeepSeek Super-agent。<br>是带着工程经验与独立质疑，讨论：注意力、Router、协作成本，以及组织协作的前提。</p>
-  <div class="rv" style="--d:5;margin-top:64px;display:flex;gap:48px;font-size:22px;font-weight:700">
-    <span><b class="red">V11</b> 研究库 + 对谈</span>
-    <span><b class="red">Hive</b> / bot 团队 / DeepSeek</span>
-    <span><b class="red">思考可见</b> · 原文 / 质疑 / 倾向 / 未验证</span>
-  </div>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">基于 DeepSeek Super-agent 设计文 · Hive · bot 团队实践 · 研究对谈</span></div>
-<div class="notes">封面定调：从「解读一篇文章」升级为「有独立观点的技术讨论」。
-来源分层会贯穿全场：【原文】DeepSeek 主张；【原型】开源代码；【讨论】我们的对谈；【实践】Hive / bot 团队；【推断】尚未验证的延伸。
-按 N 键可看每页讲者备注里的更深论证。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="abs" style="left:96px;top:250px;right:96px">
+<div class="lbl red rv">团队技术分享</div>
+<h1 class="t1 rv" style="--d:1;margin-top:32px">一个人，怎么同时<br>带好几个 Agent？</h1>
+<p class="lede rv" style="--d:3;margin-top:44px;color:var(--g1)">读 DeepSeek《Super-agent》设计文和开源原型的一些笔记</p></div>
+<div class="rule b"></div><div class="foot"><span class="src"></span></div>
+<div class="notes">开场：这次就是一起读一篇文章。DeepSeek Harness 团队 10 月 31 日发了一篇讨论 agent 系统架构的长文，同时开源了一个研究原型。文章自己说明：这是在讨论架构思路，不是正式产品功能。
+大概 20 分钟，最后留时间讨论。</div>
 </section>
-<section class="slide" data-title="议程" id="s2">
+<section class="slide" data-title="今天想和大家一起看四件事" id="s2">
 <div class="rule"></div>
-
-<div class="meta"><span><b>02</b>议程</span><span></span><span></span><span class="r">六幕</span></div>
-<div class="cols" style="top:220px">
-  <div style="grid-column:span 12">
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px 48px">
-      <div class="rv" style="--d:0;border-top:6px solid var(--ink);padding-top:18px"><div class="lbl red">01 问题重框</div><div class="t3" style="font-size:32px;margin-top:12px">注意力瓶颈<br>入口 ≠ 认知</div></div>
-      <div class="rv" style="--d:1;border-top:6px solid var(--ink);padding-top:18px"><div class="lbl red">02 架构怎么读</div><div class="t3" style="font-size:32px;margin-top:12px">Runtime 升级<br>不是新范式</div></div>
-      <div class="rv" style="--d:2;border-top:6px solid var(--ink);padding-top:18px"><div class="lbl red">03 关键争论</div><div class="t3" style="font-size:32px;margin-top:12px">直送 · 冲突<br>Router 轻重</div></div>
-      <div class="rv" style="--d:3;border-top:6px solid var(--ink);padding-top:18px"><div class="lbl red">04 我们的系统</div><div class="t3" style="font-size:32px;margin-top:12px">Hive · bot 团队<br>同构与差距</div></div>
-      <div class="rv" style="--d:4;border-top:6px solid var(--ink);padding-top:18px"><div class="lbl red">05 走向组织</div><div class="t3" style="font-size:32px;margin-top:12px">信息缺口<br>工作现场 · A2A</div></div>
-      <div class="rv" style="--d:5;border-top:6px solid var(--red);padding-top:18px"><div class="lbl red">06 带走什么</div><div class="t3" style="font-size:32px;margin-top:12px">控制成本<br>vs 协作效率</div></div>
-    </div>
-  </div>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span></div>
-<div class="notes">叙事主线：人的注意力成瓶颈 → 统一入口不等于认知统一 → Super-agent 是 Runtime 工程 → harness 让轻路由成立 → 我们的系统高度同构 → 组织协作的障碍是状态与授权。
-收尾金句（对谈对旧 PPT 的评价延伸）：未来优化的是 Agent 协作效率，还是人对整系统的控制成本？
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>02</b>今天聊什么</span></div>
+<h2 class="ttl rv">今天想和大家一起看四件事</h2>
+<div class="cols" style="top:420px"><div class="rv pt" style="--d:2;grid-column:span 3"><div class="pk">01</div><p>为什么<br>人会成为瓶颈</p></div><div class="rv pt" style="--d:3;grid-column:span 3"><div class="pk">02</div><p>DeepSeek<br>是怎么拆的</p></div><div class="rv pt" style="--d:4;grid-column:span 3"><div class="pk">03</div><p>实验里<br>看到了什么</p></div><div class="rv pt" style="--d:5;grid-column:span 3"><div class="pk">04</div><p>我们可以<br>先试哪些</p></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">先讲问题，再讲他们的做法、实验和原型，最后是几个可以马上试的小做法和留给大家的问题。</div>
 </section>
-<section class="slide" data-title="注意力瓶颈" id="s3">
+<section class="slide" data-title="模型越来越快之后，卡住的变成了人" id="s3">
 <div class="rule"></div>
-
-<div class="meta"><span><b>03</b>问题</span><span></span><span></span><span class="r">【原文】→【质疑】</span></div>
-<div class="abs rv" style="--d:0;left:96px;top:220px;width:900px">
-  <div class="lbl">【原文】主张</div>
-  <h2 class="t2" style="font-size:56px;margin-top:16px">人一般只能同时<br>跟进 <span class="red">3–5</span> 个活跃会话</h2>
-  <p class="lede" style="margin-top:28px;font-size:26px">瓶颈从「模型不够聪明」转向「人的注意力、精力与理解」。模型做得又快又好时，人反而成了卡点。</p>
-</div>
-<div class="abs rv" style="--d:2;left:1050px;top:220px;width:774px;border-left:6px solid var(--red);padding-left:36px">
-  <div class="lbl red">【质疑】我们立刻追问</div>
-  <p style="font-size:28px;font-weight:800;line-height:1.45;margin-top:18px">把五个会话合成一个入口，脑子就不乱了吗？</p>
-  <p class="small" style="margin-top:24px;color:var(--ink);font-size:22px;font-weight:600;line-height:1.55">入口管理成本可以下降；业务上下文的切换成本，未必一起下降。这是整场分享的第一块基石。</p>
-  <div style="margin-top:36px;font-size:20px;font-weight:700;color:var(--g1)">下一页把这两种成本拆开看 →</div>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span><a class="go" href="detail/attention.html">互动：会话越开越多</a></div>
-<div class="notes">【原文】DeepSeek 把人类注意力写成设计动机之一。
-【访谈整理】付强老师问题脉络：算力规模化 ≠ 协作/生产力等比转化；延伸到 Agent 同样成立。
-【讨论】用户明确不同意「统一入口就解决注意力」——这是我们最重要的独立观点之一，必须进 PPT，不能只复述原文。
-互动页：attention.html 用示意模拟「你盯每个会话 vs 入口替你盯」。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>03</b>问题</span></div>
+<h2 class="ttl rv">模型越来越快之后，卡住的变成了人</h2>
+<div class="abs rv" style="--d:1;left:96px;top:430px"><div class="num red" style="font-size:300px">3–5</div></div>
+<div class="abs rv" style="--d:3;left:820px;top:470px;width:960px"><p class="lede" style="font-size:38px;font-weight:700;line-height:1.5">文章里的经验：一个人同时能跟住的活跃会话，大概就 3 到 5 个。</p>
+<p class="lede" style="margin-top:28px;color:var(--g1)">再多开几个，Agent 做得再快，也只能排队等人看、等人点头。</p></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span><a class="go" href="detail/attention.html?from=3">会话越开越多会怎样</a></div>
+<div class="notes">文章的出发点：做单个任务时，瓶颈是模型能力；同时做很多任务时，瓶颈变成了人的注意力和精力。3–5 是作者的经验值，不是实验数字。
+可以点开小模拟：会话越开越多时，排队等你的会越积越多。</div>
 </section>
-<section class="slide" data-title="入口≠认知" id="s4">
+<section class="slide" data-title="只给 Agent 多接几个工具，解决不了这件事" id="s4">
 <div class="rule"></div>
-
-<div class="meta"><span><b>04</b>问题</span><span></span><span></span><span class="r">【讨论】三类成本</span></div>
-<div class="cols" style="top:210px">
-  <div style="grid-column:span 12;display:grid;grid-template-columns:repeat(3,1fr);gap:32px">
-    <div class="rv" style="--d:0;border:3px solid var(--ink);padding:28px 28px 32px;background:#fff">
-      <div class="lbl red">入口成本</div>
-      <div style="font-size:36px;font-weight:900;margin-top:14px;line-height:1.2">找哪个窗口？</div>
-      <p class="small" style="margin-top:18px;color:var(--ink)">统一入口可以明显下降。Router 替你盯，Worker 自跑。</p>
-    </div>
-    <div class="rv" style="--d:1;border:3px solid var(--red);padding:28px 28px 32px;background:#fff">
-      <div class="lbl red">认知成本</div>
-      <div style="font-size:36px;font-weight:900;margin-top:14px;line-height:1.2">装载哪套前提？</div>
-      <p class="small" style="margin-top:18px;color:var(--ink)">隐藏 Session ≠ 减轻理解。每条摘要背后仍是不同项目与决策。</p>
-    </div>
-    <div class="rv" style="--d:2;border:3px solid var(--ink);padding:28px 28px 32px;background:#fff">
-      <div class="lbl red">决策成本</div>
-      <div style="font-size:36px;font-weight:900;margin-top:14px;line-height:1.2">谁有权拍板？</div>
-      <p class="small" style="margin-top:18px;color:var(--ink)">Agent 代表你，不等于自动拥有替你承诺的权力。</p>
-    </div>
-  </div>
-</div>
-<div class="abs rv" style="--d:4;left:96px;right:96px;top:620px">
-  <div style="border-top:6px solid var(--ink);padding-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:48px">
-    <div><div class="lbl">【倾向】</div><p style="font-size:26px;font-weight:800;line-height:1.45;margin-top:10px">真正要优化的，是一次切换要重新装载多少前提——不只是几个聊天窗口。</p></div>
-    <div><div class="lbl">【未验证】</div><p style="font-size:26px;font-weight:800;line-height:1.45;margin-top:10px">统一入口在真实多项目负载下，是否降低「有效认知切换成本」？需要对照实验。</p></div>
-  </div>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span><a class="go" href="detail/entry-cognition.html">动画：入口 vs 认知</a></div>
-<div class="notes">对谈核心：用户说「哪怕搞到一个入口，脑子来回切也乱」。助手区分入口管理 vs 认知切换，并补上决策/授权维度。
-这页必须有动画：entry-cognition.html 对比五窗口 vs 一入口，计数「入口切换」与「认知重载」——后者在 B 模式仍增加。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>04</b>问题</span></div>
+<h2 class="ttl rv">只给 Agent 多接几个工具，解决不了这件事</h2>
+<div class="cols" style="top:480px"><div class="rv pt" style="--d:2;grid-column:span 4"><div class="pk">同步等人</div><p>一个会话一次只做一件事，<br>中途要确认就停下等你</p></div><div class="rv pt" style="--d:3;grid-column:span 4"><div class="pk">上下文串味</div><p>几件事挤在一个会话里，<br>前情越堆越乱</p></div><div class="rv pt" style="--d:4;grid-column:span 4"><div class="pk">电脑一关就停</div><p>会话跑在你的机器上，<br>你离线它也离线</p></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">文章的判断：给单个会话接更多 CLI、MCP、连接器，能做的事变多了，但这三个问题还在。所以他们想换一种组织方式。</div>
 </section>
-<section class="slide" data-title="付强问题" id="s5">
+<section class="slide" data-title="他们的想法：让 Agent 像一个一直在线的同事" id="s5">
 <div class="rule"></div>
-
-<div class="meta"><span><b>05</b>问题</span><span></span><span></span><span class="r">【访谈整理】</span></div>
-<div class="abs rv" style="--d:0;left:96px;top:220px;width:1100px">
-  <h2 class="t2" style="font-size:52px">算力涨十倍，协作能力<br>会涨十倍吗？</h2>
-  <p class="lede" style="margin-top:28px">FPS / 互联网可扩展性的老问题，被延伸到 AI：模型更强，是否线性转化为人机协作与组织产出？</p>
-</div>
-<div class="abs rv" style="--d:2;left:96px;right:96px;top:560px;display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
-  <div style="border-top:4px solid var(--ink);padding-top:16px"><div class="lbl">依赖</div><p style="font-size:22px;font-weight:700;margin-top:10px">任务互相卡住时，并行度上不去</p></div>
-  <div style="border-top:4px solid var(--ink);padding-top:16px"><div class="lbl">状态</div><p style="font-size:22px;font-weight:700;margin-top:10px">共享状态漂移，比算力更贵</p></div>
-  <div style="border-top:4px solid var(--ink);padding-top:16px"><div class="lbl">人的监督</div><p style="font-size:22px;font-weight:700;margin-top:10px">吞吐↑，审核与理解压力可能↑</p></div>
-  <div style="border-top:4px solid var(--red);padding-top:16px"><div class="lbl red">目标选择</div><p style="font-size:22px;font-weight:700;margin-top:10px">做不对的事，加速没有意义</p></div>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span></div>
-<div class="notes">【访谈整理】非逐字转写；付强老师从游戏/互联网可扩展性追问到 AI。
-【讨论】智能规模化 ≠ 生产力规模化。我们后面用「评价四元组」和「控制成本」回应这个问题。
-不要把面试对话写成 DeepSeek 原文观点。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>05</b>思路</span></div>
+<h2 class="ttl rv">他们的想法：让 Agent 像一个一直在线的同事</h2>
+<div class="cols" style="top:470px"><div class="rv pt" style="--d:2;grid-column:span 3"><div class="pk">一直是同一个它</div><p>不管你在群里、GitHub 还是邮件找它</p></div><div class="rv pt" style="--d:3;grid-column:span 3"><div class="pk">可以同时接活</div><p>手上有活，也能随时接新指令</p></div><div class="rv pt" style="--d:4;grid-column:span 3"><div class="pk">会自己留意</div><p>看到值得做的事就做，不值得就安静</p></div><div class="rv pt" style="--d:5;grid-column:span 3"><div class="pk">不会掉线</div><p>一直在线，出问题自己恢复</p></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">原文的四个特征：Continuous、Productive、Proactive、Persistent。文章强调这些不是靠一个更强的 ReAct 循环得到的，而是靠系统架构；也说明他们没有提新理论，是把计算机系统里的老办法搬过来。</div>
 </section>
-<section class="slide" data-title="四特征边界" id="s6">
+<section class="slide" data-title="拆成两层：前台只负责接话和派活，干活的在后面" id="s6">
 <div class="rule"></div>
-
-<div class="meta"><span><b>06</b>架构</span><span></span><span></span><span class="r">形态 ≠ 新范式证明</span></div>
-<div class="cols" style="top:210px">
-  <div style="grid-column:span 12;display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
-    <div class="rv" style="--d:0;background:var(--ink);color:#fff;padding:28px"><div class="lbl" style="color:#8d8a83">ALWAYS ON</div><div style="font-size:32px;font-weight:900;margin-top:12px">始终在线</div><p style="margin-top:14px;font-size:18px;font-weight:600;color:#c9c6bf">云端 Runtime，不跟笔记本开关机绑定</p></div>
-    <div class="rv" style="--d:1;border:3px solid var(--ink);padding:28px"><div class="lbl red">ASYNC</div><div style="font-size:32px;font-weight:900;margin-top:12px">异步并行</div><p class="small" style="margin-top:14px;color:var(--ink)">Router 异步派发；Worker 互不阻塞人</p></div>
-    <div class="rv" style="--d:2;border:3px solid var(--ink);padding:28px"><div class="lbl red">PROACTIVE</div><div style="font-size:32px;font-weight:900;margin-top:12px">事件驱动</div><p class="small" style="margin-top:14px;color:var(--ink)">Trigger 来自环境；主动性受权限约束</p></div>
-    <div class="rv" style="--d:3;border:3px solid var(--ink);padding:28px"><div class="lbl red">PERSISTENT</div><div style="font-size:32px;font-weight:900;margin-top:12px">状态持久</div><p class="small" style="margin-top:14px;color:var(--ink)">跨 Session 的对象与事件，不只是聊天记录</p></div>
-  </div>
-</div>
-<div class="abs rv" style="--d:5;left:96px;right:96px;top:620px;border-top:6px solid var(--ink);padding-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:40px">
-  <div><span class="lbl">【讨论】</span><p style="font-size:24px;font-weight:800;margin-top:10px;line-height:1.4">四特征定义的是运行形态，不是生产力充分条件。在线 + 异步 + 监听，人人都能加一层。</p></div>
-  <div><span class="lbl">【倾向】</span><p style="font-size:24px;font-weight:800;margin-top:10px;line-height:1.4">真正难的是：长期、可靠、低成本地创造有效价值——并证明组件收益大于成本。</p></div>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span></div>
-<div class="notes">用户原话大意：监听、异步、云端在线，本身不复杂。
-助手判断：Super-agent 更像 Agent Runtime 的系统工程升级，不是全新范式。
-价值在整合与取舍验证，不必神化命名。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>06</b>怎么拆</span></div>
+<h2 class="ttl rv">拆成两层：前台只负责接话和派活，干活的在后面</h2>
+<div class="dg"><svg viewBox="0 0 1920 1080"><defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#111"/></marker><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0L8,4L0,8z" fill="#e4321b"/></marker></defs><path class="ln draw " style="--d:2" d="M420,650 L640,650" marker-end="url(#a)"/><path class="ln draw " style="--d:2" d="M960,650 C1060,650 1060,520 1160,520" marker-end="url(#a)"/><path class="ln draw " style="--d:2" d="M960,650 L1160,650" marker-end="url(#a)"/><path class="ln draw " style="--d:2" d="M960,650 C1060,650 1060,780 1160,780" marker-end="url(#a)"/></svg></div><div class="bx  c rv" style="left:150px;top:590px;width:270px;height:120px"><div class="t">你</div><div class="s">在 IM / GitHub / 邮件里说话</div></div><div class="bx blk rv" style="left:640px;top:560px;width:320px;height:180px"><div class="k">前台 · 常驻</div><div class="t">Router</div><div class="s">只接话、派活、汇总给你</div></div><div class="bx rv" style="left:1160px;top:470px;width:420px;height:100px"><div class="t">Worker A</div><div class="s">一个任务一个干净会话</div></div><div class="bx rv" style="left:1160px;top:600px;width:420px;height:100px"><div class="t">Worker B</div><div class="s">完整工具，最强模型</div></div><div class="bx rv" style="left:1160px;top:730px;width:420px;height:100px"><div class="t">Worker C</div><div class="s">不直接找你，向前台汇报</div></div><p class="abs small rv" style="--d:5;left:640px;top:770px;width:400px">前台连命令行都可以不给；通常用轻一点的模型就够。</p>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span><a class="go" href="detail/architecture-in-motion.html?from=6">看一条消息怎么走</a></div>
+<div class="notes">Router：所有和人的交互、全局协调、记忆都在这层，但它不执行任务，可以完全没有 Bash。原文说轻量模型「通常」就能兼顾速度和质量。
+Worker：每个任务一个隔离会话，带全套工具，一般需要最强的模型。
+和常见 Agent Team 的区别：Router 只派发，不负责把任务拆细。
+忙的时候到达的消息会攒成一批，下一轮一起处理。他们压测过：需要决策的消息从每分钟约 1 条涨到约 40 条，每条决策摊下来的推理时间反而从 6.4 秒降到 1.6 秒，所以现在这个规模不急着拆 Router。</div>
 </section>
-<section class="slide" data-title="Runtime升级" id="s7">
+<section class="slide" data-title="不是每条消息都值得让模型看一眼" id="s7">
 <div class="rule"></div>
-
-<div class="meta"><span><b>07</b>架构</span><span></span><span></span><span class="r">【判断】差异在运行模型</span></div>
-<div class="abs" style="left:96px;top:210px;right:96px;display:grid;grid-template-columns:1fr 1fr;gap:48px">
-  <div class="rv" style="--d:0;border:3px solid var(--ink);padding:32px;background:#fff">
-    <div class="lbl">Hive / Codex 典型形态</div>
-    <div style="font-size:36px;font-weight:900;margin-top:14px">任务驱动</div>
-    <p style="font-size:22px;font-weight:600;margin-top:18px;line-height:1.5">用户发起 → Orchestrator / 主 Agent → Workers。以协作会话为组织起点。</p>
-    <p class="small" style="margin-top:20px">一对多、独立上下文、并行——都不是新的。</p>
-  </div>
-  <div class="rv" style="--d:1;border:3px solid var(--red);padding:32px;background:#fff">
-    <div class="lbl red">DeepSeek 希望的形态</div>
-    <div style="font-size:36px;font-weight:900;margin-top:14px">事件驱动 Runtime</div>
-    <p style="font-size:22px;font-weight:600;margin-top:18px;line-height:1.5">IM / GitHub / 定时 → 长期 Router + 状态对象 → Workers。以持续事件与跨会话状态为起点。</p>
-    <p class="small" style="margin-top:20px">给 Hive 加云端、Webhook、恢复与授权，功能目标就很接近。</p>
-  </div>
-</div>
-<div class="abs rv" style="--d:3;left:96px;right:96px;top:720px">
-  <p style="font-size:28px;font-weight:900;line-height:1.4"><span class="red">【倾向】</span>值得比的不是「是不是新范式」，而是：长期 Orchestrator vs 短时 Router，谁在复杂任务与高事件频率下更经济、更少漂移。</p>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span></div>
-<div class="notes">对谈对 Hive README 的对照表：调度层面高度相似；差异在 Runtime 与控制平面。
-Codex 已有本地+云端 Thread，故「本地 vs 云端」也不足以单独当区分点。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>07</b>怎么拆</span></div>
+<h2 class="ttl rv">不是每条消息都值得让模型看一眼</h2>
+<div class="dg"><svg viewBox="0 0 1920 1080"><defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#111"/></marker><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0L8,4L0,8z" fill="#e4321b"/></marker></defs><path class="ln draw " style="--d:2" d="M400,600 L560,600" marker-end="url(#a)"/><path class="ln draw " style="--d:2" d="M880,600 L1060,600" marker-end="url(#a)"/><path class="ln draw " style="--d:2" d="M1380,600 L1540,600" marker-end="url(#a)"/><path class="ln draw thin dash" style="--d:2" d="M720,680 L720,800" marker-end="url(#a)"/><path class="ln draw thin dash" style="--d:2" d="M1220,680 L1220,800" marker-end="url(#a)"/></svg></div><div class="bx  c rv" style="left:140px;top:540px;width:260px;height:120px"><div class="t">所有消息</div><div class="s">群聊、PR、邮件、CI</div></div><div class="bx rv" style="left:560px;top:520px;width:320px;height:160px"><div class="k">第一道</div><div class="t">先用代码筛</div><div class="s">看来源、哪个群、是不是白名单</div></div><div class="bx blk rv" style="left:1060px;top:520px;width:320px;height:160px"><div class="k">第二道</div><div class="t">再让模型判断</div><div class="s">值不值得处理，策略写在 prompt 里</div></div><div class="bx  c redb rv" style="left:1540px;top:540px;width:240px;height:120px"><div class="t">交给前台</div></div><div class="abs small rv" style="--d:5;left:600px;top:812px;width:300px">大部分闲聊在这里就被挡掉，<br>不花一个 token</div><div class="abs small rv" style="--d:6;left:1100px;top:812px;width:340px">规则想改，改段文字就行</div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span><a class="go" href="detail/arch-deepseek.html?from=7">完整结构图</a></div>
+<div class="notes">第一道是确定性规则：按来源、群、用户、bot 白名单准入；每个来源还可以设成「只响应明确找我的」「算作候选」或「忽略」。
+过了第一道的候选才进第二道，用模型做语义判断，策略写成 prompt，可以随时加改。
+原型里的做法也是这样：名单里的人 @ 它或私聊算明确请求；其它按表格判断；已经在处理的话题里的消息算跟进。</div>
 </section>
-<section class="slide" data-title="架构总览" id="s8">
+<section class="slide" data-title="同一件事的后续消息，直接送到正在做的那个 Worker" id="s8">
 <div class="rule"></div>
-
-<div class="meta"><span><b>08</b>架构</span><span></span><span></span><span class="r">过滤 → Router → 直送 → Worker → Watchdog</span></div>
-<div class="abs rv" style="--d:0;left:96px;top:210px;right:96px">
-  <div style="display:flex;align-items:stretch;gap:0;height:420px">
-    <div style="flex:1;border:3px solid var(--ink);border-right:0;padding:24px;background:#fff"><div class="lbl">01</div><div style="font-size:26px;font-weight:900;margin-top:8px">过滤</div><p class="small" style="margin-top:12px;color:var(--ink)">Fast Path 挡掉无关</p></div>
-    <div style="flex:1.2;border:3px solid var(--ink);border-right:0;padding:24px;background:var(--ink);color:#fff"><div class="lbl" style="color:#8d8a83">02</div><div style="font-size:26px;font-weight:900;margin-top:8px">Router</div><p style="margin-top:12px;font-size:17px;font-weight:600;color:#c9c6bf">派发 · 可见直送 · 压缩对人</p></div>
-    <div style="flex:1;border:3px solid var(--ink);border-right:0;padding:24px;background:#fff"><div class="lbl red">03</div><div style="font-size:26px;font-weight:900;margin-top:8px">订阅直送</div><p class="small" style="margin-top:12px;color:var(--ink)">Pass-through</p></div>
-    <div style="flex:1.1;border:3px solid var(--ink);border-right:0;padding:24px;background:#fff"><div class="lbl">04</div><div style="font-size:26px;font-weight:900;margin-top:8px">Worker</div><p class="small" style="margin-top:12px;color:var(--ink)">隔离 Session · 强模型</p></div>
-    <div style="flex:1;border:3px solid var(--ink);padding:24px;background:#fff"><div class="lbl">05</div><div style="font-size:26px;font-weight:900;margin-top:8px">Watchdog</div><p class="small" style="margin-top:12px;color:var(--ink)">活着≠正确</p></div>
-  </div>
-</div>
-<div class="abs rv" style="--d:2;left:96px;right:96px;top:660px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px">
-  <p style="font-size:22px;font-weight:800;line-height:1.45"><span class="red">【原文】</span>Router 只派发不拆解；不持 Bash。</p>
-  <p style="font-size:22px;font-weight:800;line-height:1.45"><span class="red">【质疑】</span>直接问答与冲突上浮时，判断空间并不小。</p>
-  <p style="font-size:22px;font-weight:800;line-height:1.45"><span class="red">【动画】</span>八步标质疑点；第 8 步变形到 Hive / bot 团队。</p>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span><a class="go" href="detail/architecture-in-motion.html">8 步动画</a><a class="go" href="detail/arch-deepseek.html" style="margin-left:12px">分层结构图</a></div>
-<div class="notes">主交互：architecture-in-motion.html —— 步进文案已按 V11 重写，含原文/讨论/倾向/未验证。
-另见 arch-deepseek.html 静态结构图。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>08</b>怎么拆</span></div>
+<h2 class="ttl rv">同一件事的后续消息，直接送到正在做的那个 Worker</h2>
+<div class="dg"><svg viewBox="0 0 1920 1080"><defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#111"/></marker><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0L8,4L0,8z" fill="#e4321b"/></marker></defs><path class="ln thin dash" d="M460,500 C700,500 700,560 860,560" /><path class="ln draw r" style="--d:3" d="M460,760 C900,760 1100,760 1380,760" marker-end="url(#ar)"/><path class="ln thin dash" d="M1100,560 C1250,560 1250,700 1380,720"/></svg></div><div class="bx rv" style="left:120px;top:440px;width:340px;height:120px"><div class="k">同一个话题</div><div class="t">PR #42 下的新评论</div></div><div class="bx rv" style="left:120px;top:700px;width:340px;height:120px"><div class="k">同一个话题</div><div class="t">PR #42 下的新评论</div></div><div class="bx blk rv" style="left:860px;top:500px;width:260px;height:120px"><div class="t">Router</div><div class="s">看得到，不用转</div></div><div class="bx redb rv" style="left:1380px;top:700px;width:400px;height:120px"><div class="t">正在修 #42 的 Worker</div><div class="s">已订阅这个话题</div></div><div class="abs lbl red rv" style="--d:4;left:560px;top:700px">按话题直接送达</div><div class="abs small rv" style="--d:4;left:560px;top:430px">不订阅时：都要绕前台一圈</div><p class="abs lede rv" style="--d:6;left:120px;top:880px;width:1600px;font-size:26px">「话题」就是同一个 PR、同一串群聊回复、同一封邮件往来。</p>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span><a class="go" href="detail/handoff.html?from=8">对比：经前台 vs 直送</a></div>
+<div class="notes">原文叫 Thread 订阅 / pass-through。Router 为一个话题的第一条消息派了 Worker 后，这个 Worker 就订阅这个话题；之后同话题的消息由代码直接送过去，Router 仍然看得见，只是不用再判断和转发。
+订阅是多对多的：几个 Worker 订阅同一个话题，就能自己发现彼此冲突，Worker 之间不点对点通信。
+原型里：飞书话题回复挂到根消息；GitHub 按 issue/PR 号。主聊天里不带话题的新消息，前台只有在它明确指向某个工单时才归过去，「话题相似不够」。</div>
 </section>
-<section class="slide" data-title="过滤与信道" id="s9">
+<section class="slide" data-title="慢的工具不再卡住对话，结果回来当成一条新消息" id="s9">
 <div class="rule"></div>
-
-
-<div class="meta"><span><b>09</b>架构</span><span></span><span></span><span class="r">多信道 ≠ 绕过过滤</span></div>
-<div class="abs" style="left:96px;top:210px;right:96px;display:grid;grid-template-columns:1.1fr 1fr;gap:40px">
-  <div class="rv" style="--d:0">
-    <h2 class="t3">Fast Path / Slow Path</h2>
-    <div style="margin-top:28px;display:grid;gap:14px">
-      <div style="display:grid;grid-template-columns:140px 1fr;gap:16px;border-top:3px solid var(--ink);padding-top:12px"><div class="lbl red">Fast</div><div style="font-size:22px;font-weight:800">来源 · 群 · 白名单 · 代码挡掉</div></div>
-      <div style="display:grid;grid-template-columns:140px 1fr;gap:16px;border-top:3px solid var(--ink);padding-top:12px"><div class="lbl red">Slow</div><div style="font-size:22px;font-weight:800">需语义才进 LLM · 策略写在 prompt</div></div>
-      <div style="display:grid;grid-template-columns:140px 1fr;gap:16px;border-top:3px solid var(--ink);padding-top:12px"><div class="lbl">输出</div><div style="font-size:22px;font-weight:800">IM≤100 词 · GitHub/邮件可结构化</div></div>
-    </div>
-  </div>
-  <div class="rv" style="--d:2;border:3px solid var(--ink);padding:28px;background:#fff">
-    <div class="lbl red">【讨论】图怎么画</div>
-    <p style="font-size:22px;font-weight:700;line-height:1.5;margin-top:14px">多信道应汇入<strong>统一事件层</strong>再分级——不是每条管道直达 Router。</p>
-    <p style="font-size:20px;font-weight:700;line-height:1.45;margin-top:18px;color:var(--g1)">输入 → 事件接入 → 过滤 → Router/Worker<br>输出 ← 响应层（按渠道调密度）</p>
-    <p style="font-size:20px;font-weight:800;margin-top:22px;border-top:3px solid var(--red);padding-top:14px"><span class="red">【倾向】</span>统一事件 + 分级，比「每个入口一种特例」更好测。</p>
-  </div>
-</div>
-
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span><a class="go" href="detail/arch-deepseek.html">结构图：DeepSeek</a></div>
-<div class="notes">来自对谈对架构图的批评。PPT 素材里也有类似提醒。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>09</b>怎么拆</span></div>
+<h2 class="ttl rv">慢的工具不再卡住对话，结果回来当成一条新消息</h2>
+<div class="dg"><svg viewBox="0 0 1920 1080"><defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#111"/></marker><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0L8,4L0,8z" fill="#e4321b"/></marker></defs><path class="ln draw " style="--d:2" d="M260,560 L1660,560" marker-end="url(#a)"/><path class="ln draw thin" style="--d:3" d="M560,560 C560,700 560,700 760,720" marker-end="url(#a)"/><path class="ln draw r" style="--d:4" d="M1260,720 C1380,720 1380,560 1380,560" marker-end="url(#ar)"/></svg></div><div class="abs lbl rv" style="left:120px;top:540px">对话</div><div class="bx c rv" style="left:420px;top:470px;width:280px;height:70px"><div class="t">start(跑测试)</div></div><div class="bx rv" style="left:760px;top:670px;width:500px;height:100px"><div class="t">测试在后台跑</div><div class="s">对话可以继续接新指令</div></div><div class="bx  c redb rv" style="left:1300px;top:470px;width:360px;height:70px"><div class="t">结果作为新消息回来</div></div><div class="abs rv" style="--d:5;left:800px;top:500px;width:120px;text-align:center"><div style="width:20px;height:20px;background:var(--ink);margin:30px auto 0"></div><div class="small" style="margin-top:18px">你又说一句</div></div><div class="abs rv" style="--d:5;left:1060px;top:500px;width:120px;text-align:center"><div style="width:20px;height:20px;background:var(--ink);margin:30px auto 0"></div><div class="small" style="margin-top:18px">你又说一句</div></div><p class="abs lede rv" style="--d:6;left:120px;top:860px;width:1650px;font-size:28px">回复也分场合：IM 里每条最多 100 词；GitHub、邮件这种不着急看的，可以写得完整、结构化。</p>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">原文的「全双工多通道」：把耗时工具改成异步 start()/stop()，结果作为新事件回到系统里。文章说这个 DeepSeek Harness 里已经实现了，但默认没开。
+100 词上限是文章里明确说「验证过」的硬规则。</div>
 </section>
-<section class="slide" data-title="Pass-through" id="s10">
+<section class="slide" data-title="把“脑子”“记性”和“手”分开放" id="s10">
 <div class="rule"></div>
-
-<div class="meta"><span><b>10</b>争论</span><span></span><span></span><span class="r">省 token ≠ 省时间</span></div>
-<div class="abs rv" style="--d:0;left:96px;top:210px;right:96px">
-  <h2 class="t2" style="font-size:48px">去掉直送：cache-read <span class="red">+37%</span>，完成时间几乎不变</h2>
-</div>
-<div class="abs" style="left:96px;top:360px;right:96px;display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
-  <div class="rv" style="--d:1;border-top:6px solid var(--red);padding-top:16px"><div class="lbl">Token</div><div style="font-size:42px;font-weight:900;margin-top:8px">↑</div><p class="small" style="margin-top:8px;color:var(--ink)">Router 反复读长前缀缓存</p></div>
-  <div class="rv" style="--d:2;border-top:6px solid var(--ink);padding-top:16px"><div class="lbl">模型延迟</div><div style="font-size:42px;font-weight:900;margin-top:8px">多轮</div><p class="small" style="margin-top:8px;color:var(--ink)">多的是 Router 轮次</p></div>
-  <div class="rv" style="--d:3;border-top:6px solid var(--ink);padding-top:16px"><div class="lbl">吞吐</div><div style="font-size:42px;font-weight:900;margin-top:8px">？</div><p class="small" style="margin-top:8px;color:var(--ink)">高频事件下才更敏感</p></div>
-  <div class="rv" style="--d:4;border-top:6px solid var(--ink);padding-top:16px"><div class="lbl">端到端时间</div><div style="font-size:42px;font-weight:900;margin-top:8px">≈</div><p class="small" style="margin-top:8px;color:var(--ink)">瓶颈可能在 Worker</p></div>
-</div>
-<div class="abs rv" style="--d:5;left:96px;right:96px;top:700px">
-  <p style="font-size:26px;font-weight:800;line-height:1.45"><span class="red">【讨论】</span>四个指标拆开谈。合成负载仅供参考；真实瓶颈位置【未验证】。</p>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span><a class="go" href="detail/handoff.html">动画：经 Router vs 直送</a></div>
-<div class="notes">用户直觉：无 pass-through 一定更贵——对，主要贵在 Router cache-read 与决策轮次。
-助手补充：Worker 本来就要处理消息；时间不变说明 Router 转发不是端到端主瓶颈（在该实验设定下）。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>10</b>怎么拆</span></div>
+<h2 class="ttl rv">把“脑子”“记性”和“手”分开放</h2>
+<div class="cols" style="top:480px"><div class="rv pt" style="--d:2;grid-column:span 4"><div class="pk">脑子</div><p>Agent 循环跑在云上，<br>容器本身不存东西</p></div><div class="rv pt" style="--d:3;grid-column:span 4"><div class="pk">记性</div><p>会话状态放进数据库，<br>换台机器也能接着做</p></div><div class="rv pt" style="--d:4;grid-column:span 4"><div class="pk">手</div><p>代码和工具还在你的机器上，<br>只装一个轻量的小程序</p></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">原文：计算、状态、环境分离。支持 BYOM（带上自己的机器），设备断断续续在线时，重连后自动续做。
+文章自己对比了 Anthropic 的《Decoupling the brain from the hands》，区别是 DeepSeek 先要接的是个人开发机。</div>
 </section>
-<section class="slide" data-title="Thread冲突" id="s11">
+<section class="slide" data-title="再安排一个“值班的”，看大家是不是真的在干活" id="s11">
 <div class="rule"></div>
-
-<div class="meta"><span><b>11</b>争论</span><span></span><span></span><span class="r">可见 ≠ 一致 ≠ 协调</span></div>
-<div class="abs" style="left:96px;top:220px;right:96px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px">
-  <div class="rv" style="--d:0;border:3px solid var(--ink);padding:28px"><div class="num red" style="font-size:72px">1</div><div style="font-size:28px;font-weight:900;margin-top:8px">信息可见</div><p class="small" style="margin-top:12px;color:var(--ink)">订阅到事件。Thread 主要改善这一层。</p></div>
-  <div class="rv" style="--d:1;border:3px solid var(--ink);padding:28px"><div class="num red" style="font-size:72px">2</div><div style="font-size:28px;font-weight:900;margin-top:8px">状态一致</div><p class="small" style="margin-top:12px;color:var(--ink)">知道哪个版本有效。收到 ≠ 理解一致。</p></div>
-  <div class="rv" style="--d:2;border:3px solid var(--red);padding:28px"><div class="num red" style="font-size:72px">3</div><div style="font-size:28px;font-weight:900;margin-top:8px">行动协调</div><p class="small" style="margin-top:12px;color:var(--ink)">修改顺序、依赖、避免互斥。Pub/Sub 不保证。</p></div>
-</div>
-<div class="abs rv" style="--d:4;left:96px;right:96px;top:620px;border-top:6px solid var(--ink);padding-top:24px">
-  <p style="font-size:28px;font-weight:900;line-height:1.4"><span class="red">【倾向】</span>零冲突不是目标；衡量冲突频率、影响、恢复成本，以及预防冲突的代价。<br><span style="font-size:22px;font-weight:700;color:var(--g1)">若冲突都汇聚 Router，轻路由可能变成质量瓶颈。</span></p>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span><a class="go" href="detail/thread-conflict.html">5 步：冲突如何上浮</a></div>
-<div class="notes">对谈共识：信息同步 ≠ 协作协调。DeepSeek 的松耦合合理，但不是彻底解决。
-付强式追问：Agent 数量增长时，广播/同步/冲突成本如何变化？
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>11</b>怎么拆</span></div>
+<h2 class="ttl rv">再安排一个“值班的”，看大家是不是真的在干活</h2>
+<div class="abs rv" style="left:96px;top:450px;width:820px"><p class="lede" style="font-size:36px;font-weight:700;line-height:1.5">它独立于主系统，按时醒来巡一圈。</p>
+<p class="lede" style="margin-top:24px;color:var(--g1)">不只看接口有没有报错，也让模型判断：这个 Worker 是在推进，还是在原地打转、跑偏了？</p></div><div class="abs rv" style="--d:3;left:1060px;top:450px;width:760px;border-left:6px solid var(--red);padding-left:40px"><p class="lede" style="font-size:30px">维护的人可以直接用大白话问它情况，也可以让它在运行中改 prompt、改触发规则。</p></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">原文 Watchdog：由定时消息驱动的独立 agent 会话。「活着」不等于「在干正事」，这是它要补的那一块。</div>
 </section>
-<section class="slide" data-title="Router轻重" id="s12">
+<section class="slide" data-title="他们做了个实验：同一批消息，四种设计各跑 5 次" id="s12">
 <div class="rule"></div>
-
-<div class="meta"><span><b>12</b>争论</span><span></span><span></span><span class="r">【原文】轻 · 【我们】偏强</span></div>
-<div class="abs" style="left:96px;top:210px;right:96px;display:grid;grid-template-columns:1fr 1fr;gap:40px">
-  <div class="rv" style="--d:0;border:3px solid var(--ink);padding:32px">
-    <div class="lbl">【原文】通常轻量</div>
-    <p style="font-size:26px;font-weight:800;margin-top:16px;line-height:1.45">快、省；靠规则、直送、结构化结果把判断空间压小。拿不准再升级。</p>
-  </div>
-  <div class="rv" style="--d:1;border:3px solid var(--red);padding:32px;background:#fff">
-    <div class="lbl red">【倾向】较强 Router</div>
-    <p style="font-size:26px;font-weight:800;margin-top:16px;line-height:1.45">直接问答、跨 Worker 冲突、该不该打扰——这些判断并不小。派错一次的返工，往往贵过路由费。</p>
-  </div>
-</div>
-<div class="abs rv" style="--d:3;left:96px;right:96px;top:620px">
-  <p style="font-size:30px;font-weight:900;line-height:1.4"><span class="red">能力 ≠ 职责。</span>模型可以强；仍然只做派发、仲裁、压缩对人——不替 Worker 写代码。</p>
-  <p class="small" style="margin-top:18px;color:var(--ink);font-size:22px">【未验证】在真实冲突率与直接问答占比下，轻/强净收益对照；强 Router 的串行瓶颈有多痛。</p>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span><a class="go" href="detail/router-tradeoff.html">互动：调频率与模型</a></div>
-<div class="notes">互动页已改写判决文案，加入场景 A/B/C（直送 / 直接问答 / 冲突上浮）。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>12</b>实验</span></div>
+<h2 class="ttl rv">他们做了个实验：同一批消息，四种设计各跑 5 次</h2>
+<div class="abs rv" style="left:96px;top:420px;width:1728px"><table class="tb"><tr><th>设计</th><th>完成时间（分钟）<br><small>中位 / 慢的那 5%</small></th><th>每次读缓存的 token</th></tr><tr class="hl"><td>完整 Super-agent</td><td>12.4 / 15.7</td><td>23.2M</td></tr><tr><td>去掉话题直送</td><td>12.6 / 15.5</td><td>31.8M</td></tr><tr><td>单会话 + 子 agent，中性 prompt</td><td>20.4 / 29.5</td><td>6.1M</td></tr><tr><td>单会话 + 子 agent，提示优先委派</td><td>13.8 / 29.0</td><td>10.8M</td></tr></table><p class="small" style="margin-top:28px;font-size:22px">每次约 300 条群聊和 CI 消息，其中约 20 条是真要干的活；写代码用耗时工具模拟。文章自己说是合成负载，数字当方向看。</p></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">只测调度和协调，不测代码写得好不好。p95 就是「慢的那 5% 要多久」，代表长尾。
+接下来两页各讲一个看点。</div>
 </section>
-<section class="slide" data-title="存算分离" id="s13">
+<section class="slide" data-title="话题直送没让任务变快，但省下了一截 token" id="s13">
 <div class="rule"></div>
-
-<div class="meta"><span><b>13</b>架构</span><span></span><span></span><span class="r">计算 / 状态 / 环境</span></div>
-<div class="abs" style="left:96px;top:230px;right:96px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px">
-  <div class="rv" style="--d:0;border-top:6px solid var(--ink);padding-top:20px"><div class="t3" style="font-size:36px">计算</div><p style="font-size:22px;font-weight:600;margin-top:14px;line-height:1.5">模型调用可换、可 BYOM。Router/Worker 模型档位分开选。</p></div>
-  <div class="rv" style="--d:1;border-top:6px solid var(--red);padding-top:20px"><div class="t3" style="font-size:36px">状态</div><p style="font-size:22px;font-weight:600;margin-top:14px;line-height:1.5">Thread / Ticket / Mandate / Assignment 等对象应独立于某次 Session。</p></div>
-  <div class="rv" style="--d:2;border-top:6px solid var(--ink);padding-top:20px"><div class="t3" style="font-size:36px">环境</div><p style="font-size:22px;font-weight:600;margin-top:14px;line-height:1.5">工具、登录态、工作目录。daemon / 远程执行把环境从笔记本剥离。</p></div>
-</div>
-<div class="abs rv" style="--d:4;left:96px;right:96px;top:620px;border-top:6px solid var(--ink);padding-top:24px">
-  <p style="font-size:26px;font-weight:800;line-height:1.45"><span class="red">【实践】</span>Grok Bot 跨设备续跑、落盘交接，是同一思想的粗糙实现：把「记得什么」从「哪次聊天」里拆出来。</p>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span><a class="go" href="detail/cache.html">信息图：缓存命中 vs 双重成本</a></div>
-<div class="notes">隔离任务降低干扰，也损失缓存与隐性上下文——成本转系统层。bot 团队用共享文件夹交接，是显式传递。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>13</b>实验</span></div>
+<h2 class="ttl rv">话题直送没让任务变快，但省下了一截 token</h2>
+<div class="abs rv" style="left:96px;top:460px;width:1728px"><div class="br"><span>有直送</span><i style="width:803px;background:var(--red)"></i><b>23.2M</b></div><div class="br"><span>没有直送</span><i style="width:1100px;background:var(--ink)"></i><b>31.8M</b></div></div><p class="abs lede rv" style="--d:4;left:96px;top:740px;width:1600px">完成时间几乎一样（12.4 vs 12.6 分钟）。去掉直送后前台要多做约 30% 的决策，读缓存的 token 多了约 37%。</p>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span><a class="go" href="detail/handoff.html?from=13">动画对比</a></div>
+<div class="notes">原文原话大意：直送并不会让任务完成得更快或更好，它省的是前台反复读长上下文的开销。
+注意这里的 token 是所有会话「读缓存」的 token，不是总花费。</div>
 </section>
-<section class="slide" data-title="Watchdog" id="s14">
+<section class="slide" data-title="靠 prompt 让模型“记得委派”，不太靠得住" id="s14">
 <div class="rule"></div>
-
-
-<div class="meta"><span><b>14</b>架构</span><span></span><span></span><span class="r">活着 ≠ 正确工作</span></div>
-<div class="abs rv" style="--d:0;left:96px;top:200px;right:96px">
-  <h2 class="t2" style="font-size:42px">Watchdog ≈ 架构观察员</h2>
-  <div style="margin-top:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
-    <div style="border:3px solid var(--ink);padding:16px 18px;background:#fff"><div class="lbl">01 独立</div><p style="font-size:20px;font-weight:800;margin-top:8px;line-height:1.35">不在主路径里<br>定时消息驱动</p></div>
-    <div style="border:3px solid var(--ink);padding:16px 18px;background:#fff"><div class="lbl">02 巡检</div><p style="font-size:20px;font-weight:800;margin-top:8px;line-height:1.35">API 错误<br>任务是否实质进展</p></div>
-    <div style="border:3px solid var(--ink);padding:16px 18px;background:#fff"><div class="lbl">03 对照</div><p style="font-size:20px;font-weight:800;margin-top:8px;line-height:1.35">【原文】可告警<br>【实践】只建议</p></div>
-    <div style="border:3px solid var(--red);padding:16px 18px;background:#fff"><div class="lbl red">04 消融</div><p style="font-size:20px;font-weight:800;margin-top:8px;line-height:1.35">去掉后成功率<br>掉多少？</p></div>
-  </div>
-</div>
-<div class="abs" style="left:96px;right:96px;top:520px;display:grid;grid-template-columns:1.2fr 1fr;gap:28px">
-  <div class="rv" style="--d:2;display:grid;grid-template-columns:1fr 1fr;gap:20px">
-    <div style="border-top:4px solid var(--ink);padding-top:12px"><div class="lbl">【原文】</div><p style="font-size:20px;font-weight:700;margin-top:8px;line-height:1.45">独立于主系统；查错误与进展。</p></div>
-    <div style="border-top:4px solid var(--red);padding-top:12px"><div class="lbl red">【实践】</div><p style="font-size:20px;font-weight:700;margin-top:8px;line-height:1.45">观察员每天审查、只建议，不自动改架构。</p></div>
-  </div>
-  <div class="rv" style="--d:3;border:3px solid var(--ink);padding:22px 24px;background:#fff">
-    <div class="lbl red">【讨论】安心剂风险</div>
-    <p style="font-size:20px;font-weight:800;line-height:1.4;margin-top:10px">若去掉几乎不变 → Token/误报白付。<br><span style="color:var(--g1);font-size:18px">监督必须证明独立贡献。</span></p>
-  </div>
-</div>
-
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span></div>
-<div class="notes">记忆消融实验设计也适用：组件必须证明独立贡献。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>14</b>实验</span></div>
+<h2 class="ttl rv">靠 prompt 让模型“记得委派”，不太靠得住</h2>
+<div class="cols" style="top:450px"><div class="rv" style="grid-column:span 6"><div class="num" style="font-size:200px">0<span style="font-size:90px"> / 5</span></div><p class="lede" style="margin-top:24px">中性 prompt：5 次里一次都没叫子 agent，全自己干。</p></div>
+<div class="rv" style="--d:2;grid-column:span 6"><div class="num red" style="font-size:200px">4<span style="font-size:90px"> / 5</span></div><p class="lede" style="margin-top:24px">写明「优先委派」：还是有 1 次模型觉得活小，自己上了，结果拖出长尾。</p></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">这就是表里 p95 一直在 29 分钟左右的原因。
+所以他们的思路是：该不该委派、该不该出声，尽量用系统结构定下来，而不是寄希望于 prompt 里一句话。
+另一面：Super-agent 读缓存的 token 是单会话的好几倍，是在用 token 换更短、更稳的完成时间。</div>
 </section>
-<section class="slide" data-title="Hive" id="s15">
+<section class="slide" data-title="开源原型里，能看到更落地的做法" id="s15">
 <div class="rule"></div>
-
-
-<div class="meta"><span><b>15</b>我们</span><span></span><span></span><span class="r">【实践】长期 Orchestrator</span></div>
-<div class="abs rv" style="--d:0;left:96px;top:210px;right:96px">
-  <h2 class="t3">Hive：Orchestrator 会拆解、验收、用 Team Protocol 协作</h2>
-</div>
-<div class="abs" style="left:96px;top:320px;right:96px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
-  <div class="rv" style="--d:1;border:3px solid var(--ink);padding:20px;background:var(--ink);color:#fff"><div class="lbl" style="color:#8d8a83">入口</div><div style="font-size:24px;font-weight:900;margin-top:8px">Orchestrator</div><p style="margin-top:8px;font-size:16px;color:#c9c6bf">规划 · 拆解 · 选人 · 验收</p></div>
-  <div class="rv" style="--d:2;border:3px solid var(--ink);padding:20px"><div class="lbl">Workers</div><div style="font-size:24px;font-weight:900;margin-top:8px">异构 CLI</div><p class="small" style="margin-top:8px;color:var(--ink)">Claude / Codex / Gemini…</p></div>
-  <div class="rv" style="--d:3;border:3px solid var(--ink);padding:20px"><div class="lbl">状态</div><div style="font-size:24px;font-weight:900;margin-top:8px">tasks.md</div><p class="small" style="margin-top:8px;color:var(--ink)">+ SQLite · team send</p></div>
-  <div class="rv" style="--d:4;border:3px solid var(--red);padding:20px"><div class="lbl red">驱动</div><div style="font-size:24px;font-weight:900;margin-top:8px">任务为主</div><p class="small" style="margin-top:8px;color:var(--ink)">事件 / 云端仍可加</p></div>
-</div>
-<div class="abs rv" style="--d:5;left:96px;right:96px;top:620px;display:grid;grid-template-columns:1fr 1fr;gap:40px;border-top:6px solid var(--ink);padding-top:22px">
-  <p style="font-size:22px;font-weight:800;line-height:1.45"><span class="red">【同构】</span>一对多、并行、共享任务状态——与 Super-agent 调度层高度相似。</p>
-  <p style="font-size:22px;font-weight:800;line-height:1.45"><span class="red">【差别】</span>控制平面是长期协调 Agent，不是短时事件 Router；默认不是无人值守 Runtime。</p>
-</div>
-
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span><a class="go" href="detail/arch-ours.html">并排同构图 · Hive ↔ bot</a></div>
-<div class="notes">对谈：给 Hive 加云端 Runtime、Webhook、事件-任务关联、恢复与授权 → 功能目标接近 Super-agent。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>15</b>原型</span></div>
+<h2 class="ttl rv">开源原型里，能看到更落地的做法</h2>
+<div class="cols" style="top:470px"><div class="rv pt" style="--d:2;grid-column:span 4"><div class="pk">一事一工单</div><p>每个工单一个 Worker 会话和独立工作目录；面板上只显示需要人处理的事</p></div><div class="rv pt" style="--d:3;grid-column:span 4"><div class="pk">权限不听聊天的</div><p>白名单、规则由宿主程序强制；消息和文档只是参考，改不了权限</p></div><div class="rv pt" style="--d:4;grid-column:span 4"><div class="pk">主动先只记录</div><p>想让它主动干活，要团队先写规则，并从「只记下会做什么」开始</p></div></div><p class="abs small rv" style="--d:6;left:96px;top:850px;width:1700px;font-size:24px">它的说话原则也很朴素：尽量少占人的注意力；只在有人必须行动或能用上结果时开口；一次只问一个具体问题。</p>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">原型 dsh-superagent-prototype，MIT，面向单个 GitHub 仓库的主动 coding agent，可选接飞书。概念有 Ticket（工单）、Executor、Mandate、SQLite 账本。
+工单结束后仍保留订阅，人再说话就按原来的授权复活；为了看上下文而订阅，不会因此获得权限。</div>
 </section>
-<section class="slide" data-title="bot团队" id="s16">
+<section class="slide" data-title="也要看清楚：这还是一份研究代码" id="s16">
 <div class="rule"></div>
-
-<div class="meta"><span><b>16</b>我们</span><span></span><span></span><span class="r">大内总管同构</span></div>
-<div class="abs" style="left:96px;top:220px;right:96px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
-  <div class="rv" style="--d:0;background:var(--ink);color:#fff;padding:24px"><div class="lbl" style="color:#8d8a83">ROUTER</div><div style="font-size:28px;font-weight:900;margin-top:8px">大内总管</div><p style="margin-top:10px;font-size:17px;color:#c9c6bf">只路由，不研究不写码</p></div>
-  <div class="rv" style="--d:1;border:3px solid var(--ink);padding:24px"><div class="lbl">WORKERS</div><div style="font-size:28px;font-weight:900;margin-top:8px">职能 bot</div><p class="small" style="margin-top:10px;color:var(--ink)">仓库 / 邮件 / 研究…</p></div>
-  <div class="rv" style="--d:2;border:3px solid var(--ink);padding:24px"><div class="lbl">STATE</div><div style="font-size:28px;font-weight:900;margin-top:8px">共享文件夹</div><p class="small" style="margin-top:10px;color:var(--ink)">交接写文件，不走聊天</p></div>
-  <div class="rv" style="--d:3;border:3px solid var(--red);padding:24px"><div class="lbl red">GATE</div><div style="font-size:28px;font-weight:900;margin-top:8px">审批关卡</div><p class="small" style="margin-top:10px;color:var(--ink)">对外动作停下等你</p></div>
-</div>
-<div class="abs rv" style="--d:4;left:96px;right:96px;top:520px">
-  <p style="font-size:26px;font-weight:800;line-height:1.45"><span class="red">【实践差距】</span>直送 / 强 Watchdog / 事件主动性仍弱。骨架像，肌肉还在长。</p>
-  <div style="margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
-    <div style="border-top:4px solid var(--ink);padding-top:14px"><div class="lbl">已对齐</div><p style="font-size:20px;font-weight:700;margin-top:8px;line-height:1.4">唯一入口 · 职能隔离 · 文件交接 · 对外审批</p></div>
-    <div style="border-top:4px solid var(--red);padding-top:14px"><div class="lbl red">仍弱</div><p style="font-size:20px;font-weight:700;margin-top:8px;line-height:1.4">Pass-through · 独立看门狗 · 环境 Trigger 一等公民</p></div>
-    <div style="border-top:4px solid var(--ink);padding-top:14px"><div class="lbl">权限红线</div><p style="font-size:20px;font-weight:700;margin-top:8px;line-height:1.4">已登录 ≠ 被允许自动做；主动性受审批约束</p></div>
-  </div>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span></div>
-<div class="notes">观察员 ≈ Watchdog（类比，不是等价实现）。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>16</b>边界</span></div>
+<h2 class="ttl rv">也要看清楚：这还是一份研究代码</h2>
+<div class="cols" style="top:480px"><div class="rv pt" style="--d:2;grid-column:span 4"><div class="pk">不是正式产品</div><p>文章和原型都这么说；原型和内部版本、文章也不完全一致</p></div><div class="rv pt" style="--d:3;grid-column:span 4"><div class="pk">权限给得很宽</div><p>两个预设都以完全访问权限、用你的系统用户运行，文档建议用专门账号隔离</p></div><div class="rv pt" style="--d:4;grid-column:span 4"><div class="pk">安全是公开的难题</div><p>一直在线、主动、接群聊输入，提示注入的面变大了</p></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">原文自己把安全列为开放问题：云端循环被注入，可能波及所有连着的设备；他们提到 agent 需要「能用凭证但看不到凭证」。
+第三方评论也提到：main Session 能改团队的 skills 和策略，靠的是 prompt 里要求它先等人确认。</div>
 </section>
-<section class="slide" data-title="同构表" id="s17">
+<section class="slide" data-title="我们自己也在用一个小 Agent 团队，踩过几个类似的坑" id="s17">
 <div class="rule"></div>
-
-<div class="meta"><span><b>17</b>我们</span><span></span><span></span><span class="r">骨架相同 · 控制平面不同</span></div>
-<div class="abs rv" style="--d:0;left:96px;top:200px;right:96px">
-<table style="width:100%;border-collapse:collapse;font-size:22px">
-<tr style="border-bottom:6px solid var(--ink)"><th style="text-align:left;padding:12px 8px;width:22%">能力</th><th style="text-align:left;padding:12px 8px">DeepSeek</th><th style="text-align:left;padding:12px 8px">Hive</th><th style="text-align:left;padding:12px 8px">bot 团队</th></tr>
-<tr style="border-bottom:2px solid var(--ink)"><td style="padding:14px 8px;font-weight:800">一对多</td><td>Router/Worker</td><td>Orchestrator/CLI</td><td>大内总管/bots</td></tr>
-<tr style="border-bottom:2px solid var(--ink)"><td style="padding:14px 8px;font-weight:800">状态</td><td>领域对象+事件</td><td>tasks.md/SQLite</td><td>共享文件夹</td></tr>
-<tr style="border-bottom:2px solid var(--ink)"><td style="padding:14px 8px;font-weight:800">控制平面</td><td class="red" style="font-weight:800">短时事件路由</td><td class="red" style="font-weight:800">长期协调 Agent</td><td>轻路由+审批</td></tr>
-<tr style="border-bottom:2px solid var(--ink)"><td style="padding:14px 8px;font-weight:800">驱动</td><td>事件一等公民</td><td>任务为主</td><td>聊天+弱 routine</td></tr>
-<tr><td style="padding:14px 8px;font-weight:800">缺口</td><td>产品化/验证</td><td>云端/事件/授权</td><td>直送/看门狗/主动</td></tr>
-</table>
-</div>
-<div class="abs rv" style="--d:2;left:96px;right:96px;top:720px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px">
-  <div style="border-top:4px solid var(--ink);padding-top:10px;font-size:18px;font-weight:800;line-height:1.4"><span class="red">【原文】</span>短时 Router + 领域对象</div>
-  <div style="border-top:4px solid var(--ink);padding-top:10px;font-size:18px;font-weight:800;line-height:1.4"><span class="red">【实践】</span>Hive 长期协调 · bot 轻路由+审批</div>
-  <div style="border-top:4px solid var(--red);padding-top:10px;font-size:18px;font-weight:800;line-height:1.4"><span class="red">【读表】</span>差距行才是下一阶段工程清单</div>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span><a class="go" href="detail/architecture-in-motion.html#step=8">第 8 步变形</a><a class="go" href="detail/arch-ours.html" style="margin-left:12px">Hive↔bot 并排</a></div>
-<div class="notes">旧 PPT 最有价值处：把 DeepSeek、dots、Hive、bot 团队放进同一演进框架——保留并加深，不是删掉。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>17</b>我们的尝试</span></div>
+<h2 class="ttl rv">我们自己也在用一个小 Agent 团队，踩过几个类似的坑</h2>
+<div class="cols" style="top:480px"><div class="rv pt" style="--d:2;grid-column:span 4"><div class="pk">一个入口</div><p>一个负责接话的 bot，把活分给几个各管一摊的 bot；它有时忍不住想自己动手</p></div><div class="rv pt" style="--d:3;grid-column:span 4"><div class="pk">交接写文件</div><p>靠聊天转述容易漏前提，后来改成把结果写成文件给下一个人读</p></div><div class="rv pt" style="--d:4;grid-column:span 4"><div class="pk">对外先停下</div><p>发消息、改线上之前都停下来等人点头，慢一点，但心里有底</p></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">这页只是举个身边的例子，规模很小，也没有做过像样的对照实验。
+还没解决的：一条不带上下文的新消息到底该归哪件事；值班式的检查目前只给建议，还说不清它到底帮了多少。</div>
 </section>
-<section class="slide" data-title="双重上下文" id="s18">
+<section class="slide" data-title="有几件小事，现在就可以试" id="s18">
 <div class="rule"></div>
-
-<div class="meta"><span><b>18</b>争论</span><span></span><span></span><span class="r">人侧 ↔ Agent 侧</span></div>
-<div class="abs" style="left:96px;top:200px;right:96px;display:grid;grid-template-columns:1fr 1fr;gap:36px">
-  <div class="rv" style="--d:0;border:3px solid var(--ink);padding:26px 28px;min-height:280px">
-    <div class="lbl">人侧</div>
-    <p style="font-size:26px;font-weight:900;margin-top:14px;line-height:1.4">我在想哪个项目？<br>上次拍板的前提还在吗？</p>
-    <p class="small" style="margin-top:18px;color:var(--ink);font-size:18px">入口合并省窗口；装载业务上下文的成本仍在。</p>
-  </div>
-  <div class="rv" style="--d:1;border:3px solid var(--red);padding:26px 28px;min-height:280px">
-    <div class="lbl red">Agent 侧</div>
-    <p style="font-size:26px;font-weight:900;margin-top:14px;line-height:1.4">Session 隔离丢了哪些隐性知识？<br>交接有没有传够？</p>
-    <p class="small" style="margin-top:18px;color:var(--ink);font-size:18px">写入成功 ≠ 后续受益。检索错、理解错、过时都会发生。</p>
-  </div>
-</div>
-<div class="abs rv" style="--d:2;left:96px;right:96px;top:640px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
-  <div style="border-top:5px solid var(--ink);padding-top:12px"><div class="lbl">介入成本</div><p style="font-size:20px;font-weight:800;margin-top:8px;line-height:1.35">人何时被叫来？<br>叫对了吗？</p></div>
-  <div style="border-top:5px solid var(--ink);padding-top:12px"><div class="lbl">迁移成本</div><p style="font-size:20px;font-weight:800;margin-top:8px;line-height:1.35">换 Session / 换 Worker<br>丢了什么？</p></div>
-  <div style="border-top:5px solid var(--red);padding-top:12px"><div class="lbl red">验证成本</div><p style="font-size:20px;font-weight:800;margin-top:8px;line-height:1.35">记忆写入成功 ≠ 后续受益</p></div>
-</div>
-<div class="abs rv" style="--d:3;left:96px;right:96px;top:820px">
-  <p style="font-size:22px;font-weight:800"><span class="red">【倾向】</span>三侧一起优化；只压入口窗口，认知负担会换地方出现。</p>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span><a class="go" href="detail/cache.html">信息图：缓存 vs 双重成本</a></div>
-<div class="notes">双重上下文是对谈里反复出现的镜像结构。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>18</b>可以先试</span></div>
+<h2 class="ttl rv">有几件小事，现在就可以试</h2>
+<div class="abs" style="left:96px;top:420px;width:1728px"><div class="li rv" style="--d:1"><b>1</b><span>负责接话的 Agent 不给它干活的工具，只让它派活</span></div><div class="li rv" style="--d:2"><b>2</b><span>后续消息按话题直接送到在做的人手里</span></div><div class="li rv" style="--d:3"><b>3</b><span>IM 回复定个长度上限，比如 100 词</span></div><div class="li rv" style="--d:4"><b>4</b><span>想让 Agent 主动做事，先从“只记录、不动手”开始</span></div><div class="li rv" style="--d:5"><b>5</b><span>要它守的规矩，尽量写进代码和权限，而不只是 prompt</span></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">这几条都来自文章和原型，成本都不高，也容易撤回。</div>
 </section>
-<section class="slide" data-title="评价方法" id="s19">
+<section class="slide" data-title="留给大家的几个问题" id="s19">
 <div class="rule"></div>
-
-<div class="meta"><span><b>19</b>方法</span><span></span><span></span><span class="r">缺的是验证，不是手段</span></div>
-<div class="abs" style="left:96px;top:220px;right:96px;display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
-  <div class="rv" style="--d:0;border-top:6px solid var(--red);padding-top:18px"><div class="t3" style="font-size:34px">目标</div><p style="font-size:20px;font-weight:700;margin-top:12px;line-height:1.45">要优化的到底是时间、质量、成本，还是人的介入次数？</p></div>
-  <div class="rv" style="--d:1;border-top:6px solid var(--ink);padding-top:18px"><div class="t3" style="font-size:34px">成本</div><p style="font-size:20px;font-weight:700;margin-top:12px;line-height:1.45">Token、延迟、工程复杂度、误报、人工纠正</p></div>
-  <div class="rv" style="--d:2;border-top:6px solid var(--ink);padding-top:18px"><div class="t3" style="font-size:34px">效果</div><p style="font-size:20px;font-weight:700;margin-top:12px;line-height:1.45">成功率、召回、过期记忆使用率、有效产出</p></div>
-  <div class="rv" style="--d:3;border-top:6px solid var(--ink);padding-top:18px"><div class="t3" style="font-size:34px">边界</div><p style="font-size:20px;font-weight:700;margin-top:12px;line-height:1.45">合成负载？真实依赖链？重复实验了吗？</p></div>
-</div>
-<div class="abs rv" style="--d:4;left:96px;right:96px;top:520px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
-  <div style="border:3px solid var(--ink);padding:18px 20px;background:#fff"><div class="lbl">例 · 记忆消融</div><p style="font-size:18px;font-weight:700;margin-top:10px;line-height:1.4">A–E 对照：有/无记忆、错记忆、过期记忆——测有效产出差。</p></div>
-  <div style="border:3px solid var(--ink);padding:18px 20px;background:#fff"><div class="lbl">例 · Watchdog</div><p style="font-size:18px;font-weight:700;margin-top:10px;line-height:1.4">去掉后成功率与人工纠正量；证明独立贡献，不是安心剂。</p></div>
-  <div style="border:3px solid var(--red);padding:18px 20px;background:#fff"><div class="lbl red">例 · 轻/强 Router</div><p style="font-size:18px;font-weight:700;margin-top:10px;line-height:1.4">冲突率 × 直接问答占比下的净收益与串行瓶颈。</p></div>
-</div>
-<div class="abs rv" style="--d:5;left:96px;right:96px;top:740px;border-top:4px solid var(--ink);padding-top:18px">
-  <p style="font-size:24px;font-weight:900;line-height:1.4">【共识】识别问题 → 枚举方案 → 实验检验价值与成本。<span style="font-size:20px;font-weight:700;color:var(--g1)"> 复杂系统最容易堆「看似合理」却无净收益证明的机制。</span></p>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span></div>
-<div class="notes">记忆消融表 A–E、去掉 Watchdog 的对照，是方法示例。评估能力本身可能是被低估的瓶颈。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="meta"><span><b>19</b>讨论</span></div>
+<h2 class="ttl rv">留给大家的几个问题</h2>
+<div class="abs" style="left:96px;top:420px;width:1728px"><div class="li q rv" style="--d:1"><b>?</b><span>入口合成一个之后，人在几件事之间切换的负担，真的变小了吗？</span></div><div class="li q rv" style="--d:2"><b>?</b><span>前台用轻模型够不够？用户直接提问、几个 Worker 冲突时，谁来拍板？</span></div><div class="li q rv" style="--d:3"><b>?</b><span>实验是合成负载。换成我们真实的群聊和 PR，结论还成立吗？</span></div><div class="li q rv" style="--d:4"><b>?</b><span>不再有“会话”之后，我们怎么中途看进度、插手、接管？</span></div><div class="li q rv" style="--d:5"><b>?</b><span>Agent 一直在线、会主动做事，权限和安全的边界划在哪？</span></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">前两条是听完文章很自然会冒出来的疑问；第 3 条文章自己也提醒了；后两条是原文列的开放问题。欢迎随便聊。</div>
 </section>
-<section class="slide" data-title="控制成本" id="s20">
+<section class="slide" data-title="封面" id="s20">
 <div class="rule"></div>
-
-<div class="meta"><span><b>20</b>金句</span><span></span><span></span><span class="r">【对谈】收束问题</span></div>
-<div class="abs rv" style="--d:0;left:96px;top:200px;right:96px">
-  <h2 class="t1" style="font-size:48px;line-height:1.2">一个人拥有十个、一百个 Agent 时，更该优化的是<br><span class="red">协作效率</span>，还是 <span class="red">人对整系统的控制成本</span>？</h2>
-</div>
-<div class="abs" style="left:96px;right:96px;top:420px;display:grid;grid-template-columns:1fr 1fr;gap:28px">
-  <div class="rv" style="--d:1;border:3px solid var(--ink);padding:26px 28px;background:#fff">
-    <div class="lbl">协作效率侧</div>
-    <p style="font-size:22px;font-weight:800;margin-top:12px;line-height:1.4">吞吐 · 并行 · 少等人<br>Pass-through · 直送 · 异构 Worker</p>
-    <p class="small" style="margin-top:16px;font-size:18px;color:var(--g1)">风险：吞吐上升 → 审核与对齐压力更大</p>
-  </div>
-  <div class="rv" style="--d:2;border:3px solid var(--red);padding:26px 28px;background:#fff">
-    <div class="lbl red">控制成本侧</div>
-    <p style="font-size:22px;font-weight:800;margin-top:12px;line-height:1.4">可见 · 可停 · 可追责<br>审批关卡 · 观察员 · 最小权限</p>
-    <p class="small" style="margin-top:16px;font-size:18px;color:var(--g1)">风险：控制过重 → 协作效率被拖死</p>
-  </div>
-</div>
-<div class="abs rv" style="--d:3;left:96px;right:96px;top:760px">
-  <p style="font-size:22px;font-weight:800;line-height:1.4"><span class="red">【对谈收束】</span>执行层持续了，人的认知负担不会自动消失。旧 PPT 真正该被追问的，是这一对张力，而不是「能不能一对多」。</p>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span></div>
-<div class="notes">旧 PPT 评审里助手抛出的最大问题——我们把它升格为独立一页，而不是备注里的一句。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
+<div class="abs" style="left:96px;top:300px;right:96px"><h1 class="t1 rv">谢谢，欢迎讨论</h1>
+<div class="rv small" style="--d:3;margin-top:64px;font-size:24px;line-height:1.9;color:var(--ink)">原文：DeepSeek Harness《Exploring Super-agent Design: Towards a More Autonomous Agent System》，2026-10-31<br>开源原型：github.com/deepseek-ai/dsh-superagent-prototype（MIT，研究用途）</div></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">资料都在这两个链接里。原型的 docs 目录写得很清楚，推荐看 000-philosophy。</div>
 </section>
-<section class="slide" data-title="组织信息缺口" id="s21">
-<div class="rule"></div>
-
-
-<div class="meta"><span><b>21</b>组织</span><span></span><span></span><span class="r">数字化 ≠ 机器可理解</span></div>
-<div class="abs rv" style="--d:0;left:96px;top:210px;width:1100px">
-  <h2 class="t2" style="font-size:44px">群聊、会议、文档只是组织运行信息的一部分</h2>
-  <p class="lede" style="margin-top:20px;font-size:24px">大量背景、决策与进展仍散落在个人工作过程与默会知识里。</p>
-</div>
-<div class="abs rv" style="--d:2;left:96px;right:96px;top:480px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
-  <div style="border:3px solid var(--ink);padding:22px"><div class="lbl">拿得到</div><p style="font-size:22px;font-weight:800;margin-top:10px;line-height:1.4">公开频道、文档、Issue、纪要</p></div>
-  <div style="border:3px solid var(--red);padding:22px"><div class="lbl red">常缺</div><p style="font-size:22px;font-weight:800;margin-top:10px;line-height:1.4">私聊、口头决定、未归档调整</p></div>
-  <div style="border:3px solid var(--ink);padding:22px"><div class="lbl">不该默认共享</div><p style="font-size:22px;font-weight:800;margin-top:10px;line-height:1.4">个人活动与隐私边界</p></div>
-</div>
-<div class="abs rv" style="--d:4;left:96px;right:96px;top:720px;border-top:6px solid var(--ink);padding-top:18px">
-  <p style="font-size:24px;font-weight:800"><span class="red">【讨论】</span>真正昂贵的不是发消息，是阅读、理解、关联、决定是否行动。</p>
-</div>
-
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span><a class="go" href="detail/org-state.html">5 步：组织状态动效</a></div>
-<div class="notes">V11 新增专题。真正昂贵的不是发消息，是阅读、理解、关联、决定是否行动。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
-</section>
-<section class="slide" data-title="工作现场" id="s22">
-<div class="rule"></div>
-
-
-<div class="meta"><span><b>22</b>组织</span><span></span><span></span><span class="r">【探索】macOS 工作记录</span></div>
-<div class="abs rv" style="--d:0;left:96px;top:210px;right:96px">
-  <h2 class="t3">无障碍树 → 候选事件；缺内容则截图兜底</h2>
-</div>
-<div class="abs" style="left:96px;top:320px;right:96px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
-  <div class="rv" style="--d:1;border-top:6px solid var(--ink);padding-top:14px"><div class="lbl">01</div><div style="font-size:26px;font-weight:900;margin-top:8px">无障碍树</div><p class="small" style="margin-top:8px;color:var(--ink)">前台 App · 控件 · 输入框</p></div>
-  <div class="rv" style="--d:2;border-top:6px solid var(--ink);padding-top:14px"><div class="lbl">02</div><div style="font-size:26px;font-weight:900;margin-top:8px">截图兜底</div><p class="small" style="margin-top:8px;color:var(--ink)">树读不到时再视觉</p></div>
-  <div class="rv" style="--d:3;border-top:6px solid var(--ink);padding-top:14px"><div class="lbl">03</div><div style="font-size:26px;font-weight:900;margin-top:8px">候选事件</div><p class="small" style="margin-top:8px;color:var(--ink)">活动摘要 · 待核实</p></div>
-  <div class="rv" style="--d:4;border-top:6px solid var(--red);padding-top:14px"><div class="lbl red">04</div><div style="font-size:26px;font-weight:900;margin-top:8px">授权共享</div><p class="small" style="margin-top:8px;color:var(--ink)">默认不共享 · 用户选择</p></div>
-</div>
-<div class="abs rv" style="--d:5;left:96px;right:96px;top:620px;border-left:10px solid var(--red);padding-left:28px">
-  <p style="font-size:28px;font-weight:900;line-height:1.35">【红线】工作活动 ≠ 实际产出。<br>个人信息不应默认共享给组织。</p>
-  <p style="margin-top:14px;font-size:20px;font-weight:700;color:var(--g1)">【未验证】从工作记录推断项目风险——需真实场景，不是架构想象。</p>
-</div>
-
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span><a class="go" href="detail/org-state.html#step=3">动效：工作现场步骤</a></div>
-<div class="notes">V11 明确标注探索。PPT 里必须保留未验证与隐私边界，避免写成已完成能力。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
-</section>
-<section class="slide" data-title="A2A" id="s23">
-<div class="rule"></div>
-
-<div class="meta"><span><b>23</b>组织</span><span></span><span></span><span class="r">共享状态层倾向</span></div>
-<div class="abs" style="left:96px;top:210px;right:96px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
-  <div class="rv" style="--d:0;border:3px solid var(--ink);padding:24px"><div class="lbl">模式 A</div><div style="font-size:28px;font-weight:900;margin-top:10px">中心化组织 Agent</div><p class="small" style="margin-top:12px;color:var(--ink)">全局集中；Router 瓶颈与权限更难</p></div>
-  <div class="rv" style="--d:1;border:3px solid var(--ink);padding:24px"><div class="lbl">模式 B</div><div style="font-size:28px;font-weight:900;margin-top:10px">分布式个人 Agent</div><p class="small" style="margin-top:12px;color:var(--ink)">边界清晰；全局状态与冲突协商贵</p></div>
-  <div class="rv" style="--d:2;border:3px solid var(--red);padding:24px"><div class="lbl red">模式 C · 值得探</div><div style="font-size:28px;font-weight:900;margin-top:10px">分层混合</div><p class="small" style="margin-top:12px;color:var(--ink)">个人 / 项目 / 组织分层；勿机械复制部门层级</p></div>
-</div>
-<div class="abs rv" style="--d:4;left:96px;right:96px;top:620px">
-  <p style="font-size:26px;font-weight:800;line-height:1.45"><span class="red">【倾向】</span>中心不必是「一个全能组织 Super-agent」，而是一套带权限的共享组织状态，让各类 Agent 围绕它协作。<br><span style="font-size:20px;color:var(--g1)">观察 ≠ 参与；知道发生了什么 ≠ 有权决定做什么。</span><br><span style="font-size:18px;color:var(--g1)">【未验证】三种模式的净收益——点进对照页看结构示意，不把讨论当结论。</span></p>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span><a class="go" href="detail/org-modes.html">对照：共享状态 vs 中心大脑</a></div>
-<div class="notes">对谈：从「一人管十 Agent」扩展到「人与 Agent 共同组成的组织如何理解并协调自己」。开放问题，不下最终架构结论。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
-</section>
-<section class="slide" data-title="安全与主动性" id="s24">
-<div class="rule"></div>
-
-
-<div class="meta"><span><b>24</b>边界</span><span></span><span></span><span class="r">常驻 + 主动 = 攻击面</span></div>
-<div class="abs rv" style="--d:0;left:96px;top:220px;right:96px">
-  <h2 class="t2" style="font-size:48px">主动性必须受权限约束</h2>
-  <p class="lede" style="margin-top:22px;font-size:24px">事件驱动让 Agent 不必等你键入；也意味着注入、误触发、越权执行的面更大。</p>
-</div>
-<div class="abs" style="left:96px;top:480px;right:96px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
-  <div class="rv" style="--d:1;border-top:4px solid var(--ink);padding-top:14px"><div class="lbl">白名单</div><p style="font-size:20px;font-weight:800;margin-top:8px;line-height:1.4">来源与动作先过滤</p></div>
-  <div class="rv" style="--d:2;border-top:4px solid var(--ink);padding-top:14px"><div class="lbl">审批关卡</div><p style="font-size:20px;font-weight:800;margin-top:8px;line-height:1.4">对外动作停下等你</p></div>
-  <div class="rv" style="--d:3;border-top:4px solid var(--ink);padding-top:14px"><div class="lbl">最小权限</div><p style="font-size:20px;font-weight:800;margin-top:8px;line-height:1.4">工具面按任务授予</p></div>
-  <div class="rv" style="--d:4;border-top:4px solid var(--red);padding-top:14px"><div class="lbl red">红线</div><p style="font-size:20px;font-weight:800;margin-top:8px;line-height:1.4">已登录 ≠ 被允许自动做</p></div>
-</div>
-<div class="abs rv" style="--d:5;left:96px;right:96px;top:720px">
-  <p style="font-size:24px;font-weight:800"><span class="red">【倾向】</span>安全机制不是附加功能，是主动性能成立的前提。</p>
-</div>
-
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span></div>
-<div class="notes">bot 团队审批关卡是实践对照。原文开放问题亦含跨 Agent 安全协作。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
-</section>
-<section class="slide" data-title="开放与实验" id="s25">
-<div class="rule"></div>
-
-<div class="meta"><span><b>25</b>开放</span><span></span><span></span><span class="r">原文五问 + 我们的回放</span></div>
-<div class="abs rv" style="--d:0;left:96px;top:200px;right:96px;display:grid;grid-template-columns:1fr 1fr;gap:18px 48px;font-size:22px;font-weight:700;line-height:1.45">
-  <div style="border-top:3px solid var(--ink);padding-top:12px">Router 如何横向扩展？<div class="small" style="margin-top:6px;font-weight:600">批处理能撑多久？何时该分片？</div></div>
-  <div style="border-top:3px solid var(--ink);padding-top:12px">Worker 直连后，全局连续性谁维护？<div class="small" style="margin-top:6px;font-weight:600">单一 Router 保证的能力如何迁移？</div></div>
-  <div style="border-top:3px solid var(--ink);padding-top:12px">长期记忆如何真的提升后续表现？<div class="small" style="margin-top:6px;font-weight:600">写入成功 ≠ 召回正确 ≠ 任务受益</div></div>
-  <div style="border-top:3px solid var(--ink);padding-top:12px">无 Session 交互的产品形态？<div class="small" style="margin-top:6px;font-weight:600">人如何在非聊天 UI 里监督与授权？</div></div>
-  <div style="border-top:3px solid var(--ink);padding-top:12px">跨 Agent 安全协作边界？<div class="small" style="margin-top:6px;font-weight:600">观察 ≠ 参与；权限与责任如何绑定？</div></div>
-  <div style="border-top:3px solid var(--red);padding-top:12px;color:var(--red)">我们的加问：回放测判断层——轻/强 Router、冲突上浮率、认知切换成本<div class="small" style="margin-top:6px;font-weight:600;color:var(--g1)">用同一批任务回放，只改判断层与 harness</div></div>
-</div>
-<div class="abs rv" style="--d:2;left:96px;right:96px;top:720px;border-top:6px solid var(--ink);padding-top:18px">
-  <p style="font-size:22px;font-weight:800;line-height:1.45"><span class="red">【方法】</span>开放问题不是结束语——每一问都应能落成对照实验的一列变量。</p>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">讨论整理 · V11 研究库</span></div>
-<div class="notes">第八节开放问题值得单独读。我们的贡献是把「评价方法」和「控制成本」补进去。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
-</section>
-<section class="slide" data-title="五点带走" id="s26">
-<div class="rule"></div>
-
-<div class="meta"><span><b>26</b>带走</span><span></span><span></span><span class="r">不是口号，是可争论的主张</span></div>
-<div class="abs" style="left:96px;top:200px;right:96px">
-  <ol style="list-style:none;counter-reset:n;display:grid;gap:18px">
-    <li class="rv" style="--d:0;display:grid;grid-template-columns:70px 1fr;gap:20px;align-items:start;font-size:26px;font-weight:800;line-height:1.35"><span class="red" style="font-size:36px;font-weight:900">1</span><span>注意力是真瓶颈；但<strong>入口管理 ≠ 认知切换</strong></span></li>
-    <li class="rv" style="--d:1;display:grid;grid-template-columns:70px 1fr;gap:20px;align-items:start;font-size:26px;font-weight:800;line-height:1.35"><span class="red" style="font-size:36px;font-weight:900">2</span><span>Super-agent 是 <strong>Runtime 工程整合</strong>，不必神化成新范式</span></li>
-    <li class="rv" style="--d:2;display:grid;grid-template-columns:70px 1fr;gap:20px;align-items:start;font-size:26px;font-weight:800;line-height:1.35"><span class="red" style="font-size:36px;font-weight:900">3</span><span>轻 Router 靠 harness；我们更看好<strong>强判断 + 克制职责</strong></span></li>
-    <li class="rv" style="--d:3;display:grid;grid-template-columns:70px 1fr;gap:20px;align-items:start;font-size:26px;font-weight:800;line-height:1.35"><span class="red" style="font-size:36px;font-weight:900">4</span><span>Hive / bot / DeepSeek <strong>骨架同构</strong>；差距在事件、直送、监督与授权</span></li>
-    <li class="rv" style="--d:4;display:grid;grid-template-columns:70px 1fr;gap:20px;align-items:start;font-size:26px;font-weight:800;line-height:1.35"><span class="red" style="font-size:36px;font-weight:900">5</span><span>组织协作先补<strong>可理解状态与权限</strong>；再谈 A2A 协议与中心大脑</span></li>
-  </ol>
-</div>
-
-<div class="rule b"></div>
-<div class="foot"><span class="src">研究讨论稿 · 欢迎证伪</span></div>
-<div class="notes">收尾回到控制成本 vs 协作效率。感谢听众；欢迎用实验打脸我们的倾向。
-
-讲者补充：本页正文只放判断与张力；细节数据、实验条件、与 Hive/bot 的对照放在备注与 detail 页。按 N 切换备注。来源标签：【原文】【原型】【讨论】【实践】【推断】【访谈整理】【未验证】。</div>
-</section>
-
-</div>
-<script src="assets/deck.js"></script>
-</body></html>
+</div><script src="assets/deck.js"></script></body></html>

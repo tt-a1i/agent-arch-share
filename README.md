@@ -1,6 +1,6 @@
-# Agent 架构分享：DeepSeek Super-agent、Personal Agent 与我们的实践
+# 一个人，怎么同时带好几个 Agent？
 
-v5 可交付候选：瑞士风格 HTML 演示稿。先讲 DeepSeek Super-agent 的架构（Router、任务会话、Thread 订阅与直送），再讲 personal agent，最后讲我们自己做的东西（Hive、bot 团队）和一些思考。主幻灯片里点进去可以看动画和架构详情页。
+面向团队的技术分享：读 DeepSeek《Super-agent》设计文和开源原型的笔记。从「人的注意力成了瓶颈」讲起，依次介绍前台/Worker 两层、两道过滤、按话题直送、异步工具、状态分离、Watchdog，再看他们的实验和原型，最后是可以先试的做法和留给大家的问题。
 
 **在线观看：** https://tt-a1i.github.io/agent-arch-share/
 

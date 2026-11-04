@@ -34,13 +34,12 @@
 <body><div class="stage">
  <div class="rule"></div>
  <div class="dhead">
-  <a class="back" data-def="8" href="../index.html#/8"><span>回到第 8 页</span></a>
+  <a class="back" data-def="6" href="../index.html#/6"><span>回到第 6 页</span></a>
   <h1>DeepSeek Super-agent · 分层结构图</h1>
-  <span class="tag">研究原型 · 点击节点 · 【原文】与【讨论】分层</span>
+  <span class="tag">点击任一节点看说明</span>
  </div>
  <div class="legend">
-  <span><i class="o"></i>【原文】设计主张</span>
-  <span><i class="d"></i>【讨论】质疑 / 倾向</span>
+  
   <span><i class="p"></i>虚线 = Watchdog 独立巡检</span>
   <span style="margin-left:auto;font-weight:800;color:var(--red)">红实线 = Thread 订阅直送（Router 可见不转发）</span>
  </div>
@@ -93,55 +92,53 @@
  <div class="box" data-id="cron" style="left:96px;top:568px;width:200px;height:88px"><div class="k">定时</div><div class="t">Trigger</div><div class="s">驱动巡检等</div></div>
 
  <!-- 02 Filter: left 360, w 220 -->
- <div class="box" data-id="fast" style="left:360px;top:268px;width:220px;height:88px"><div class="k">Fast Path</div><div class="t">代码规则</div><div class="s">来源 · 群 · 白名单</div><div class="tagrow"><span>原文</span></div></div>
- <div class="box" data-id="slow" style="left:360px;top:368px;width:220px;height:88px"><div class="k">Slow Path</div><div class="t">LLM 语义</div><div class="s">值得处理吗？</div><div class="tagrow"><span>原文</span></div></div>
+ <div class="box" data-id="fast" style="left:360px;top:268px;width:220px;height:88px"><div class="k">Fast Path</div><div class="t">代码规则</div><div class="s">来源 · 群 · 白名单</div></div>
+ <div class="box" data-id="slow" style="left:360px;top:368px;width:220px;height:88px"><div class="k">Slow Path</div><div class="t">LLM 语义</div><div class="s">值得处理吗？</div></div>
  <div class="box drop" data-id="drop" style="left:360px;top:468px;width:220px;height:88px"><div class="k">丢弃</div><div class="t">无关消息</div><div class="s">不进模型</div></div>
- <div class="box hot" data-id="thread" style="left:360px;top:604px;width:220px;height:88px"><div class="k">订阅表</div><div class="t">Thread</div><div class="s">多对多 · 代码直送</div><div class="tagrow"><span class="r">讨论 · 可见≠协调</span></div></div>
+ <div class="box hot" data-id="thread" style="left:360px;top:604px;width:220px;height:88px"><div class="k">订阅表</div><div class="t">Thread</div><div class="s">多对多 · 代码直送</div></div>
 
  <!-- 03 Router: left 650, w 260 -->
  <div class="box" data-id="you" style="left:650px;top:268px;width:260px;height:88px"><div class="k">人</div><div class="t">你</div><div class="s">只对 Router 说话 · IM≤100 词</div></div>
- <div class="box blk" data-id="router" style="left:650px;top:398px;width:260px;height:100px"><div class="k">常驻 · 通常轻量</div><div class="t">Router</div><div class="s">派发 · 协调 · 压缩对人</div><div class="tagrow"><span style="border-color:#8d8a83;color:#c9c6bf">原文 · 不拆解</span><span class="r" style="border-color:#ff8a78;color:#ff8a78">倾向 · 可更强</span></div></div>
- <div class="box" data-id="state" style="left:650px;top:540px;width:260px;height:100px"><div class="k">状态</div><div class="t">数据库</div><div class="s">ID+摘要 · 引用图 · 领域对象</div><div class="tagrow"><span>原文 · 存算分离</span></div></div>
+ <div class="box blk" data-id="router" style="left:650px;top:398px;width:260px;height:100px"><div class="k">常驻 · 通常轻量</div><div class="t">Router</div><div class="s">派发 · 协调 · 压缩对人</div></div>
+ <div class="box" data-id="state" style="left:650px;top:540px;width:260px;height:100px"><div class="k">状态</div><div class="t">数据库</div><div class="s">ID+摘要 · 引用图 · 领域对象</div></div>
 
  <!-- 04 Workers: left 980, w 260 -->
  <div class="box" data-id="wA" style="left:980px;top:268px;width:260px;height:100px"><div class="k">Worker</div><div class="t">任务会话 A</div><div class="s">最强模型 · 全工具</div></div>
  <div class="box" data-id="wB" style="left:980px;top:398px;width:260px;height:100px"><div class="k">Worker</div><div class="t">任务会话 B</div><div class="s">隔离并行</div></div>
- <div class="box" data-id="wC" style="left:980px;top:528px;width:260px;height:100px"><div class="k">Worker</div><div class="t">任务会话 C</div><div class="s">可订阅 Thread</div><div class="tagrow"><span class="r">讨论 · 隔离↔缓存</span></div></div>
+ <div class="box" data-id="wC" style="left:980px;top:528px;width:260px;height:100px"><div class="k">Worker</div><div class="t">任务会话 C</div><div class="s">可订阅 Thread</div></div>
 
  <!-- 05 Watchdog: left 1310 -->
- <div class="box hot" data-id="wd" style="left:1310px;top:268px;width:514px;height:100px"><div class="k">独立于主系统</div><div class="t">Watchdog</div><div class="s">定时驱动 · 卡住 / 跑偏</div><div class="tagrow"><span>原文</span><span class="r">≈ 观察员 · 有成本</span></div></div>
- <div class="box" data-id="daemon" style="left:1310px;top:398px;width:514px;height:100px"><div class="k">环境</div><div class="t">端上 daemon</div><div class="s">本机文件 · 工具 · BYOM · 计算/状态/环境分离</div><div class="tagrow"><span>原文</span></div></div>
- <div class="box dash" data-id="judge" style="left:1310px;top:528px;width:514px;height:100px"><div class="k">我们的总判</div><div class="t" style="font-size:18px">Runtime 整合，不是新范式</div><div class="s">一对多不新；难在长期可靠低成本</div><div class="tagrow"><span class="r">讨论</span></div></div>
-
+ <div class="box hot" data-id="wd" style="left:1310px;top:268px;width:514px;height:100px"><div class="k">独立于主系统</div><div class="t">Watchdog</div><div class="s">定时驱动 · 卡住 / 跑偏</div></div>
+ <div class="box" data-id="daemon" style="left:1310px;top:398px;width:514px;height:100px"><div class="k">环境</div><div class="t">端上 daemon</div><div class="s">本机文件 · 工具 · BYOM · 计算/状态/环境分离</div></div>
+ 
  <div id="panel">
   <div class="ttl" id="pt">点击节点</div>
-  <div class="body" id="pb">事件 → 过滤 → Router → Worker。红线 = Pass-through；虚线 = Watchdog。每个节点区分【原文】主张与【讨论】张力。</div>
+  <div class="body" id="pb">事件 → 过滤 → Router → Worker。红线 = Pass-through；虚线 = Watchdog。</div>
  </div>
 </div>
 <script src="../assets/detail.js"></script>
 <script>
 const N={
- im:{t:'IM 事件',b:'<b>【原文】</b>消息是事件，不是同步会话；人说完可走开。<b>【讨论】</b>执行持续了，审核负担未必下降。'},
- gh:{t:'GitHub',b:'<b>【原文】</b>PR/Issue/评论皆 Trigger；一个 PR = 一个 Thread。<b>【实践】</b>事件关联「恢复旧任务还是开新任务」仍是难点。'},
- mail:{t:'邮件',b:'<b>【原文】</b>异步渠道给结构化高密度输出。<b>【讨论】</b>密度高不等于人愿意读——压缩与授权仍要设计。'},
- cron:{t:'定时 Trigger',b:'<b>【原文】</b>定时消息驱动周期性工作（含 Watchdog）。<b>【讨论】</b>主动性前提是权限与白名单，不是默认可写。'},
- fast:{t:'Fast Path',b:'<b>【原文】</b>来源/群/白名单先挡；能用代码判断的不进模型。<b>【倾向】</b>轻 Router 能成立，往往因为判断空间已被规则压小。'},
- slow:{t:'Slow Path',b:'<b>【原文】</b>需语义判断才走 LLM。<b>【未验证】</b>慢路径误放/误杀率，在真实群聊噪声下如何。'},
- drop:{t:'丢弃',b:'<b>【原文】</b>无关消息不进模型、不花 token。<b>【讨论】</b>误丢高优先级 @ 会直接变成「系统装聋」。'},
- thread:{t:'Thread 订阅',b:'<b>【原文】</b>多对多订阅后代码直送；Router 可见不转发。<b>【讨论】</b>可见≠一致≠协调；冲突可能上浮压垮轻路由。'},
- you:{t:'你',b:'<b>【原文】</b>人只与 Router 交互；IM ≤100 词。<b>【讨论】</b>这是在保护注意力，不是展示能力——压缩可能丢掉前提。'},
- router:{t:'Router',b:'<b>【原文】</b>通常轻量、不持 Bash、只派发不拆解。<b>【倾向】</b>直接问答与冲突仲裁需要更强判断；能力可强，职责仍克制。'},
- state:{t:'状态库',b:'<b>【原文】</b>Thread/Ticket/Mandate/Assignment 等对象；Inline&Spill + Chain of Recall。<b>【实践】</b>状态独立于 Session，才谈得上跨设备续跑。'},
- wA:{t:'Worker A',b:'<b>【原文】</b>一任务一隔离 Session，强模型+全工具，不直接对人。<b>【质疑】</b>隔离换来干净，也切断隐性上下文与缓存。'},
- wB:{t:'Worker B',b:'<b>【原文】</b>并行推进；耗时工具异步，结果当新事件回送。<b>【讨论】</b>并行度受任务依赖与冲突恢复成本限制。'},
- wC:{t:'Worker C',b:'<b>【原文】</b>可订阅 Thread 收直送。<b>【讨论】</b>收到事件≠按同一版本理解；见 thread-conflict 动效。'},
- wd:{t:'Watchdog',b:'<b>【原文】</b>独立于主系统的定时会话，查卡住与跑偏。<b>【实践】</b>≈架构观察员（只建议）。<b>【讨论】</b>消融：去掉后指标掉多少？'},
- daemon:{t:'端上 daemon',b:'<b>【原文】</b>计算/状态/环境分离；BYOM；设备离线云端循环可续。<b>【讨论】</b>环境权限与注入面随主动性一起变大。'},
- judge:{t:'总判',b:'<b>【讨论】</b>Super-agent 更像 Agent Runtime 的工程整合，不是新范式。真正难的是长期、可靠、低成本，并证明组件净收益。'}
+ im:{t:'IM 事件',b:'私聊和群聊里的每条消息都是一个事件，你说完就可以走开。'},
+ gh:{t:'GitHub',b:'PR、Issue、评论都会触发；一个 PR 就是一个话题。'},
+ mail:{t:'邮件',b:'一串邮件往来算一个话题；邮件这种不急着看的渠道，回复可以写得完整、结构化。'},
+ cron:{t:'定时触发',b:'按时间发出的消息，驱动周期性的工作，比如 Watchdog 巡检。'},
+ fast:{t:'第一道筛子',b:'按来源、群、白名单用代码先挡一遍；能用规则判断的，不进模型。'},
+ slow:{t:'第二道筛子',b:'需要理解语义的候选，交给模型判断值不值得处理。策略写在 prompt 里，随时可改。'},
+ drop:{t:'丢弃',b:'无关消息到这里就停了，不花 token。'},
+ thread:{t:'话题订阅',b:'Worker 订阅一个话题后，后续消息由代码直接送达；前台看得到，但不用转发。几个 Worker 订阅同一话题时，可以自己发现冲突。'},
+ you:{t:'你',b:'只和前台打交道。IM 回复每条最多 100 词，只在需要你行动或结果能用时开口。'},
+ router:{t:'Router（前台）',b:'常驻，通常用轻一点的模型，不拿命令行工具。负责接话、派活、记忆和给你汇总，不拆任务。'},
+ state:{t:'状态库',b:'工单、话题、授权等对象都有 ID，存在数据库里，不依赖某一次会话；前台可以顺着 ID 一跳跳找回上下文。'},
+ wA:{t:'Worker A',b:'一个任务一个隔离会话，带全套工具和更强的模型，不直接找你。'},
+ wB:{t:'Worker B',b:'和其它 Worker 并行推进；耗时工具异步跑，结果作为新消息回来。'},
+ wC:{t:'Worker C',b:'可以订阅话题，直接收到后续消息。'},
+ wd:{t:'Watchdog',b:'独立于主系统、定时醒来的会话：查接口报错，也判断 Worker 有没有实质进展。'},
+ daemon:{t:'端上的小程序',b:'代码和工具留在你的机器上，只装一个无状态的轻量程序；机器掉线重连后，云上的循环接着做。'}
 };
 const boxes=[...document.querySelectorAll('.box')];
 const pt=document.getElementById('pt'),pb=document.getElementById('pb');
-const intro={t:'点击节点',b:'事件 → 过滤 → Router → Worker。红线 = Pass-through；虚线 = Watchdog。每个节点区分【原文】主张与【讨论】张力。'};
+const intro={t:'点击节点',b:'事件 → 过滤 → Router → Worker。红线 = Pass-through；虚线 = Watchdog。'};
 let sel=null;
 boxes.forEach(el=>{el.onclick=e=>{e.stopPropagation();const id=el.dataset.id;if(sel===el){el.classList.remove('on');sel=null;pt.textContent=intro.t;pb.innerHTML=intro.b;return}
  boxes.forEach(x=>x.classList.remove('on'));el.classList.add('on');sel=el;const n=N[id];pt.textContent=n.t;pb.innerHTML=n.b}});
