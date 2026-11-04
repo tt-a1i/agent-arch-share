@@ -1,56 +1,116 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>提示缓存：每任务新会话 vs 一个会话接着做</title>
+<title>提示缓存命中 vs 双重上下文成本</title>
 <link rel="stylesheet" href="../assets/d.css">
 <style>
-.pn{position:absolute;top:396px;width:852px}
-.pn h3{font-size:30px;font-weight:900;padding-bottom:14px;border-bottom:6px solid var(--ink)}
-.cost{font-size:80px;font-weight:900;letter-spacing:-.04em;line-height:.9;margin-top:22px}
-.brk{font-size:18px;font-weight:600;color:var(--g1);line-height:1.5;margin-top:12px;min-height:54px}
-.brk b{color:var(--ink);font-weight:900}
-.leg{display:flex;gap:24px;font-size:16px;font-weight:700;margin-top:10px}
-.leg span{display:inline-flex;align-items:center;gap:8px}.leg i{width:16px;height:16px;display:inline-block}
-.p{background:var(--ink)}.h{background:var(--g3)}.c{background:var(--red)}
-.ctx{margin-top:14px}
-.bar{display:grid;grid-template-columns:70px 1fr;align-items:center;height:17px;margin-bottom:1px}
-.bar .lb{font-size:14px;font-weight:700;color:var(--g1)}
-.bar .st{position:relative;display:flex;align-items:center;height:14px}
-.bar .st i{height:12px;display:block}
-.bar .lim{position:absolute;top:-4px;bottom:-4px;width:0;border-left:3px dashed var(--red)}
-.bar .k{margin-left:8px;font-size:13px;font-weight:700}
+.legend{position:absolute;left:96px;right:96px;top:182px;display:flex;gap:22px;align-items:center;font-size:17px;font-weight:700}
+.legend i{display:inline-block;width:22px;height:10px;margin-right:8px;vertical-align:middle}
+.legend .o{background:var(--ink)}.legend .d{background:var(--red)}.legend .c{background:var(--g3)}
+.card{position:absolute;border:3px solid var(--ink);background:#fff;padding:18px 20px;cursor:pointer;transition:box-shadow .15s,border-color .15s}
+.card:hover,.card.on{box-shadow:0 0 0 4px rgba(228,50,27,.25)}
+.card.on{border-color:var(--red)}
+.card .k{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--g2)}
+.card .t{font-size:26px;font-weight:900;margin-top:6px;line-height:1.2}
+.card .s{font-size:16px;font-weight:600;color:var(--g1);margin-top:8px;line-height:1.4}
+.card.hot{border-color:var(--red)}
+.card.blk{background:var(--ink);color:#fff}.card.blk .k{color:#8d8a83}.card.blk .s{color:#c9c6bf}
+.bars{position:absolute;left:96px;right:96px;top:520px;display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.barwrap{border:3px solid var(--ink);background:#fff;padding:16px 18px}
+.barwrap .ttl{font-size:18px;font-weight:900;margin-bottom:12px}
+.row{display:grid;grid-template-columns:110px 1fr 90px;gap:10px;align-items:center;margin-bottom:10px}
+.row .lb{font-size:14px;font-weight:800;color:var(--g1)}
+.row .track{height:18px;background:var(--g4);position:relative;overflow:hidden}
+.row .track i{display:block;height:100%;background:var(--ink)}
+.row .track i.r{background:var(--red)}
+.row .track i.g{background:var(--g2)}
+.row .n{font-size:16px;font-weight:900;text-align:right}
+.tag{display:inline-block;font-size:12px;font-weight:800;padding:2px 8px;border:2px solid var(--ink);margin-right:6px}
+.tag.r{border-color:var(--red);color:var(--red)}
+#panel{position:absolute;left:96px;right:96px;bottom:28px;height:100px;border-top:6px solid var(--ink);padding-top:14px;display:grid;grid-template-columns:200px 1fr;gap:20px;background:var(--paper)}
+#panel .ttl{font-size:24px;font-weight:900}
+#panel .body{font-size:18px;font-weight:600;line-height:1.45;color:#2a2926}
+#panel .body b{font-weight:900;color:var(--red);margin-right:4px}
+.links{position:absolute;right:96px;top:120px;display:flex;gap:10px}
+.links a{font-size:16px;font-weight:800;padding:8px 14px;border:3px solid var(--ink);text-decoration:none}
+.links a:hover{background:var(--ink);color:#fff}
 </style></head>
 <body><div class="stage">
  <div class="rule"></div>
- <div class="dhead"><a class="back" data-def="14" href="../index.html#/14"><span>回到第 14 页</span></a><h1>提示缓存：每任务新会话 vs 一个会话接着做</h1><span class="tag"><span class="red">示意算例，非实测</span> · GPT-6 Astra 公开价：输入 $10/M · 缓存读 $1/M · 缓存写 $12.5/M · 输出 $50/M</span></div>
- <div class="cols" style="top:230px;align-items:end">
-  <div style="grid-column:span 4"><div class="lbl">互不相关的任务数</div><div style="display:flex;align-items:baseline;gap:14px"><span class="red" id="nv" style="font-size:72px;font-weight:900;letter-spacing:-.04em;line-height:1">10</span><span class="lbl">个</span></div><input type="range" id="n" min="1" max="16" value="10" style="margin-top:14px"></div>
-  <div style="grid-column:span 4;padding-left:24px"><label class="chk"><input type="checkbox" id="exp">任务之间隔了几个小时（缓存过期）</label><div style="margin-top:20px"><button class="btn on" id="play">逐个任务播放</button></div></div>
-  <div class="small" style="grid-column:span 4;font-size:18px">假设：固定前缀 20K；每任务 8 轮调用，每轮新增 3K 上下文、输出 1K；新增部分按缓存写入计，之前部分按缓存读计。</div>
+ <div class="dhead">
+  <a class="back" data-def="13" href="../index.html#/13"><span>回到第 13 页</span></a>
+  <h1>提示缓存命中 vs 双重上下文成本</h1>
+  <span class="tag"><span class="red">示意比例 · 非本机实测</span></span>
  </div>
- <div class="pn" style="left:96px"><h3>A · 每个任务开新会话（共享固定前缀）</h3><div class="cost red" id="cA">$0</div><div class="brk" id="bA"></div>
-  <div class="leg"><span><i class="p"></i>固定前缀（命中缓存）</span><span><i class="c"></i>本任务过程</span></div><div class="ctx" id="xA"></div></div>
- <div class="pn" style="left:972px"><h3>B · 所有任务在同一个会话里接着做</h3><div class="cost" id="cB">$0</div><div class="brk" id="bB"></div>
-  <div class="leg"><span><i class="p"></i>固定前缀</span><span><i class="h"></i>前面任务累积的上下文</span><span><i class="c"></i>本任务过程</span><span class="red">┆ 272K 起整次输入 2 倍价</span></div><div class="ctx" id="xB"></div></div>
- <div class="rule b" style="bottom:96px"></div>
- <div class="foot" style="bottom:24px"><span class="src" style="color:var(--ink);font-weight:700">固定前缀在新会话里照样命中；相关任务回原会话，不相关的才开新会话。另一面：原文实验里 Super-agent 的 cache-read（23.2M）远高于单会话（6.1M）—— 省不省钱取决于负载</span></div>
+ <div class="legend">
+  <span><i class="o"></i>【原文】数字 / 主张</span>
+  <span><i class="d"></i>【讨论】质疑 / 倾向</span>
+  <span><i class="c"></i>示意条对比干扰 / 隐性上下文</span>
+  <span style="margin-left:auto;display:flex;gap:10px">
+   <a href="../index.html#/18" style="font-size:15px;font-weight:800;padding:6px 12px;border:2px solid var(--ink);text-decoration:none">→ 第 18 页</a>
+   <a href="arch-deepseek.html" style="font-size:15px;font-weight:800;padding:6px 12px;border:2px solid var(--ink);text-decoration:none">→ 结构图</a>
+   <span style="font-weight:800;color:var(--red);align-self:center">点击卡片</span>
+  </span>
+ </div>
+
+ <!-- Top four cards -->
+ <div class="card" data-id="hit" style="left:96px;top:230px;width:420px;height:250px">
+  <div class="k">A · 缓存命中侧</div>
+  <div class="t">共享固定前缀<br>省重复读</div>
+  <div class="s">每任务新会话仍可命中系统 prompt / 工具描述等前缀。<span class="tag">原文</span></div>
+ </div>
+ <div class="card hot" data-id="dual" style="left:540px;top:230px;width:420px;height:250px">
+  <div class="k">B · 双重上下文成本</div>
+  <div class="t">人侧切换<br>+ Agent 侧隔离</div>
+  <div class="s">入口合并省窗口；Session 隔离切断隐性知识与缓存连续性。<span class="tag r">讨论</span></div>
+ </div>
+ <div class="card blk" data-id="sa" style="left:984px;top:230px;width:420px;height:250px">
+  <div class="k">【原文实验】SA 对照</div>
+  <div class="t" style="font-size:22px">cache-read<br>23.2M ≫ 6.1M</div>
+  <div class="s">Super-agent 路径缓存读远高于单会话——省不省钱取决于负载形态。<span class="tag" style="border-color:#8d8a83;color:#c9c6bf">原文</span></div>
+ </div>
+ <div class="card" data-id="tend" style="left:1428px;top:230px;width:396px;height:250px">
+  <div class="k">【倾向】策略</div>
+  <div class="t" style="font-size:22px">相关回原会话<br>不相关才新开</div>
+  <div class="s">隔离换干净，也损缓存；不要无条件「永远新开」或「永远粘在一起」。<span class="tag r">倾向</span></div>
+ </div>
+
+ <!-- Comparison bars -->
+ <div class="bars">
+  <div class="barwrap" id="barA">
+   <div class="ttl">示意 · A 每任务新会话（共享前缀）</div>
+   <div class="row"><span class="lb">前缀命中</span><div class="track"><i style="width:70%"></i></div><span class="n">高</span></div>
+   <div class="row"><span class="lb">任务过程</span><div class="track"><i class="r" style="width:35%"></i></div><span class="n">中</span></div>
+   <div class="row"><span class="lb">跨任务干扰</span><div class="track"><i class="g" style="width:12%"></i></div><span class="n">低</span></div>
+   <div class="row"><span class="lb">隐性上下文</span><div class="track"><i class="g" style="width:18%"></i></div><span class="n">弱</span></div>
+  </div>
+  <div class="barwrap" id="barB">
+   <div class="ttl">示意 · B 同一会话接着做</div>
+   <div class="row"><span class="lb">前缀命中</span><div class="track"><i style="width:70%"></i></div><span class="n">高</span></div>
+   <div class="row"><span class="lb">累积上下文</span><div class="track"><i class="r" style="width:85%"></i></div><span class="n">高</span></div>
+   <div class="row"><span class="lb">跨任务干扰</span><div class="track"><i class="r" style="width:70%"></i></div><span class="n">高</span></div>
+   <div class="row"><span class="lb">隐性上下文</span><div class="track"><i style="width:75%"></i></div><span class="n">强</span></div>
+  </div>
+ </div>
+
+ <div id="panel">
+  <div class="ttl" id="pt">点击卡片</div>
+  <div class="body" id="pb">缓存命中省的是重复前缀；双重上下文成本在人侧切换与 Agent 侧隔离。下方比例为教学示意，不是本机账单。</div>
+ </div>
 </div>
 <script src="../assets/detail.js"></script>
 <script>
-const $=id=>document.getElementById(id);
-const PRE=20,ADD=3,ROUNDS=8,OUT=1,TASK=ADD*ROUNDS,READ1=ROUNDS*PRE+ADD*ROUNDS*(ROUNDS+1)/2;
-const pR=1,pW=12.5,pO=50;
-function cost(n,exp){const outC=n*ROUNDS*OUT/1000*pO,wC=n*TASK/1000*pW,aRead=n*(READ1-TASK)/1000*pR,bRead=(n*READ1+ROUNDS*TASK*n*(n-1)/2-n*TASK)/1000*pR;
- let A=aRead+wC+outC,B=bRead+wC+outC,eA=0,eB=0;if(exp){eA=n*PRE/1000*(pW-pR);eB=TASK*n*(n-1)/2/1000*(pW-pR);A+=eA;B+=eB}return{A,B,aRead,bRead,wC,outC,eA,eB}}
-const fmt=x=>'$'+x.toFixed(x<100?1:0);let timer=null;
-function render(k){const n=+$('n').value,exp=$('exp').checked;$('nv').textContent=n;const c=cost(k,exp),f=cost(n,exp);
- $('cA').textContent=fmt(c.A);$('cB').textContent=fmt(c.B);
- $('bA').innerHTML=`缓存读 ${fmt(c.aRead)} · 写入 ${fmt(c.wC)} · 输出 ${fmt(c.outC)}${exp?' · 过期重写前缀 '+fmt(c.eA):''}<br>全部 ${n} 个任务合计 <b>${fmt(f.A)}</b>`;
- $('bB').innerHTML=`缓存读 ${fmt(c.bRead)} · 写入 ${fmt(c.wC)} · 输出 ${fmt(c.outC)}${exp?' · 过期重写累积上下文 '+fmt(c.eB):''}<br>全部 ${n} 个任务合计 <b>${fmt(f.B)}</b>，约 A 的 ${(f.B/f.A).toFixed(1)} 倍`;
- const xA=$('xA'),xB=$('xB');xA.innerHTML='';xB.innerHTML='';const SC=Math.max(300,PRE+TASK*n)+40,w=v=>(v/SC*100)+'%';
- for(let i=1;i<=k;i++){xA.insertAdjacentHTML('beforeend',`<div class="bar"><span class="lb">任务 ${i}</span><div class="st"><i class="p" style="width:${w(PRE)}"></i><i class="c" style="width:${w(TASK)}"></i></div></div>`);
-  const hist=TASK*(i-1),tot=PRE+hist+TASK;
-  xB.insertAdjacentHTML('beforeend',`<div class="bar"><span class="lb">任务 ${i}</span><div class="st"><i class="p" style="width:${w(PRE)}"></i><i class="h" style="width:${w(hist)}"></i><i class="c" style="width:${w(TASK)}"></i><span class="lim" style="left:${w(272)}"></span><span class="k" style="color:${tot>272?'var(--red)':'var(--g1)'}">${tot}K</span></div></div>`)}}
-function play(){clearInterval(timer);let k=0;const n=+$('n').value;render(0);timer=setInterval(()=>{k++;render(k);if(k>=n)clearInterval(timer)},420)}
-$('n').oninput=()=>{clearInterval(timer);render(+$('n').value)};$('exp').onchange=()=>{clearInterval(timer);render(+$('n').value)};$('play').onclick=play;
-if(document.documentElement.classList.contains('shot'))render(10);else play();
+const N={
+ hit:{t:'缓存命中侧',b:'<b>【原文】</b>固定前缀可跨会话命中；新开任务不等于从零计费。<b>【讨论】</b>命中率依赖前缀稳定性与供应商缓存策略——别把「新会话」神话成必然更贵或更便宜。'},
+ dual:{t:'双重上下文',b:'<b>【讨论】</b>人要切换项目前提；Agent 换 Session 丢隐性知识与过程缓存。<b>【倾向】</b>同时看介入成本、迁移成本、验证成本——见第 18 页。'},
+ sa:{t:'原文实验数字',b:'<b>【原文】</b>公开材料中 SA 路径 cache-read 约 23.2M，对照单会话约 6.1M。<b>【讨论】</b>数字说明「调度层读得多」，不能直接推出「不该一对多」；要问负载形态与端到端时间。<b>【未验证】</b>你的真实任务分布下净账单。'},
+ tend:{t:'开新还是接着',b:'<b>【倾向】</b>相关任务回原会话保上下文；不相关才新开保隔离。<b>【质疑】</b>「相关」的判定本身要成本——又是 Router/harness 的判断空间。'}
+};
+const cards=[...document.querySelectorAll('.card')];
+const pt=document.getElementById('pt'),pb=document.getElementById('pb');
+const intro={t:'点击卡片',b:'缓存命中省的是重复前缀；双重上下文成本在人侧切换与 Agent 侧隔离。下方比例为教学示意，不是本机账单。'};
+let sel=null;
+cards.forEach(el=>{el.onclick=e=>{e.stopPropagation();if(sel===el){el.classList.remove('on');sel=null;pt.textContent=intro.t;pb.innerHTML=intro.b;return}
+ cards.forEach(x=>x.classList.remove('on'));el.classList.add('on');sel=el;const n=N[el.dataset.id];pt.textContent=n.t;pb.innerHTML=n.b}});
+document.querySelector('.stage').addEventListener('click',()=>{if(!sel)return;sel.classList.remove('on');sel=null;pt.textContent=intro.t;pb.innerHTML=intro.b});
+if(document.documentElement.classList.contains('shot')){const el=document.querySelector('[data-id=sa]');el.classList.add('on');sel=el;pt.textContent=N.sa.t;pb.innerHTML=N.sa.b}
 </script></body></html>

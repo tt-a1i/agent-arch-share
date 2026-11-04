@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>交接成本：一条后续消息，要过几道手？</title>
+<title>Pass-through：省 token ≠ 省完成时间</title>
 <link rel="stylesheet" href="../assets/d.css">
 <style>
 .pn{position:absolute;top:230px;width:852px}
@@ -26,7 +26,7 @@ table.x tr.hl td{color:var(--red)}
 </style></head>
 <body><div class="stage">
  <div class="rule"></div>
- <div class="dhead"><a class="back" data-def="13" href="../index.html#/13"><span>回到第 13 页</span></a><h1>交接成本：一条后续消息，要过几道手？</h1><button class="btn on" id="play" style="margin-left:auto">播放 5 条后续消息</button></div>
+ <div class="dhead"><a class="back" data-def="10" href="../index.html#/10"><span>回到第 13 页</span></a><h1>Pass-through：省 token ≠ 省完成时间</h1><button class="btn on" id="play" style="margin-left:auto">播放 5 条后续消息</button></div>
  <div class="pn" style="left:96px"><h3>经路由转达</h3><svg id="L" viewBox="0 0 852 272" width="852" height="272"></svg>
   <div class="cn"><div><b id="Lr">0</b><span>路由模型调用</span></div><div><b id="Lt">0</b><span>路由读入 token（示意单位）</span></div><div><b id="Lh">0</b><span>经手次数</span></div></div></div>
  <div class="pn" style="left:972px"><h3 class="red">代码直送（Thread 订阅）</h3><svg id="R" viewBox="0 0 852 272" width="852" height="272"></svg>
@@ -37,15 +37,16 @@ table.x tr.hl td{color:var(--red)}
   <div class="row2" style="border-bottom:2px solid var(--ink)"><span>主会话顺手做</span><div class="track"><i class="w" style="flex:1.6;animation-delay:.1s">执行</i><i class="ok" style="flex:5.6;animation-delay:.4s">已经做完了</i></div></div>
  </div>
  <div class="abs" style="left:972px;top:696px;width:852px">
-  <div class="lbl" style="margin-bottom:14px">原文实验 · 合成负载，仅供参考</div>
-  <table class="x"><tr><th>设计</th><th class="n">p50 / p95（分钟）</th><th class="n">每轮 cache-read</th></tr>
-   <tr class="hl"><td>Super-agent</td><td class="n">12.4 / 15.7</td><td class="n">23.2M</td></tr>
-   <tr><td>去掉直送</td><td class="n">12.6 / 15.5</td><td class="n">31.8M</td></tr>
-   <tr><td>单会话 + subagent · 中性 prompt（5 次都没委派）</td><td class="n">20.4 / 29.5</td><td class="n">6.1M</td></tr>
-   <tr><td>单会话 + subagent · 优先委派 prompt</td><td class="n">13.8 / 29.0</td><td class="n">10.8M</td></tr></table>
+  <div class="lbl" style="margin-bottom:14px">四指标拆开看 · 合成负载仅供参考</div>
+  <table class="x"><tr><th>指标</th><th class="n">有直送</th><th class="n">无直送</th><th>怎么读</th></tr>
+   <tr class="hl"><td>cache-read</td><td class="n">23.2M</td><td class="n">31.8M</td><td>+37% · Router 反复读长前缀</td></tr>
+   <tr><td>完成时间 p50</td><td class="n">12.4′</td><td class="n">12.6′</td><td>几乎不变</td></tr>
+   <tr><td>完成时间 p95</td><td class="n">15.7′</td><td class="n">15.5′</td><td>时间瓶颈不在 Router 转发</td></tr>
+   <tr><td>路由决策次数</td><td class="n">基线</td><td class="n">≈+30%</td><td>多的是模型轮次，不是 Worker</td></tr></table>
+  <p style="margin-top:14px;font-size:18px;font-weight:700;line-height:1.45;color:var(--ink)">【讨论】省的是 Router 的 cache-read 与决策轮次；端到端时间可能卡在 Worker 工具/推理。别把「省 token」说成「省时间」。</p>
  </div>
  <div class="rule b"></div>
- <div class="foot"><span class="src">示意动画，调用次数与 token 单位只演示机制。原文消融：去掉直送，cache-read 多约 37%，路由决策多约 30%；完成时间几乎一样</span></div>
+ <div class="foot"><span class="src">【原文】Pass-through 消融 · 【讨论】Token≠时间 · 【未验证】真实负载下瓶颈是否仍在 Worker</span></div>
 </div>
 <script src="../assets/detail.js"></script>
 <script>

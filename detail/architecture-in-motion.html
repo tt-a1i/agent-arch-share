@@ -57,7 +57,7 @@
 </style></head>
 <body><div class="stage">
  <div class="rule"></div>
- <div class="dhead"><a class="back" data-def="4" href="../index.html#/4"><span>回到第 4 页</span></a><h1>架构是怎么运转的 · 8 步</h1>
+ <div class="dhead"><a class="back" data-def="8" href="../index.html#/8"><span>回到第 4 页</span></a><h1>架构是怎么运转的 · 8 步</h1>
   <div class="mode">骨架<b id="modeB">DeepSeek Super-agent（研究原型）</b></div></div>
  <svg id="ed" viewBox="0 0 1920 1080"><defs><marker id="ah" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="13" markerHeight="13" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0L12 6L0 12z" fill="context-stroke"/></marker></defs><g id="edges"></g><g id="pks"></g></svg>
  <div id="nodes"></div><div id="bubs"></div>
@@ -108,35 +108,36 @@ const S=[
  {mode:'ds',act:['im','filter'],focus:['im'],edges:['im-filter'],hot:[],
   pk:[{p:['im-filter'],every:1500}],
   bub:[[96,270,'帮我看看 PR 里那个 bug','IM 消息']],
-  h:'你在 IM 发出一条消息',p:'消息作为一个<b>事件</b>进入系统。agent 是常驻的：你不用开会话、盯会话，说完就可以去忙别的。'},
+  h:'事件进场：你说完就可以走开',p:'【原文】消息是事件，不是一次同步会话。常驻 Runtime 让你不必开会话、盯会话。<br>【讨论】执行持续了，人的审核负担未必下降——吞吐↑可能意味着待确认↑。'},
  {mode:'ds',act:['filter','drop','router'],focus:['filter'],edges:['im-filter','filter-drop','filter-router'],hot:[],
   pk:[{p:['im-filter','filter-drop'],every:1300},{p:['im-filter','filter-router'],every:2600,delay:650}],
   bub:[[96,250,'群聊闲聊、无关通知 → 忽略','不进模型，不花 token']],
-  h:'代码规则先过滤：无关消息不进模型',p:'按来源、群、用户、bot 设白名单；挡掉的不进模型，需要语义判断的才交给 LLM 慢速路径。',src:'能用代码判断的，不交给模型'},
+  h:'Fast Path：能用代码挡的，不进模型',p:'【原文】来源 / 群 / 白名单先过滤；需要语义的才走慢速路径。<br>【倾向】过滤规则本身也是 harness——轻 Router 能成立，往往因为判断空间已被工程压小。',src:'【实践】白名单误伤 / 漏放，都会直接变成 Router 质量问题'},
  {mode:'ds',act:['router','state','wC'],focus:['router'],edges:['filter-router','router-state','router-wC'],hot:[],badge:{wC:'新会话'},
   pk:[{p:['filter-router','router-wC'],every:2400},{p:['router-state'],every:1600,speed:240},{p:['-router-state'],every:1600,delay:800,speed:240}],
   bub:[[806,572,'新任务 → 开一个新会话','路由的判断']],
-  h:'常驻路由看 ID + 摘要，决定开新会话',p:'路由通常用轻量模型、不持有 Bash，<b>只派发、不拆解</b>。上下文先只放 ID 和摘要，需要时顺着引用逐跳召回。'},
+  h:'Router：只派发，还是也要判断？',p:'【原文】通常轻量模型、不持 Bash，只派发不拆解。<br>【质疑】直接问答、跨 Worker 冲突、该不该打扰人——这些判断空间并不小。<br>【倾向】我们更看好「较强 Router + 清晰职责边界」。',src:'能力可以强；职责仍应克制'},
  {mode:'ds',act:['wA','wB','wC','router'],focus:['wA','wB','wC'],edges:['router-wA','router-wB','router-wC'],hot:[],work:['wA','wB','wC'],
   pk:[],
   bub:[[806,572,'路由腾出手，接下一句话','并行']],
-  h:'任务会话在后台并行干活',p:'一个任务一个隔离会话，通常配<b>最强模型</b>和全套工具，不直接和人说话。耗时工具改成异步，结果作为新事件回送 —— 人不再被同步阻塞。'},
+  h:'Worker 并行：隔离换来的是什么？',p:'【原文】一任务一 Session，强模型 + 全工具，不直接对人。<br>【质疑】隔离降低干扰，也切断缓存与隐性上下文；成本转移到持久化与交接。<br>【未验证】拆多细才划算，取决于任务相关性和恢复成本。'},
  {mode:'ds',act:['im','filter','thread','wC','router'],focus:['thread'],edges:['im-filter','filter-thread','thread-wC'],hot:['filter-thread','thread-wC'],work:['wC'],half:['router'],
   pk:[{p:['im-filter','filter-thread','thread-wC'],every:2600},{p:['im-filter','filter-router'],every:2600,ghost:1}],
   bub:[[96,280,'↩ 原话题里回复：「补上测试」','同一 Thread'],[806,572,'看得到，但不判断、不转发','路由']],
-  h:'在原话题里追问：代码直送到归属会话',p:'同一 IM 话题、PR 或邮件链 = 一个 Thread。会话在第一条事件时订阅它，之后的消息由代码直送；路由<b>看得到，但不判断、不转发</b>。不带话题的新消息自成新 Thread，仍交给路由。',
-  src:'原文消融：去掉直送，cache-read token 多约 37%（23.2M → 31.8M）· 合成负载，仅供参考'},
+  h:'Pass-through：省 token，不一定省时间',p:'【原文】订阅后代码直送；Router 可见但不转发。<br>【实验】去掉直送，cache-read ≈+37%；完成时间几乎不变。<br>【讨论】Token / 模型延迟 / 吞吐 / 端到端时间是四个指标——别混谈。',
+  src:'合成负载，仅供参考 · 详见 handoff 动效页'},
  {mode:'ds',act:['wd','wA','wB','wC'],focus:['wd'],edges:['wd-wA','wd-wB','wd-wC'],hot:[],work:['wA','wC'],ping:['wd'],badge:{wB:'有进展吗？'},
   pk:[{p:['wd-wA'],every:2100,speed:320},{p:['wd-wB'],every:2100,delay:700,speed:320},{p:['wd-wC'],every:2100,delay:1400,speed:320}],
-  bub:[],
-  h:'Watchdog：盯着卡住或跑偏的任务',p:'一个<b>独立于主系统</b>、由定时消息驱动的会话：既处理 API 报错，也用模型判断任务有没有实质进展、有没有跑偏。主链路挂了，它还在。'},
+  bub:[[1586,280,'活着 ≠ 正确工作','观察员逻辑']],
+  h:'Watchdog ≈ 架构观察员',p:'【原文】独立于主系统的定时会话，查卡住与跑偏。<br>【实践】我们的观察员每天审查、只提建议，不自动改架构。<br>【讨论】监督本身有 Token 与误报成本；消融时要问：去掉它，指标掉多少？'},
  {mode:'ds',act:['wC','router','im'],focus:['router'],edges:['router-wC','reply'],hot:['reply'],
   pk:[{p:['-router-wC','reply'],every:3000,speed:420}],
   bub:[[96,262,'已修复，测试通过；<br>等你确认后合并。','示例回复 · IM ≤100 词']],
-  h:'结果回到路由，压成 ≤100 词发回 IM',p:'路由按渠道调密度：<b>IM 每条不超过 100 词</b>，GitHub、邮件这类异步渠道才给结构化输出。只在你必须行动、或能用上结果时说话。'},
+  h:'回传：压缩到人还愿意读',p:'【原文】IM ≤100 词；只在必须行动或结果可用时说话。<br>【延伸】这是在保护注意力，不是在展示能力。<br>【未验证】压缩会不会丢掉关键前提，导致错误批准？'},
  {mode:'team',act:['im','drop','filter','router','state','wA','wB','wC','wd'],focus:['router'],edges:['you-router','router-gate','gate-you','routine-wC','router-wA','router-wB','router-wC','wA-state','router-state','wd-wA','wd-wB','wd-wC'],hot:['router-gate','gate-you'],work:['wA','wC'],
   pk:[{p:['you-router','router-wB'],every:3200,delay:1500},{p:['routine-wC'],every:3000,delay:2300},{p:['wA-state'],every:2600,delay:2000,speed:260},{p:['router-gate','gate-you'],every:3600,delay:2900,speed:340}],
-  bub:[],h:'同一副骨架 → 我们的 bot 团队',map:1}
+  bub:[],h:'同一副骨架 → Hive / bot 团队 / DeepSeek',map:1,
+  src:'【判断】差异不在「能不能一对多」，而在控制平面：长期 Orchestrator vs 短时 Router；任务驱动 vs 事件驱动 Runtime'}
 ];
 /* build */
 const NS='http://www.w3.org/2000/svg',EG=document.getElementById('edges'),PG=document.getElementById('pks'),ND=document.getElementById('nodes');
@@ -173,7 +174,7 @@ function go(i){i=Math.max(0,Math.min(S.length-1,i));if(i===cur)return;const prev
   if(SHOT)b.classList.add('show');else setTimeout(()=>b.classList.add('show'),morph?1500:300);});
  const T=document.getElementById('ctxt');T.style.opacity=0;
  const fill=()=>{let h='<h2>'+s.h+'</h2>';
-  if(s.map)h+='<div class="map"><span>常驻路由<em>→</em>大内总管</span><span>任务会话<em>→</em>各职能 bot</span><span>状态 / 交接<em>→</em>共享文件夹</span><span>事件触发<em>→</em>routine</span><span>权限关卡<em>→</em>审批</span><span class="anl">Watchdog<em>≈</em>架构观察员（类比）</span></div>';
+  if(s.map)h+='<div class="map"><span>常驻路由<em>→</em>大内总管 / Hive Orchestrator</span><span>任务会话<em>→</em>职能 bot / CLI Worker</span><span>状态 / 交接<em>→</em>共享文件夹 · tasks.md</span><span>事件触发<em>→</em>routine（我们偏弱）</span><span>权限关卡<em>→</em>审批</span><span class="anl">Watchdog<em>≈</em>架构观察员</span></div>'+(s.src?'<div class="sr">'+s.src+'</div>':'');
   else h+='<p>'+s.p+'</p>'+(s.src?'<div class="sr">'+s.src+'</div>':'');T.innerHTML=h;T.style.opacity=1;};
  if(SHOT)fill();else setTimeout(fill,220);
  document.getElementById('cn').firstChild.textContent=String(i+1).padStart(2,'0');

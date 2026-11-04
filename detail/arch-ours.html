@@ -1,48 +1,115 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>并排看：Hive 与我们的 bot 团队</title>
-<link rel="stylesheet" href="../assets/d.css"></head>
+<title>Hive ↔ bot 团队 · 并排同构</title>
+<link rel="stylesheet" href="../assets/d.css">
+<style>
+.hd2{position:absolute;left:96px;right:96px;top:188px;display:grid;grid-template-columns:1fr 48px 1fr;gap:0;align-items:end}
+.hd2 h2{font-size:32px;font-weight:900}.hd2 .sub{font-size:18px;font-weight:700;color:var(--g1);margin-top:6px}
+.hd2 .mid{text-align:center;font-size:14px;font-weight:900;color:var(--red);letter-spacing:.08em}
+.pane{position:absolute;top:280px;width:820px;bottom:210px;border:3px solid var(--ink);background:#fff;padding:20px 22px 16px}
+.pane h3{font-size:14px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--g2);margin-bottom:12px}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.row2{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;margin-bottom:10px}
+.cell{border:3px solid var(--ink);padding:12px 14px;cursor:pointer;transition:all .2s;min-height:72px}
+.cell:hover,.cell.on{box-shadow:0 0 0 4px var(--red)}
+.cell.on{background:var(--ink);color:#fff}.cell.on .s{color:#c9c6bf}.cell.on .k{color:#8d8a83}
+.cell.blk{background:var(--ink);color:#fff}.cell.blk .s{color:#c9c6bf}.cell.blk .k{color:#8d8a83}
+.cell.rb{border-color:var(--red)}
+.cell .k{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--g2)}
+.cell .t{font-size:20px;font-weight:900;margin-top:4px;line-height:1.15}
+.cell .s{font-size:14px;font-weight:600;color:var(--g1);margin-top:4px;line-height:1.3}
+.strip{position:absolute;left:96px;right:96px;bottom:120px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.strip div{border-top:4px solid var(--ink);padding-top:10px}
+.strip div.r{border-color:var(--red)}
+.strip .k{font-size:13px;font-weight:800;color:var(--g2);letter-spacing:.06em;text-transform:uppercase}
+.strip .t{font-size:18px;font-weight:800;margin-top:6px;line-height:1.35}
+#panel{position:absolute;left:96px;right:96px;bottom:28px;height:78px;border-top:6px solid var(--ink);padding-top:12px;font-size:20px;font-weight:600;line-height:1.45}
+#panel b{font-weight:900;color:var(--red);margin-right:8px}
+</style></head>
 <body><div class="stage">
  <div class="rule"></div>
- <div class="dhead"><a class="back" data-def="8" href="../index.html#/8"><span>回到第 8 页</span></a><h1>并排看：Hive 与我们的 bot 团队</h1><span class="tag">点击节点看说明</span></div>
- <div class="abs" style="left:96px;top:222px;font-size:30px;font-weight:900">Hive <span class="g1" style="font-size:22px;font-weight:700;margin-left:12px">当场指挥一个开发小队</span></div>
- <div class="abs" style="left:1010px;top:222px;font-size:30px;font-weight:900">我们的 bot 团队 <span class="g1" style="font-size:22px;font-weight:700;margin-left:12px">常驻的分工团队</span></div>
- <div class="abs" style="left:958px;top:222px;width:2px;height:620px;background:var(--ink)"></div>
- <div id="note">点击任一节点看说明。两边是同一副骨架：一个入口 + 多个执行者 + 共享状态；差别在入口干不干活、后续消息怎么走。</div>
- <div class="rule b"></div>
- <div class="foot"><span class="src">来源：Hive README、docs/design-decisions.md、CONTEXT.md；bot 团队只讲平台上看得见的能力</span></div>
+ <div class="dhead">
+  <a class="back" data-def="15" href="../index.html#/15"><span>回到第 15 页</span></a>
+  <h1>Hive ↔ bot 团队 · 并排同构</h1>
+  <span class="tag">骨架相同 · 控制平面不同 · 点击单元格</span>
+ </div>
+ <div class="hd2">
+  <div><h2>Hive</h2><div class="sub">【实践】任务驱动 · 本机 Team Workspace · Orchestrator 会拆解验收</div></div>
+  <div class="mid">同构<br>↔</div>
+  <div><h2>我们的 bot 团队</h2><div class="sub">【实践】常驻分工 · 大内总管只路由 · 文件交接 + 审批</div></div>
+ </div>
+
+ <div class="pane" style="left:96px">
+  <h3>控制平面 · 长期协调 Agent</h3>
+  <div class="row2">
+   <div class="cell blk" data-id="h-orch"><div class="k">入口 · 真实 CLI</div><div class="t">Orchestrator</div><div class="s">规划 · 拆解 · 选人 · 验收</div></div>
+   <div class="cell" data-id="h-you"><div class="k">人</div><div class="t">你</div><div class="s">浏览器里看团队</div></div>
+  </div>
+  <h3 style="margin-top:8px">Workers · 异构 CLI</h3>
+  <div class="row">
+   <div class="cell" data-id="h-cc"><div class="k">PTY</div><div class="t">Claude Code</div><div class="s">本机进程</div></div>
+   <div class="cell" data-id="h-cx"><div class="k">PTY</div><div class="t">Codex</div><div class="s">本机进程</div></div>
+   <div class="cell" data-id="h-gm"><div class="k">PTY</div><div class="t">Gemini / 其他</div><div class="s">多模型</div></div>
+  </div>
+  <h3 style="margin-top:8px">状态 / 协议</h3>
+  <div class="row2">
+   <div class="cell" data-id="h-state"><div class="k">状态</div><div class="t">SQLite + tasks.md</div><div class="s">team send / report</div></div>
+   <div class="cell" data-id="h-proto"><div class="k">协议事件</div><div class="t">working · idle</div><div class="s">刻意不做卡死检测</div></div>
+  </div>
+ </div>
+
+ <div class="pane" style="left:1004px">
+  <h3>控制平面 · 短时路由 + 审批</h3>
+  <div class="row2">
+   <div class="cell blk" data-id="b-router"><div class="k">唯一入口</div><div class="t">大内总管</div><div class="s">只路由 · 不研究不写码</div></div>
+   <div class="cell" data-id="b-you"><div class="k">人</div><div class="t">你</div><div class="s">和大内总管聊</div></div>
+  </div>
+  <h3 style="margin-top:8px">Workers · 职能 bot</h3>
+  <div class="row">
+   <div class="cell" data-id="b-repo"><div class="k">bot</div><div class="t">仓库维护</div><div class="s">日常</div></div>
+   <div class="cell" data-id="b-mail"><div class="k">bot</div><div class="t">邮件</div><div class="s">收件提醒</div></div>
+   <div class="cell" data-id="b-res"><div class="k">bot</div><div class="t">研究 ×5</div><div class="s">调研学习</div></div>
+  </div>
+  <h3 style="margin-top:8px">状态 / 权限 / 观察</h3>
+  <div class="row">
+   <div class="cell" data-id="b-state"><div class="k">交接</div><div class="t">共享文件夹</div><div class="s">写文件不走聊天</div></div>
+   <div class="cell rb" data-id="b-gate"><div class="k">权限</div><div class="t">审批关卡</div><div class="s">已登录≠被允许</div></div>
+   <div class="cell" data-id="b-obs"><div class="k">≈ Watchdog</div><div class="t">架构观察员</div><div class="s">每日审查 · 只建议</div></div>
+  </div>
+ </div>
+
+ <div class="strip">
+  <div><div class="k">【原文对照】</div><div class="t">DeepSeek Router 短时事件路由；Hive Orchestrator 长期协调</div></div>
+  <div><div class="k">【同构】</div><div class="t">一对多 · 隔离执行 · 共享任务状态</div></div>
+  <div class="r"><div class="k">【差距】</div><div class="t">直送 / 强看门狗 / 事件一等公民 —— 我们仍弱</div></div>
+  <div><div class="k">【倾向】</div><div class="t">比「是否新范式」更值得比：哪种控制平面更少漂移</div></div>
+ </div>
+ <div id="panel">点击单元格，看这一侧在同构表里的位置与讨论点。两边不是谁抄谁，是同一类工程问题的两种实现。</div>
 </div>
-<script>window.ARCH={
-frames:[{x:96,y:300,w:820,h:540,t:'本机 · 只绑定 127.0.0.1'}],
-nodes:[
- {x:126,y:340,w:180,h:72,t:'你',s:'浏览器里看团队',note:'在浏览器里组成一个「看得见的团队」。'},
- {x:386,y:320,w:330,h:112,c:'b big',k:'入口 · 真实 CLI 进程',t:'Orchestrator',s:'规划 · 拆解 · 选人 · 验收',note:'Hive 的 Orchestrator 会规划、拆解、选人、验收 —— 更像原文说的 Agent Team，适合当场指挥一个开发小队。'},
- {x:126,y:520,w:180,h:90,k:'PTY',t:'Claude Code',note:'CLI agent 作为真实 PTY 进程跑在本机。'},
- {x:326,y:520,w:180,h:90,k:'PTY',t:'Codex',note:'CLI agent 作为真实 PTY 进程跑在本机。'},
- {x:526,y:520,w:180,h:90,k:'PTY',t:'Gemini',note:'CLI agent 作为真实 PTY 进程跑在本机。'},
- {x:726,y:520,w:170,h:90,k:'PTY',t:'OpenCode',note:'CLI agent 作为真实 PTY 进程跑在本机。'},
- {x:126,y:700,w:370,h:100,k:'状态',t:'SQLite + tasks.md',s:'按派单 team send',note:'状态存在 SQLite 与 tasks.md；后续消息按派单 team send。'},
- {x:526,y:700,w:370,h:100,k:'协议事件',t:'working · idle · stopped',s:'刻意不做卡死检测',note:'状态只由协议事件推进。刻意不做心跳和卡死检测：慢构建、长思考和真卡死，从外面看一模一样。'},
- {x:1010,y:340,w:150,h:72,t:'你',s:'和大内总管聊',note:'人只和一个对象说话。'},
- {x:1240,y:320,w:300,h:112,c:'b big',k:'唯一入口',t:'大内总管',s:'只路由，不研究、不写代码',note:'对应路由：接话、分派、转达。后续消息目前经大内总管读后转 —— 这是我们的差距之一。'},
- {x:1620,y:340,w:204,h:72,k:'事件触发',t:'routine',note:'定时 / 事件触发：每日同步、每日分析。'},
- {x:1010,y:520,w:190,h:90,k:'bot',t:'仓库维护',note:'每个仓库的日常维护。'},
- {x:1220,y:520,w:190,h:90,k:'bot',t:'邮件',note:'收件与提醒。'},
- {x:1430,y:520,w:190,h:90,k:'bot',t:'研究类 ×5',note:'调研与学习。'},
- {x:1640,y:520,w:184,h:90,k:'≈ Watchdog',t:'架构观察员',note:'我们的类比：每天一次审查、只提建议 —— 不是持续运行的看门狗。'},
- {x:1010,y:700,w:390,h:100,k:'状态 / 交接',t:'共享文件夹',s:'inbox · repos · scout · knowledge · daily',note:'交接写文件，不走聊天；交接必须带验证（目标、产出、测过什么、已知缺口）；一个文件同一时间一个写入者，追加不覆盖。'},
- {x:1430,y:700,w:394,h:100,c:'rb',k:'权限',t:'审批关卡',s:'对外动作逐次批准',note:'对外动作逐次批准：已登录 ≠ 被允许。'}
-],
-edges:[
- {d:'M306 376 H383'},
- {d:'M551 432 V470 H216 V517',noarrow:0},{d:'M416 470 V517'},{d:'M616 470 V517'},{d:'M551 470 H811 V517'},
- {d:'M216 610 V697',c:'g'},{d:'M711 610 V697',c:'g'},
- {d:'M1160 376 H1237'},
- {d:'M1390 432 V470 H1105 V517'},{d:'M1315 470 V517'},{d:'M1525 470 V517'},{d:'M1390 470 H1732 V517'},
- {d:'M1722 412 V470',noarrow:1},
- {d:'M1105 610 V697',c:'g',both:1},{d:'M1525 610 V697',c:'r'}
-],
-labels:[]
-};</script>
-<script src="../assets/detail.js"></script><script src="../assets/arch.js"></script>
-</body></html>
+<script src="../assets/detail.js"></script>
+<script>
+const N={
+ 'h-orch':'<b>【实践·Hive】</b>Orchestrator 是真实 CLI Agent：会拆解、验收。更接近原文说的 Agent Team，而非「只派发」的轻 Router。',
+ 'h-you':'<b>【实践·Hive】</b>人在可见 Team Workspace 里指挥；默认任务驱动，不是事件驱动 Runtime。',
+ 'h-cc':'<b>【实践】</b>Worker = 本机 PTY 上的 CLI。异构执行器是 Hive 的特点。',
+ 'h-cx':'<b>【讨论】</b>Codex 也有 Subagent/云端 Thread——「本地 vs 云端」不足以单独区分 Super-agent。',
+ 'h-gm':'<b>【实践】</b>多模型并行；与 DeepSeek「Router 轻 / Worker 强」档位分离可对照。',
+ 'h-state':'<b>【实践】</b>tasks.md + SQLite；team send 派单。给它加云端+Webhook+恢复+授权，功能目标就接近 Super-agent。',
+ 'h-proto':'<b>【实践】</b>状态靠协议事件推进；刻意不做心跳卡死检测——慢构建与真卡死从外难分。',
+ 'b-router':'<b>【实践·bot】</b>大内总管只路由。后续消息目前多经它转达——缺少 Pass-through 是明确差距。',
+ 'b-you':'<b>【讨论】</b>统一入口降低管理成本；拍板时认知装载仍在——见 entry-cognition。',
+ 'b-repo':'<b>【实践】</b>职能隔离的 Worker；交接走文件，不靠聊天传上下文。',
+ 'b-mail':'<b>【实践】</b>邮件 bot；异步渠道，适合结构化摘要。',
+ 'b-res':'<b>【实践】</b>研究类多实例；注意「拆太细」的派单税。',
+ 'b-state':'<b>【实践】</b>共享文件夹：交接须带验证；同时一个写入者；追加不覆盖。',
+ 'b-gate':'<b>【倾向】</b>主动性受权限约束。已登录 ≠ 被允许自动做——这是安全页的红线。',
+ 'b-obs':'<b>【类比】</b>≈ Watchdog：每日审查、只提建议，不是持续自动改架构。监督本身有成本。'
+};
+const cells=[...document.querySelectorAll('.cell')];
+const panel=document.getElementById('panel');
+const intro=panel.innerHTML;let sel=null;
+cells.forEach(el=>{el.onclick=e=>{e.stopPropagation();if(sel===el){el.classList.remove('on');sel=null;panel.innerHTML=intro;return}
+ cells.forEach(x=>x.classList.remove('on'));el.classList.add('on');sel=el;panel.innerHTML=N[el.dataset.id]||intro}});
+document.querySelector('.stage').addEventListener('click',()=>{if(!sel)return;sel.classList.remove('on');sel=null;panel.innerHTML=intro});
+if(document.documentElement.classList.contains('shot')){const el=document.querySelector('[data-id=h-orch]');el.classList.add('on');panel.innerHTML=N['h-orch']}
+</script></body></html>

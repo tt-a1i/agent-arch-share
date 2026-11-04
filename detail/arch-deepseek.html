@@ -1,45 +1,150 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DeepSeek Super-agent 架构图</title>
-<link rel="stylesheet" href="../assets/d.css"></head>
+<title>DeepSeek Super-agent · 分层结构图</title>
+<link rel="stylesheet" href="../assets/d.css">
+<style>
+.legend{position:absolute;left:96px;right:96px;top:182px;display:flex;gap:24px;align-items:center;font-size:17px;font-weight:700}
+.legend i{display:inline-block;width:26px;height:10px;margin-right:8px;vertical-align:middle}
+.legend .o{background:var(--ink)}.legend .d{background:var(--red)}
+.legend .p{height:0;border-top:3px dashed var(--g2);width:26px;background:transparent}
+.colh{position:absolute;top:228px;font-size:14px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--g2);padding-bottom:8px;border-bottom:3px solid var(--ink)}
+.box{position:absolute;border:3px solid var(--ink);background:var(--paper);padding:12px 14px;cursor:pointer;transition:box-shadow .15s,background .15s,color .15s;z-index:2}
+.box:hover{box-shadow:0 0 0 3px rgba(228,50,27,.35)}
+.box.on{background:var(--ink);color:#fff;box-shadow:0 0 0 4px var(--red)}.box.on .s{color:#c9c6bf}.box.on .k{color:#8d8a83}
+.box .k{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--g2)}
+.box .t{font-size:20px;font-weight:900;margin-top:3px;line-height:1.15}
+.box .s{font-size:14px;font-weight:600;color:var(--g1);margin-top:3px;line-height:1.3}
+.box.drop{border-color:var(--g3);color:var(--g1)}
+.box.hot{border-color:var(--red)}
+.box.blk{background:var(--ink);color:#fff}.box.blk .s{color:#c9c6bf}.box.blk .k{color:#8d8a83}
+.box.dash{border-style:dashed}
+.tagrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.tagrow span{font-size:12px;font-weight:800;padding:1px 7px;border:2px solid var(--ink)}
+.tagrow span.r{border-color:var(--red);color:var(--red)}
+.flow{position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;z-index:1;overflow:visible}
+.flow path{fill:none;stroke:var(--ink);stroke-width:2.5}
+.flow path.r{stroke:var(--red);stroke-width:4.5}
+.flow path.d{stroke-dasharray:7 7;stroke:var(--g2)}
+.flow path.dim{stroke:var(--g3);stroke-width:2}
+#panel{position:absolute;left:96px;right:96px;bottom:28px;height:108px;border-top:6px solid var(--ink);padding-top:14px;display:grid;grid-template-columns:180px 1fr;gap:20px;z-index:3;background:var(--paper)}
+#panel .ttl{font-size:24px;font-weight:900}
+#panel .body{font-size:18px;font-weight:600;line-height:1.45;color:#2a2926}
+#panel .body b{font-weight:900;color:var(--red);margin-right:4px}
+</style></head>
 <body><div class="stage">
  <div class="rule"></div>
- <div class="dhead"><a class="back" data-def="4" href="../index.html#/4"><span>回到第 4 页</span></a><h1>DeepSeek Super-agent 架构图</h1><span class="tag">点击节点看说明 · 研究原型，非正式产品</span></div>
- <div id="note">点击任一节点看说明。<span class="red" style="font-weight:800">红线</span> = 同一 Thread 的后续消息由代码直送：路由看得到，但不判断、不转发。虚线 = Watchdog 独立巡检。</div>
- <div class="rule b"></div>
- <div class="foot"><span class="src">来源：DeepSeek Harness《Exploring Super-agent Design》，2026-10-31；github.com/deepseek-ai/dsh-superagent-prototype。各角色用什么模型可配置</span></div>
+ <div class="dhead">
+  <a class="back" data-def="8" href="../index.html#/8"><span>回到第 8 页</span></a>
+  <h1>DeepSeek Super-agent · 分层结构图</h1>
+  <span class="tag">研究原型 · 点击节点 · 【原文】与【讨论】分层</span>
+ </div>
+ <div class="legend">
+  <span><i class="o"></i>【原文】设计主张</span>
+  <span><i class="d"></i>【讨论】质疑 / 倾向</span>
+  <span><i class="p"></i>虚线 = Watchdog 独立巡检</span>
+  <span style="margin-left:auto;font-weight:800;color:var(--red)">红实线 = Thread 订阅直送（Router 可见不转发）</span>
+ </div>
+
+ <!-- Column headers -->
+ <div class="colh" style="left:96px;width:200px">01 · 事件源</div>
+ <div class="colh" style="left:360px;width:220px">02 · 过滤</div>
+ <div class="colh" style="left:650px;width:260px">03 · Router</div>
+ <div class="colh" style="left:980px;width:260px">04 · Worker</div>
+ <div class="colh" style="left:1310px;width:514px">05 · Watchdog / 环境</div>
+
+ <!-- SVG: same 1920×1080 stage coords as boxes. Centers measured from box left/top/w/h. -->
+ <svg class="flow" viewBox="0 0 1920 1080">
+  <defs>
+   <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#111"/></marker>
+   <marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0L10 5L0 10z" fill="#e4321b"/></marker>
+   <marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8d8a83"/></marker>
+  </defs>
+  <!-- events (right=296) → filter (left=360); cy of each event box -->
+  <path class="dim" d="M296 318 H360" marker-end="url(#ah)"/>
+  <path class="dim" d="M296 418 H360" marker-end="url(#ah)"/>
+  <path class="dim" d="M296 518 H360" marker-end="url(#ah)"/>
+  <path class="dim" d="M296 618 H360" marker-end="url(#ah)"/>
+  <!-- filter spine + into fast/slow/drop -->
+  <path d="M470 348 V548"/>
+  <path d="M470 348 H500" marker-end="url(#ah)"/>
+  <path d="M470 448 H500" marker-end="url(#ah)"/>
+  <path d="M470 548 H500" marker-end="url(#ah)"/>
+  <!-- filter outs (right=580) → router (left=650); mid heights -->
+  <path d="M580 348 H650" marker-end="url(#ah)"/>
+  <path d="M580 448 H650" marker-end="url(#ah)"/>
+  <!-- you (cy=318) ↔ router (cy=448) -->
+  <path d="M780 356 V410" marker-end="url(#ah)"/>
+  <!-- router (right=910, cy≈448) → workers (left=980) -->
+  <path d="M910 430 H945 V318 H980" marker-end="url(#ah)"/>
+  <path d="M910 448 H980" marker-end="url(#ah)"/>
+  <path d="M910 466 H945 V578 H980" marker-end="url(#ah)"/>
+  <!-- pass-through red: go under state/router, then up into Worker C -->
+  <path class="r" d="M580 648 H620 V720 H945 V578 H980" marker-end="url(#ahr)"/>
+  <!-- watchdog dashed from workers to wd -->
+  <path class="d" d="M1240 318 H1280 V380 H1310" marker-end="url(#ahg)"/>
+  <path class="d" d="M1240 448 H1310" marker-end="url(#ahg)"/>
+  <path class="d" d="M1240 578 H1280 V500 H1310" marker-end="url(#ahg)"/>
+ </svg>
+
+ <!-- 01 Events: left 96, w 200; tops 268/368/468/568; h 88 -->
+ <div class="box" data-id="im" style="left:96px;top:268px;width:200px;height:88px"><div class="k">IM</div><div class="t">私聊 / 群聊</div><div class="s">消息 = 事件</div></div>
+ <div class="box" data-id="gh" style="left:96px;top:368px;width:200px;height:88px"><div class="k">GitHub</div><div class="t">PR · Issue</div><div class="s">一个 PR = Thread</div></div>
+ <div class="box" data-id="mail" style="left:96px;top:468px;width:200px;height:88px"><div class="k">邮件</div><div class="t">邮件链</div><div class="s">异步高密度</div></div>
+ <div class="box" data-id="cron" style="left:96px;top:568px;width:200px;height:88px"><div class="k">定时</div><div class="t">Trigger</div><div class="s">驱动巡检等</div></div>
+
+ <!-- 02 Filter: left 360, w 220 -->
+ <div class="box" data-id="fast" style="left:360px;top:268px;width:220px;height:88px"><div class="k">Fast Path</div><div class="t">代码规则</div><div class="s">来源 · 群 · 白名单</div><div class="tagrow"><span>原文</span></div></div>
+ <div class="box" data-id="slow" style="left:360px;top:368px;width:220px;height:88px"><div class="k">Slow Path</div><div class="t">LLM 语义</div><div class="s">值得处理吗？</div><div class="tagrow"><span>原文</span></div></div>
+ <div class="box drop" data-id="drop" style="left:360px;top:468px;width:220px;height:88px"><div class="k">丢弃</div><div class="t">无关消息</div><div class="s">不进模型</div></div>
+ <div class="box hot" data-id="thread" style="left:360px;top:604px;width:220px;height:88px"><div class="k">订阅表</div><div class="t">Thread</div><div class="s">多对多 · 代码直送</div><div class="tagrow"><span class="r">讨论 · 可见≠协调</span></div></div>
+
+ <!-- 03 Router: left 650, w 260 -->
+ <div class="box" data-id="you" style="left:650px;top:268px;width:260px;height:88px"><div class="k">人</div><div class="t">你</div><div class="s">只对 Router 说话 · IM≤100 词</div></div>
+ <div class="box blk" data-id="router" style="left:650px;top:398px;width:260px;height:100px"><div class="k">常驻 · 通常轻量</div><div class="t">Router</div><div class="s">派发 · 协调 · 压缩对人</div><div class="tagrow"><span style="border-color:#8d8a83;color:#c9c6bf">原文 · 不拆解</span><span class="r" style="border-color:#ff8a78;color:#ff8a78">倾向 · 可更强</span></div></div>
+ <div class="box" data-id="state" style="left:650px;top:540px;width:260px;height:100px"><div class="k">状态</div><div class="t">数据库</div><div class="s">ID+摘要 · 引用图 · 领域对象</div><div class="tagrow"><span>原文 · 存算分离</span></div></div>
+
+ <!-- 04 Workers: left 980, w 260 -->
+ <div class="box" data-id="wA" style="left:980px;top:268px;width:260px;height:100px"><div class="k">Worker</div><div class="t">任务会话 A</div><div class="s">最强模型 · 全工具</div></div>
+ <div class="box" data-id="wB" style="left:980px;top:398px;width:260px;height:100px"><div class="k">Worker</div><div class="t">任务会话 B</div><div class="s">隔离并行</div></div>
+ <div class="box" data-id="wC" style="left:980px;top:528px;width:260px;height:100px"><div class="k">Worker</div><div class="t">任务会话 C</div><div class="s">可订阅 Thread</div><div class="tagrow"><span class="r">讨论 · 隔离↔缓存</span></div></div>
+
+ <!-- 05 Watchdog: left 1310 -->
+ <div class="box hot" data-id="wd" style="left:1310px;top:268px;width:514px;height:100px"><div class="k">独立于主系统</div><div class="t">Watchdog</div><div class="s">定时驱动 · 卡住 / 跑偏</div><div class="tagrow"><span>原文</span><span class="r">≈ 观察员 · 有成本</span></div></div>
+ <div class="box" data-id="daemon" style="left:1310px;top:398px;width:514px;height:100px"><div class="k">环境</div><div class="t">端上 daemon</div><div class="s">本机文件 · 工具 · BYOM · 计算/状态/环境分离</div><div class="tagrow"><span>原文</span></div></div>
+ <div class="box dash" data-id="judge" style="left:1310px;top:528px;width:514px;height:100px"><div class="k">我们的总判</div><div class="t" style="font-size:18px">Runtime 整合，不是新范式</div><div class="s">一对多不新；难在长期可靠低成本</div><div class="tagrow"><span class="r">讨论</span></div></div>
+
+ <div id="panel">
+  <div class="ttl" id="pt">点击节点</div>
+  <div class="body" id="pb">事件 → 过滤 → Router → Worker。红线 = Pass-through；虚线 = Watchdog。每个节点区分【原文】主张与【讨论】张力。</div>
+ </div>
 </div>
-<script>window.ARCH={
-nodes:[
- {x:96,y:250,w:220,h:80,t:'IM',s:'私聊 · 群聊 · 话题',note:'IM 消息作为事件进入系统；人不用开会话、盯会话。'},
- {x:96,y:360,w:220,h:80,t:'GitHub',s:'PR · issue · 评论',note:'PR、issue 与评论都是事件；一个 PR 就是一个 Thread。'},
- {x:96,y:470,w:220,h:80,t:'邮件',s:'邮件链',note:'异步渠道：可以给结构化、高密度的输出。一封邮件链就是一个 Thread。'},
- {x:96,y:580,w:220,h:80,t:'定时消息',s:'驱动 Watchdog 等',note:'定时消息也是事件，用来驱动巡检等周期性工作。'},
- {x:396,y:300,w:240,h:100,k:'Fast Path',t:'代码规则',s:'来源 · 群 · 白名单',note:'按来源、群、用户、bot 设白名单；每个来源可设「只响应显式请求 / 作为候选 / 忽略」。能用代码判断的，不交给模型。'},
- {x:396,y:450,w:240,h:100,k:'慢速路径',t:'LLM 语义判断',s:'值得处理吗？',note:'代码规则挡不住、又需要语义判断的事件，才交给 LLM。'},
- {x:396,y:600,w:240,h:70,c:'q',t:'丢弃',s:'',note:'无关消息不进模型，不花 token。'},
- {x:396,y:730,w:240,h:90,k:'订阅表',t:'Thread',s:'同一 PR · 话题 · 邮件链',note:'Thread = 同一件事的一串消息。会话在第一条事件时订阅；之后该 Thread 的消息由代码直送。不带话题的新消息自成新 Thread，交给路由判断；只有明确指向某个任务才挂上。挂错了可以交还路由。'},
- {x:806,y:250,w:120,h:64,t:'你',note:'人只和一个对象说话：路由。IM 回复每条 ≤100 词。'},
- {x:716,y:420,w:300,h:160,c:'b big',k:'常驻',t:'Router',s:'通常轻量模型 · 不持有 Bash',note:'负责所有人机交互、协调和记忆；只派发、不拆解 —— 这是它和 Agent Team 的区别。忙时到达的事件，下一轮合并注入（批处理）。'},
- {x:716,y:650,w:300,h:100,k:'状态',t:'数据库',s:'ID + 摘要 · 引用图',note:'上下文当缓存用：先只给 ID 和摘要，按需展开；超长截断留指针。对象组成引用图，路由可逐跳召回（Chain of Recall）。计算 / 状态 / 环境分离：云端无状态循环 + 数据库 + 端上 daemon。'},
- {x:1096,y:250,w:300,h:100,k:'Worker',t:'任务会话 A',s:'通常最强模型 · 全套工具',note:'一个任务一个隔离会话，通常配最强模型和全套工具，不直接和人说话。耗时工具改成异步，结果作为新事件回送。'},
- {x:1096,y:400,w:300,h:100,k:'Worker',t:'任务会话 B',s:'通常最强模型 · 全套工具',note:'多个任务会话并行推进；路由腾出手继续接话。'},
- {x:1096,y:550,w:300,h:100,k:'Worker',t:'任务会话 C',s:'订阅了某个 Thread',note:'订阅 Thread 的会话直接收到后续消息；路由看得到，但不判断、不转发。'},
- {x:1476,y:240,w:348,h:120,k:'独立于主系统',t:'Watchdog',s:'定时消息驱动',note:'独立的「巡夜人」：既处理 API 报错这类基础设施故障，也用模型判断任务有没有实质进展、有没有偏离目标。主链路挂了，它还在。'},
- {x:1476,y:700,w:348,h:100,k:'环境',t:'端上轻量 daemon',s:'本机文件 · 工具 · 设备',note:'计算 / 状态 / 环境分离：设备离线不影响云端循环继续。'}
-],
-edges:[
- {d:'M316 290 H356',noarrow:1},{d:'M316 400 H356',noarrow:1},{d:'M316 510 H356',noarrow:1},{d:'M316 620 H356',noarrow:1},
- {d:'M356 290 V775',noarrow:1},{d:'M356 350 H393'},
- {d:'M516 400 V447'},{d:'M516 550 V597'},
- {d:'M636 350 H676 V460 H713'},{d:'M636 500 H713'},
- {d:'M866 317 V417',both:1},{d:'M866 583 V647',both:1},
- {d:'M1016 500 H1056 V300 H1093'},{d:'M1016 500 H1056 V450 H1093'},{d:'M1016 500 H1056 V600 H1093',c:''},
- {d:'M1476 300 H1399',c:'d'},{d:'M1476 300 H1436 V450 H1399',c:'d'},{d:'M1476 300 H1436 V600 H1399',c:'d'},
- {d:'M1246 650 V750 H1473',c:'g'},
- {d:'M356 775 H393',c:'r'},{d:'M636 775 H1036 V630 H1093',c:'r'}
-],
-labels:[{x:96,y:232,t:'事件源',c:'g'},{x:660,y:812,t:'同一 Thread → 代码直送',c:'r'},{x:536,y:588,t:'无关',c:'g'},{x:1268,y:738,t:'环境',c:'g'}]
-};</script>
-<script src="../assets/detail.js"></script><script src="../assets/arch.js"></script>
-</body></html>
+<script src="../assets/detail.js"></script>
+<script>
+const N={
+ im:{t:'IM 事件',b:'<b>【原文】</b>消息是事件，不是同步会话；人说完可走开。<b>【讨论】</b>执行持续了，审核负担未必下降。'},
+ gh:{t:'GitHub',b:'<b>【原文】</b>PR/Issue/评论皆 Trigger；一个 PR = 一个 Thread。<b>【实践】</b>事件关联「恢复旧任务还是开新任务」仍是难点。'},
+ mail:{t:'邮件',b:'<b>【原文】</b>异步渠道给结构化高密度输出。<b>【讨论】</b>密度高不等于人愿意读——压缩与授权仍要设计。'},
+ cron:{t:'定时 Trigger',b:'<b>【原文】</b>定时消息驱动周期性工作（含 Watchdog）。<b>【讨论】</b>主动性前提是权限与白名单，不是默认可写。'},
+ fast:{t:'Fast Path',b:'<b>【原文】</b>来源/群/白名单先挡；能用代码判断的不进模型。<b>【倾向】</b>轻 Router 能成立，往往因为判断空间已被规则压小。'},
+ slow:{t:'Slow Path',b:'<b>【原文】</b>需语义判断才走 LLM。<b>【未验证】</b>慢路径误放/误杀率，在真实群聊噪声下如何。'},
+ drop:{t:'丢弃',b:'<b>【原文】</b>无关消息不进模型、不花 token。<b>【讨论】</b>误丢高优先级 @ 会直接变成「系统装聋」。'},
+ thread:{t:'Thread 订阅',b:'<b>【原文】</b>多对多订阅后代码直送；Router 可见不转发。<b>【讨论】</b>可见≠一致≠协调；冲突可能上浮压垮轻路由。'},
+ you:{t:'你',b:'<b>【原文】</b>人只与 Router 交互；IM ≤100 词。<b>【讨论】</b>这是在保护注意力，不是展示能力——压缩可能丢掉前提。'},
+ router:{t:'Router',b:'<b>【原文】</b>通常轻量、不持 Bash、只派发不拆解。<b>【倾向】</b>直接问答与冲突仲裁需要更强判断；能力可强，职责仍克制。'},
+ state:{t:'状态库',b:'<b>【原文】</b>Thread/Ticket/Mandate/Assignment 等对象；Inline&Spill + Chain of Recall。<b>【实践】</b>状态独立于 Session，才谈得上跨设备续跑。'},
+ wA:{t:'Worker A',b:'<b>【原文】</b>一任务一隔离 Session，强模型+全工具，不直接对人。<b>【质疑】</b>隔离换来干净，也切断隐性上下文与缓存。'},
+ wB:{t:'Worker B',b:'<b>【原文】</b>并行推进；耗时工具异步，结果当新事件回送。<b>【讨论】</b>并行度受任务依赖与冲突恢复成本限制。'},
+ wC:{t:'Worker C',b:'<b>【原文】</b>可订阅 Thread 收直送。<b>【讨论】</b>收到事件≠按同一版本理解；见 thread-conflict 动效。'},
+ wd:{t:'Watchdog',b:'<b>【原文】</b>独立于主系统的定时会话，查卡住与跑偏。<b>【实践】</b>≈架构观察员（只建议）。<b>【讨论】</b>消融：去掉后指标掉多少？'},
+ daemon:{t:'端上 daemon',b:'<b>【原文】</b>计算/状态/环境分离；BYOM；设备离线云端循环可续。<b>【讨论】</b>环境权限与注入面随主动性一起变大。'},
+ judge:{t:'总判',b:'<b>【讨论】</b>Super-agent 更像 Agent Runtime 的工程整合，不是新范式。真正难的是长期、可靠、低成本，并证明组件净收益。'}
+};
+const boxes=[...document.querySelectorAll('.box')];
+const pt=document.getElementById('pt'),pb=document.getElementById('pb');
+const intro={t:'点击节点',b:'事件 → 过滤 → Router → Worker。红线 = Pass-through；虚线 = Watchdog。每个节点区分【原文】主张与【讨论】张力。'};
+let sel=null;
+boxes.forEach(el=>{el.onclick=e=>{e.stopPropagation();const id=el.dataset.id;if(sel===el){el.classList.remove('on');sel=null;pt.textContent=intro.t;pb.innerHTML=intro.b;return}
+ boxes.forEach(x=>x.classList.remove('on'));el.classList.add('on');sel=el;const n=N[id];pt.textContent=n.t;pb.innerHTML=n.b}});
+document.querySelector('.stage').addEventListener('click',()=>{if(!sel)return;sel.classList.remove('on');sel=null;pt.textContent=intro.t;pb.innerHTML=intro.b});
+if(document.documentElement.classList.contains('shot')){const el=document.querySelector('[data-id=router]');el.classList.add('on');sel=el;pt.textContent=N.router.t;pb.innerHTML=N.router.b}
+</script></body></html>

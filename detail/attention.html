@@ -26,7 +26,7 @@
 </style></head>
 <body><div class="stage">
  <div class="rule"></div>
- <div class="dhead"><a class="back" data-def="2" href="../index.html#/2"><span>回到第 2 页</span></a><h1>会话越开越多，会发生什么？</h1><span class="tag">示意模拟：参数为假设，只演示机制，不是实测</span></div>
+ <div class="dhead"><a class="back" data-def="3" href="../index.html#/3"><span>回到第 2 页</span></a><h1>会话越开越多，会发生什么？</h1><span class="tag">示意模拟：参数为假设，只演示机制，不是实测</span></div>
  <div class="abs" style="left:96px;top:230px;width:560px">
   <div style="display:flex;gap:10px"><button class="btn on" id="mA">你直接盯每个会话</button><button class="btn" id="mB">入口替你盯</button></div>
   <div class="lbl" style="margin-top:44px">你的注意力 · 最多同时盯 5 个</div>
@@ -38,7 +38,7 @@
  </div>
  <div id="field"><div id="rbar">Router：接话 · 分派 · 转达<span>只把需要你拍板的事交给你</span></div><div id="ss"></div></div>
  <div class="rule b"></div>
- <div class="foot"><span class="src">原文：一个人一般只能同时跟进 3–5 个活跃会话。红框 = 正在等你；斜纹 = 等不到你，只能干等</span></div>
+ <div class="foot"><span class="src">【原文】3–5 会话上限 · 【讨论】入口替你盯 ≠ 认知不用切 · 下一页 entry-cognition 展开</span></div>
 </div>
 <script src="../assets/detail.js"></script>
 <script>
@@ -49,7 +49,7 @@ function add(){if(sess.filter(s=>s.p<100).length>=24)return;const s={id:id++,nam
  if(sess.length>24){const d=sess.findIndex(x=>x.p>=100);if(d>=0){sess[d].el.remove();sess.splice(d,1)}}}
 function reset(){sess=[];ss.innerHTML='';done=0;id=0;for(let i=0;i<4;i++)add()}
 function setMode(m){mode=m;$('mA').classList.toggle('on',m==='A');$('mB').classList.toggle('on',m==='B');$('field').classList.toggle('sa',m==='B');
- $('explain').textContent=m==='A'?'单会话模式：每个会话走几步就停下来等你确认；超过 5 个，多出来的只能干等。':'Super-agent 模式：Worker 自己往下跑，入口消化掉大部分确认，只有少数真正需要你拍板的才上来（示意参数）。'}
+ $('explain').textContent=m==='A'?'单会话模式：每个会话走几步就停下来等你确认；超过 5 个，多出来的只能干等。':'【示意】Worker 自跑，入口消化多数确认。但拍板时你仍要装载业务前提——见「入口≠认知」。'}
 function tick(){const act=sess.filter(s=>s.p<100);
  act.forEach(s=>{if(!s.need&&Math.random()<(mode==='A'?0.45:0.06))s.need=true});
  const need=act.filter(s=>s.need),watched=need.slice(0,CAP);

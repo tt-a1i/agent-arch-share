@@ -1,11 +1,10 @@
 # Agent 架构分享：DeepSeek Super-agent、Personal Agent 与我们的实践
 
-一套 HTML 演示稿（瑞士风格新版）。先讲 DeepSeek Super-agent 的架构（Router、任务会话、Thread 订阅与直送），再讲 personal agent，最后讲我们自己做的东西（Hive、bot 团队）和一些思考。主幻灯片里点进去可以看动画和架构详情页。
+v5 可交付候选：瑞士风格 HTML 演示稿。先讲 DeepSeek Super-agent 的架构（Router、任务会话、Thread 订阅与直送），再讲 personal agent，最后讲我们自己做的东西（Hive、bot 团队）和一些思考。主幻灯片里点进去可以看动画和架构详情页。
 
 **在线观看：** https://tt-a1i.github.io/agent-arch-share/
 
 ![主幻灯片预览](shots/contact-main.jpg)
-![架构动画预览](shots/contact-anim.jpg)
 
 ## 键盘操作
 - `←` / `→`、空格：翻页 / 下一步
@@ -19,4 +18,11 @@
 ```bash
 python3 -m http.server 8000
 # 打开 http://localhost:8000/
+```
+
+## 回退
+本仓库 Pages 源为 `main` 根目录。若需回到上一版，可用：
+```bash
+git revert HEAD
+# 或：git reset --hard <上一 commit> && git push
 ```
