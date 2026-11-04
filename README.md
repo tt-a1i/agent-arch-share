@@ -1,4 +1,4 @@
-# 一个人，怎么同时带好几个 Agent？
+# 从单会话到 Super-agent
 
 面向团队的技术分享：读 DeepSeek《Super-agent》设计文和开源原型的笔记，共 41 页，分五段：
 

@@ -14,7 +14,7 @@ const count=s=>s.querySelectorAll('[data-count]').forEach(el=>{const to=parseFlo
  (function f(t){const k=Math.max(0,Math.min(1,(t-t0-dl)/1100)),e=1-Math.pow(1-k,3);el.textContent=pre+(to*e).toFixed(dec)+suf;if(k<1)requestAnimationFrame(f)})(t0)});
 const go=(n,full)=>{const prev=i;i=Math.max(0,Math.min(S.length-1,n));S.forEach((s,k)=>s.classList.toggle('on',k===i));pg.style.width=((i+1)/S.length*100)+'%';
  frags(S[i]).forEach(f=>f.classList.toggle('in',!!full||SHOT));if(prev!==i||!S[i].dataset.seen){S[i].dataset.seen=1;count(S[i])}
- const h='#/'+(i+1);if(location.hash!==h)history.replaceState(null,'',location.pathname+location.search+h);document.title=(S[i].dataset.title||'')+' · 一个人，怎么同时带好几个 Agent？'};
+ const h='#/'+(i+1);if(location.hash!==h)history.replaceState(null,'',location.pathname+location.search+h);document.title=(S[i].dataset.title||'')+' · 从单会话到 Super-agent'};
 const next=()=>{const fs=frags(S[i]),f=fs.find(x=>!x.classList.contains('in'));if(!f)return go(i+1);
  const g=f.dataset.f;fs.filter(x=>x===f||(g&&x.dataset.f===g)).forEach(x=>x.classList.add('in'))};
 const prev=()=>{if(i>0)go(i-1,true)};
