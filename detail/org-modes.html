@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>组织级 A2A 协作拓扑：共享状态层 vs 中心化大脑</title>
+<link rel="stylesheet" href="../assets/d.css">
+<style>
+.legend{position:absolute;left:96px;right:96px;top:182px;display:flex;gap:22px;align-items:center;font-size:17px;font-weight:700}
+.legend i{display:inline-block;width:22px;height:10px;margin-right:8px;vertical-align:middle}
+.legend .o{background:var(--ink)}.legend .d{background:var(--red)}
+.mode{position:absolute;border:3px solid var(--ink);background:#fff;padding:20px 22px;cursor:pointer;transition:box-shadow .15s,border-color .15s,background .15s}
+.mode:hover{box-shadow:0 0 0 4px rgba(228,50,27,.2)}
+.mode.on{border-color:var(--red);box-shadow:0 0 0 4px rgba(228,50,27,.15)}
+.mode.pick{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mode.pick .k,.mode.pick .risk{color:#8d8a83}.mode.pick .s{color:#c9c6bf}
+.mode .k{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--g2)}
+.mode .t{font-size:28px;font-weight:900;margin-top:8px;line-height:1.2}
+.mode .s{font-size:17px;font-weight:600;color:var(--g1);margin-top:10px;line-height:1.45}
+.mode .risk{font-size:15px;font-weight:800;margin-top:14px;padding-top:12px;border-top:2px solid var(--g3);color:var(--g1);line-height:1.35}
+.mode .risk b{color:var(--red)}
+.mode.fav{border-color:var(--red)}
+.schem{position:absolute;left:96px;right:96px;top:560px;height:200px;border:3px solid var(--ink);background:#fff;padding:18px 22px}
+.schem .ttl{font-size:16px;font-weight:800;color:var(--g2);letter-spacing:.06em;text-transform:uppercase}
+.schem .row{display:flex;align-items:center;gap:14px;margin-top:16px;flex-wrap:wrap}
+.schem .node{border:3px solid var(--ink);padding:10px 16px;font-size:18px;font-weight:900;background:var(--paper)}
+.schem .node.c{background:var(--ink);color:#fff}
+.schem .node.r{border-color:var(--red);color:var(--red);background:#fff}
+.schem .arr{font-size:22px;font-weight:900;color:var(--g2)}
+.schem .note{font-size:17px;font-weight:700;color:var(--ink);margin-top:16px;line-height:1.45}
+#panel{position:absolute;left:96px;right:96px;bottom:28px;height:100px;border-top:6px solid var(--ink);padding-top:14px;display:grid;grid-template-columns:240px 1fr;gap:20px;background:var(--paper)}
+#panel .ttl{font-size:24px;font-weight:900}
+#panel .body{font-size:18px;font-weight:600;line-height:1.45;color:#2a2926}
+#panel .body b{font-weight:900;color:var(--red);margin-right:4px}
+</style></head>
+<body><div class="stage">
+ <div class="rule"></div>
+ <div class="dhead">
+  <a class="back" data-def="25" href="../index.html#/25"><span>回到第 25 页</span></a>
+  <h1>组织级 Agent 协作：三种拓扑模式对照</h1>
+  <span class="tag">点击卡片切换结构示意 · 延伸推演（待实验验证）</span>
+ </div>
+ <div class="legend">
+  <span><i class="o"></i>数据与指令流向示意</span>
+  <span><i class="d"></i>核心优劣与治理边界</span>
+  <span style="margin-left:auto;font-weight:800;color:var(--red)">不预设唯一终局 · 按权限、冲突率与维护成本取舍</span>
+ </div>
+
+ <div class="mode" data-id="a" style="left:96px;top:230px;width:560px;height:290px">
+  <div class="k">模式 A</div>
+  <div class="t">中心化组织 Super-agent</div>
+  <div class="s">全公司或全团队共用一个「超级大脑」实例，集中读取所有人的上下文并统一派发任务。</div>
+  <div class="risk"><b>主要顾虑：</b>中心 Router 极易成为吞吐与判断瓶颈；所有隐私与执行权限汇于一点，被注入或越权的爆炸半径太大。</div>
+ </div>
+ <div class="mode" data-id="b" style="left:680px;top:230px;width:560px;height:290px">
+  <div class="k">模式 B</div>
+  <div class="t">纯分布式个人 Agent 点对点</div>
+  <div class="s">每个人、每个职能只管自己的个人 Agent，默认不共享状态，有事通过点对点发消息协商。</div>
+  <div class="risk"><b>主要顾虑：</b>权限与隐私边界最清楚，但缺少共同维护的项目状态对象，跨人依赖、版本漂移与来回协商成本高。</div>
+ </div>
+ <div class="mode fav" data-id="c" style="left:1264px;top:230px;width:560px;height:290px">
+  <div class="k">模式 C · 我们更看好的方向</div>
+  <div class="t">带权限的共享状态层 + 分层 Agent</div>
+  <div class="s">中心不是一个包揽一切的大脑，而是一套可验证、带读写权限的项目状态层（工单、依赖、证据、决策边界）。</div>
+  <div class="risk"><b>核心优势：</b>个人 Agent 保守隐私，只把核验过的状态同步上来；状态可共享，重大决定权仍分层归人。</div>
+ </div>
+
+ <div class="schem" id="schem">
+  <div class="ttl" id="st">结构示意</div>
+  <div class="row" id="sr"></div>
+  <div class="note" id="sn"></div>
+ </div>
+
+ <div id="panel">
+  <div class="ttl" id="pt">点选一种模式</div>
+  <div class="body" id="pb">三种拓扑各有适用范围：几个人的紧密小队也许模式 A 就能跑通；跨部门协作则更需要模式 C 的权限隔离与显式状态契约。</div>
+ </div>
+</div>
+<script src="../assets/detail.js"></script>
+<script>
+const M={
+ a:{t:'模式 A · 中心化大脑',
+    b:'<b>优点：</b>全局上下文集中，初期搭建快。<b>风险：</b>把知识边界、执行边界和决策边界混在同一个进程里；一旦规模变大，冲突仲裁和权限审计都会集中卡死在中心节点。',
+    st:'拓扑示意 · 单一中心大脑统管全局',
+    nodes:[['c','组织级 Super-agent（全量上下文+全权限）'],['arr','→'],['node','成员 A 的环境'],['arr','·'],['node','成员 B 的环境'],['arr','·'],['node','生产仓库 / 工具']],
+    sn:'所有读写与工具调用都穿过中心大脑——单点故障与提示注入风险最高。'},
+ b:{t:'模式 B · 纯分布式点对点',
+    b:'<b>优点：</b>每个人的 Agent 只代表自己，隐私与权限天然隔离。<b>风险：</b>当五个人协同改同一个版本时，两两发消息同步很容易出现「收到但没按同一版前提改」的状态漂移。',
+    st:'拓扑示意 · 个人 Agent 之间点对点发消息',
+    nodes:[['node','你的个人 Agent'],['arr','⇄'],['node','同事 A 的 Agent'],['arr','⇄'],['node','同事 B 的 Agent'],['arr','?'],['r','缺少唯一可信的项目状态']],
+    sn:'没有共同维护的状态账本，跨人冲突和进度对齐只能靠反复发消息确认。'},
+ c:{t:'模式 C · 共享状态层 + 分层协作',
+    b:'<b>核心思路：</b>把「共享什么信息」和「谁有权调用什么工具、做什么决定」彻底拆开。个人 Agent 从本地工作现场提炼候选事件，核验后写入共享项目状态；项目级 Agent 做依赖检查与提醒，关键拍板仍归责任人。',
+    st:'拓扑示意 · 围绕带权限的共享状态层协作',
+    nodes:[['node','个人 Agent（本地隐私）'],['arr','→ 授权同步 →'],['r','带权限的共享项目状态（任务/依赖/证据）'],['arr','⇄'],['node','项目协调 Agent'],['arr','→'],['c','责任人拍板']],
+    sn:'这其实也是我们 bot 团队「共享文件夹交接」和 Hive「tasks.md + 水位协议」往团队规模的自然延伸。'}
+};
+function paint(id){
+ const m=M[id];
+ document.querySelectorAll('.mode').forEach(el=>{
+  el.classList.toggle('on',el.dataset.id===id);
+  el.classList.toggle('pick',el.dataset.id===id);
+ });
+ document.getElementById('pt').textContent=m.t;
+ document.getElementById('pb').innerHTML=m.b;
+ document.getElementById('st').textContent=m.st;
+ document.getElementById('sn').textContent=m.sn;
+ const sr=document.getElementById('sr');sr.innerHTML='';
+ m.nodes.forEach(([k,t])=>{
+  if(k==='arr'){const s=document.createElement('span');s.className='arr';s.textContent=t;sr.appendChild(s)}
+  else{const s=document.createElement('span');s.className='node'+(k==='c'?' c':k==='r'?' r':'');s.textContent=t;sr.appendChild(s)}
+ });
+}
+document.querySelectorAll('.mode').forEach(el=>{
+ el.onclick=e=>{e.stopPropagation();paint(el.dataset.id);history.replaceState(null,'',location.pathname+location.search+'#mode='+el.dataset.id)}
+});
+const hm=(location.hash+'').match(/mode=([abc])/i);
+paint(hm?hm[1].toLowerCase():'c');
+addEventListener('hashchange',()=>{const m=(location.hash+'').match(/mode=([abc])/i);if(m)paint(m[1].toLowerCase())});
+</script></body></html>

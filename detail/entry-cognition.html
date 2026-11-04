@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>入口管理成本 ≠ 脑子里的认知切换成本</title>
+<link rel="stylesheet" href="../assets/d.css">
+<style>
+.pane{position:absolute;top:210px;bottom:130px;border:3px solid var(--ink);background:#fff;overflow:hidden}
+.pane h3{height:56px;display:flex;align-items:center;padding:0 22px;font-size:24px;font-weight:900;border-bottom:3px solid var(--ink);background:var(--paper)}
+.pane h3 em{font-style:normal;color:var(--red);margin-left:12px;font-size:18px}
+.tabs{display:flex;gap:0;border-bottom:3px solid var(--ink);background:var(--paper)}
+.tabs i{flex:1;height:48px;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:17px;font-weight:800;border-right:2px solid var(--ink);opacity:.45;transition:all .35s;cursor:pointer}
+.tabs i:last-child{border-right:0}
+.tabs i.on{opacity:1;background:var(--ink);color:#fff}
+.tabs i.flash{background:var(--red);color:#fff;opacity:1}
+.body{padding:28px 24px}
+.body .ctx{font-size:32px;font-weight:900;line-height:1.25;min-height:82px}
+.body .cost{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.body .cost b{display:block;font-size:56px;font-weight:900;letter-spacing:-.03em;line-height:.9}
+.body .cost span{display:block;font-size:17px;font-weight:700;color:var(--g1);margin-top:8px}
+.brain{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:220px;text-align:center;z-index:5;pointer-events:none}
+.brain .orb{width:128px;height:128px;margin:0 auto;border:6px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;background:var(--paper);transition:border-color .35s,background .35s,color .35s,transform .35s}
+.brain .orb.hot{border-color:var(--red);background:var(--red);color:#fff;transform:scale(1.12)}
+.brain .lbl{margin-top:14px;font-size:18px;font-weight:800;white-space:nowrap}
+.arrow{position:absolute;left:50%;top:42%;width:0;height:0;border-left:18px solid transparent;border-right:18px solid transparent;border-top:28px solid var(--red);opacity:0;transition:opacity .3s;transform:translateX(-50%)}
+.arrow.show{opacity:1}
+.meter{position:absolute;left:96px;right:96px;bottom:34px;height:48px;display:flex;align-items:center;gap:24px}
+.meter .bar{flex:1;height:14px;background:var(--g4);position:relative}
+.meter .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--red);transition:width .5s}
+.cap{position:absolute;left:96px;right:96px;top:120px;display:flex;align-items:center;gap:20px}
+.cap .verdict{margin-left:auto;font-size:20px;font-weight:800;max-width:660px;text-align:right;line-height:1.4}
+</style></head>
+<body><div class="stage">
+ <div class="rule"></div>
+ <div class="cap">
+  <a class="back" data-def="4" href="../index.html#/4"><span>回到第 4 页</span></a>
+  <h1 style="font-size:28px;font-weight:900">入口切换 ≠ 认知重载</h1>
+  <div style="display:flex;gap:10px;margin-left:16px">
+   <button class="btn on" id="mA">模式 A：五个窗口自己盯</button>
+   <button class="btn" id="mB">模式 B：合成一个统一入口</button>
+   <button class="btn" id="play">播放 5 次任务切换</button>
+  </div>
+  <div class="verdict" id="verdict">把五个窗口合成一个入口，省了找窗口的操作；但五套业务背景仍要你在脑子里来回装载。</div>
+ </div>
+
+ <div class="pane" id="left" style="left:96px;width:780px">
+  <h3>你看到的界面<em id="uiTag">5 个独立会话窗口</em></h3>
+  <div class="tabs" id="tabs"></div>
+  <div class="body">
+   <div class="ctx" id="ctx">PR #482 · 布局模块接口变更</div>
+   <div class="cost">
+    <div><b id="cEntry">0</b><span>界面入口切换次数（找窗口）</span></div>
+    <div><b id="cCog" class="red">0</b><span>大脑认知重载次数（换业务前提）</span></div>
+   </div>
+   <p class="small" style="margin-top:28px;color:var(--ink);font-weight:600;line-height:1.55" id="note">每个窗口各自持有一段业务上下文。切一次窗口，既要切界面，也要在脑子里换一套问题。</p>
+  </div>
+ </div>
+
+ <div class="brain"><div class="orb" id="orb">你的大脑</div><div class="lbl" id="blbl">工作记忆 · 一次一件事</div><div class="arrow" id="arr"></div></div>
+
+ <div class="pane" id="right" style="right:96px;width:780px">
+  <h3>背后同时在推进的 5 件事<em id="sysTag">分散会话</em></h3>
+  <div class="body" style="padding-top:28px">
+   <div id="sysRows"></div>
+   <p class="small" style="margin-top:26px;border-left:8px solid var(--red);padding-left:18px;color:var(--ink);font-weight:700;line-height:1.55" id="claim">
+     真正决定人累不累的，不只是「开了几个聊天窗口」，而是「每次请你拍板时，你得重新回忆多少前因后果」。
+   </p>
+  </div>
+ </div>
+
+ <div class="rule b"></div>
+ <div class="meter">
+  <span class="src" style="flex:0 0 auto;width:280px">大脑上下文装载负担（示意）</span>
+  <div class="bar"><i id="loadBar" style="width:30%"></i></div>
+  <span class="src" style="flex:0 0 auto;font-weight:800;color:var(--ink)" id="loadTxt">点「模式 B」对比两种入口下的计数变化</span>
+ </div>
+</div>
+<script src="../assets/detail.js"></script>
+<script>
+const TASKS=[
+ {n:'PR #482',d:'布局模块接口变更 · 要不要现在合并？',sys:'Worker A 等你确认 merge 风险'},
+ {n:'邮件链',d:'合作方延期两天 · 会影响下周发版吗？',sys:'邮件 bot 已整理完影响范围'},
+ {n:'研发群',d:'产品问「这周五能不能先灰度？」',sys:'Thread 已订阅，等你定口径'},
+ {n:'CI 告警',d:'核心回归红了 · 追根因还是先回滚？',sys:'Watchdog 标红：卡住无进展'},
+ {n:'技术调研',d:'dots 的凭证隔离怎么实现的？',sys:'调研 bot 交来半份对比笔记'}
+];
+const SHOT=document.documentElement.classList.contains('shot');
+let mode='A',idx=0,entry=0,cog=0;
+const tabs=document.getElementById('tabs'),sys=document.getElementById('sysRows');
+TASKS.forEach((t,i)=>{
+ const el=document.createElement('i');el.textContent=t.n;el.onclick=()=>jump(i);tabs.appendChild(el);
+ const r=document.createElement('div');
+ r.style.cssText='display:grid;grid-template-columns:130px 1fr;gap:12px;padding:13px 0;border-bottom:2px solid var(--ink);font-size:19px;transition:background .25s';
+ r.innerHTML='<b style="font-weight:900">'+t.n+'</b><span style="color:var(--g1);font-weight:600">'+t.sys+'</span>';
+ sys.appendChild(r);t.row=r;t.tab=el;
+});
+function paint(){
+ [...tabs.children].forEach((t,i)=>t.classList.toggle('on',mode==='B'?i===0:i===idx));
+ TASKS.forEach((t,i)=>{t.row.style.background=i===idx?'#f7d6cf':'transparent'});
+ document.getElementById('ctx').textContent=TASKS[idx].d;
+ document.getElementById('cEntry').textContent=entry;
+ document.getElementById('cCog').textContent=cog;
+ const load=Math.min(100,25+cog*14+(mode==='A'?15:4));
+ document.getElementById('loadBar').style.width=load+'%';
+ document.getElementById('loadTxt').textContent=load>75?'高 · 连续切换五套不相关项目前提':load>50?'中 · 脑子仍在频繁换频道':'低 · 刚开始切换';
+ document.getElementById('uiTag').textContent=mode==='A'?'5 个独立会话窗口':'1 个统一对话入口';
+ document.getElementById('sysTag').textContent=mode==='A'?'各自独立等你回应':'Router 汇总后依然请你拍板';
+ document.getElementById('note').textContent=mode==='A'
+  ?'模式 A：每换一件事，既要在界面上找窗口（左计数 +1），也要在脑子里换一套业务前提（右计数 +1）。'
+  :'模式 B：界面始终停在同一个 Router 窗口（左计数只计 1），但每条汇报背后仍是不同项目，脑子里的认知重载一次没少（右计数照样 +5）！';
+ document.getElementById('verdict').textContent=mode==='A'
+  ?'模式 A（五窗口）：窗口切换次数与大脑认知重载次数同步飙升。'
+  :'模式 B（统一入口）：界面切换降到了 1，但大脑依然要装卸载 5 套不同的项目背景。';
+}
+function jump(i){
+ if(i===idx)return;
+ const orb=document.getElementById('orb'),arr=document.getElementById('arr');
+ orb.classList.add('hot');arr.classList.add('show');TASKS[i].tab.classList.add('flash');
+ setTimeout(()=>{
+  idx=i;
+  if(mode==='A')entry++; else if(entry===0)entry=1;
+  cog++;
+  orb.classList.remove('hot');arr.classList.remove('show');TASKS[i].tab.classList.remove('flash');
+  paint();
+ },420);
+}
+function setMode(m){
+ mode=m;entry=m==='B'?1:0;cog=0;idx=0;
+ document.getElementById('mA').classList.toggle('on',m==='A');
+ document.getElementById('mB').classList.toggle('on',m==='B');
+ if(m==='B'){
+  [...tabs.children].forEach((t,i)=>{t.textContent=i===0?'统一入口 · Router 摘要流':TASKS[i].n;t.style.flex=i===0?'2.4':'1';t.style.opacity=i===0?'1':'.35'});
+ }else{
+  [...tabs.children].forEach((t,i)=>{t.textContent=TASKS[i].n;t.style.flex='1';t.style.opacity=''});
+ }
+ paint();play();
+}
+let playing=false;
+async function play(){
+ if(playing)return;playing=true;
+ entry=mode==='B'?1:0;cog=0;idx=0;paint();
+ const order=[1,3,0,4,2];
+ for(const i of order){
+  await new Promise(r=>setTimeout(r,520));
+  jump(i);
+  await new Promise(r=>setTimeout(r,480));
+ }
+ playing=false;
+}
+document.getElementById('mA').onclick=()=>setMode('A');
+document.getElementById('mB').onclick=()=>setMode('B');
+document.getElementById('play').onclick=play;
+if(SHOT){mode='B';entry=1;cog=5;idx=2;paint()}
+else setTimeout(play,500);
+</script></body></html>
