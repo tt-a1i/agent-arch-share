@@ -279,12 +279,12 @@ html.shot .m1,html.shot .m2{opacity:0}
 <div class="pt"><div class="pk2" style="font-size:36px">全塞进一个会话</div></div>
 <svg width="540" height="250" viewBox="0 0 540 250" style="margin-top:10px"><g fill="#111"><circle cx="40" cy="40" r="10"/><circle cx="40" cy="85" r="10"/><circle cx="40" cy="130" r="10"/><circle cx="40" cy="175" r="10"/><circle cx="40" cy="220" r="10"/></g>
 <g class="ln thin"><path d="M50 40 C170 40 170 130 290 130"/><path d="M50 85 C170 85 170 130 290 130"/><path d="M50 130 L290 130"/><path d="M50 175 C170 175 170 130 290 130"/><path d="M50 220 C170 220 170 130 290 130"/></g><rect x="290" y="80" width="200" height="100" fill="#111"/><text x="390" y="138" text-anchor="middle" class="svt w">一个会话</text></svg>
-<div class="tgs" style="margin-top:14px"><span class="tg ok">上下文连贯</span><span class="tg no">一步一步，慢</span><span class="tg no">几件事串味</span></div></div>
+<div class="tgs" style="margin-top:14px"><span class="tg ok">上下文连贯</span><span class="tg no">等工具时卡住</span><span class="tg no">几件事串味</span></div></div>
 <div class="abs f" data-f="1" style="left:690px;top:390px;width:540px">
-<div class="pt"><div class="pk2" style="font-size:36px">每件事新开一个</div></div>
+<div class="pt"><div class="pk2" style="font-size:36px">每件事开一个 <span class="g2" style="font-size:24px">像开 5 个窗口</span></div></div>
 <svg width="540" height="250" viewBox="0 0 540 250" style="margin-top:10px"><g fill="#111"><circle cx="40" cy="40" r="10"/><circle cx="40" cy="85" r="10"/><circle cx="40" cy="130" r="10"/><circle cx="40" cy="175" r="10"/><circle cx="40" cy="220" r="10"/></g>
 <g class="ln thin"><path d="M50 40 L290 40"/><path d="M50 85 L290 85"/><path d="M50 130 L290 130"/><path d="M50 175 L290 175"/><path d="M50 220 L290 220"/></g><g fill="#f3f2ee" stroke="#111" stroke-width="3"><rect x="290" y="24" width="160" height="32"/><rect x="290" y="69" width="160" height="32"/><rect x="290" y="114" width="160" height="32"/><rect x="290" y="159" width="160" height="32"/><rect x="290" y="204" width="160" height="32"/></g></svg>
-<div class="tgs" style="margin-top:14px"><span class="tg ok">并行，快</span><span class="tg no">没有全局</span><span class="tg no">各回各的</span></div></div>
+<div class="tgs" style="margin-top:14px"><span class="tg ok">并行，快</span><span class="tg no">人来回切</span><span class="tg no">没有全局</span></div></div>
 <div class="abs f" data-f="2" style="left:1284px;top:390px;width:540px">
 <div class="pt r"><div class="pk2 red" style="font-size:36px">分两层</div></div>
 <svg width="540" height="250" viewBox="0 0 540 250" style="margin-top:10px"><g fill="#111"><circle cx="40" cy="40" r="10"/><circle cx="40" cy="85" r="10"/><circle cx="40" cy="130" r="10"/><circle cx="40" cy="175" r="10"/><circle cx="40" cy="220" r="10"/></g>
@@ -293,7 +293,10 @@ html.shot .m1,html.shot .m2{opacity:0}
 <g fill="#f3f2ee" stroke="#111" stroke-width="3"><rect x="370" y="35" width="150" height="40"/><rect x="370" y="110" width="150" height="40"/><rect x="370" y="185" width="150" height="40"/></g></svg>
 <div class="tgs" style="margin-top:14px"><span class="tg ok">连贯</span><span class="tg ok">并行</span></div></div>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">（按 → 逐个出现）
+<div class="notes">一句话：一个会话太挤，五个会话太散，所以分两层。
+别说错：「多个会话不好并发」是错的——多个会话本来就能并行，卡的是人要来回切。真正会被同步工具卡住的，是「一个会话里塞所有事」。
+被问到「单会话加 subagent 不也行吗」：可以，但要靠 prompt 让它记得委派，后面实验会看到这不稳。
+（按 → 逐个出现）
 这是连续性和吞吐之间的取舍。
 全塞一个会话：上下文最连贯，因为它什么都看得到；但 ReAct 一次走一步，任务一多就慢，几件事的中间过程混在一起，结果也会变差。
 每件事开一个新会话：并发最高；但任务之间不完全独立时，没有全局上下文，结果对不上；几个会话分别回复你，也很乱。
@@ -322,7 +325,9 @@ html.shot .m1,html.shot .m2{opacity:0}
 <div class="abs f" data-f="1" style="left:640px;top:730px;width:360px"><div class="tgs"><span class="tg">不拿命令行</span><span class="tg">通常用轻模型</span></div></div>
 <div class="abs f" data-f="1" style="left:1160px;top:820px;width:700px"><div class="tgs"><span class="tg">一任务一会话</span><span class="tg">全套工具</span><span class="tg">强模型</span><span class="tg no">不直接找你</span></div></div>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span><a class="go" href="detail/arch-deepseek.html?from=12">完整结构图</a><a class="go" href="detail/architecture-in-motion.html?from=12">看一条消息怎么走</a></div>
-<div class="notes">Router 层：所有和人的交互、跨任务的信息和决策都汇在这里，是全局的顺序点、协调点和记忆。为了不让它自己变成瓶颈，它不执行任务，只和人打交道、派活，可以完全不给 Bash。
+<div class="notes">一句话：前台管「对人说话、派给谁」，Worker 管「把事做完」。
+别说错：别说「所有消息都由 Router 转发」——已经有主人的后续消息是代码直送的（后面第 16 页）。
+Router 层：所有和人的交互、跨任务的信息和决策都汇在这里，是全局的顺序点、协调点和记忆。为了不让它自己变成瓶颈，它不执行任务，只和人打交道、派活，可以完全不给 Bash。
 Worker 层：每个任务一个隔离会话，全套执行工具，直接决定代码质量，所以一般用最强的模型。Worker 不直接跟人说话，推理过程和工具调用不外泄，状态汇报给前台，由前台统一回复。
 两层是逻辑分工，内部不一定各是一个会话：Worker 内部可以再开 subagent，甚至本身就是一个 Agent Team，前台不用关心。
 右下两个按钮：一个是可点击的完整结构图，一个是 7 步动画。</div>
@@ -350,7 +355,9 @@ Worker 层：每个任务一个隔离会话，全套执行工具，直接决定�
 <text x="140" y="267" text-anchor="middle" class="svt">修 bug</text><text x="410" y="267" text-anchor="middle" class="svt">审 PR</text><text x="680" y="267" text-anchor="middle" class="svt">写功能</text></svg>
 <p class="cap" style="margin-top:16px">几件互不相干的事，<br>前台只管派给谁、谁和谁有关</p></div>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">乍一看，一个中心派活给几个执行者，很像常见的 Agent Team。但关注点不同：
+<div class="notes">一句话：DeepSeek 限制的是前台的「执行职责」，不是它的「智力」。
+别说错：别说「作者主张 Router 越轻越好、越笨越好」。原文是：前台不拆解、不执行，所以活比想象中简单，轻模型「通常」够用。能力和职责是两个维度，第 40 页会展开我们的看法。
+乍一看，一个中心派活给几个执行者，很像常见的 Agent Team。但关注点不同：
 Agent Team 通常把一个复杂任务拆成紧耦合的步骤，队长要深入理解任务、规划子任务、频繁协调成员，推理负担很重。
 Super-agent 的前台只派发任务、在高层跟踪任务之间的关系，不拆解单个任务。
 所以作者的经验是：前台的活往往比想象中简单，轻一点的模型通常就能兼顾速度和质量。注意原文是「通常」，不是规定。
@@ -407,7 +414,10 @@ Super-agent 的前台只派发任务、在高层跟踪任务之间的关系，�
 <div class="abs lbl f" data-f="1" style="left:96px;top:370px;font-size:30px">约 300 条</div>
 <div class="abs lbl red f" data-f="1" style="left:1600px;top:370px;font-size:30px">约 20 条</div>
 <div class="rule b"></div><div class="foot"><span class="src">300 / 20 是他们实验负载里的比例</span><a class="go" href="detail/arch-deepseek.html?from=15">完整结构图</a></div>
-<div class="notes">Super-agent 的主要输入不再是人一句句敲的 prompt，而是环境里的半结构化事件：群聊、邮件、日历提醒、代码评审评论、CI 结果……原文统一叫 Trigger。
+<div class="notes">一句话：两道筛子管的是「要不要处理」；下一页的直送管的是「交给谁」。
+举例：CI 失败、群里随口一句「这个页面好像有点慢」——第一道看来源和名单，第二道让模型判断值不值得管。
+注意：CI 成功也不能一律丢掉，如果有 Worker 正在等这个结果，就得通知它。规则看的是事件加上系统当前状态。
+Super-agent 的主要输入不再是人一句句敲的 prompt，而是环境里的半结构化事件：群聊、邮件、日历提醒、代码评审评论、CI 结果……原文统一叫 Trigger。
 接进真实群聊和代码平台，事件流噪声大、需要动手的比例很低。每条都让大模型从头判断，延迟和算力都受不了。
 他们借了计算机系统的 Fast Path / Slow Path：
 第一道是代码：按来源、群、用户或 bot 白名单做确定性准入。每个来源可以设成「只响应明确请求」「当作候选」或「忽略」。大部分消息在这里就被挡掉，不花一个 token。
@@ -436,11 +446,38 @@ Super-agent 的前台只派发任务、在高层跟踪任务之间的关系，�
 <div class="bx redb f" data-f="1" style="left:1400px;top:740px;width:424px;height:120px"><div class="t">另一个 Worker</div><div class="s">也订阅了 → 自己发现冲突</div></div>
 <p class="abs small rv" style="--d:5;left:120px;top:890px;width:1200px">话题 = 同一个 PR、同一串群聊回复、同一封邮件往来</p>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span><a class="go" href="detail/handoff.html?from=16">动画对比：经前台 vs 直送</a></div>
-<div class="notes">Fast/Slow 的思路也用在路由上：前台只处理新任务的冷启动和跨任务协调，已有主人的后续事件由代码直接送达。
+<div class="notes">一句话：已经有主人的消息，用代码查订阅表直接送，不用再让前台的模型判断一次。
+别说错：别说两件事「强一致」——那是分布式里讲数据读写的术语。这里说「有明确的归属关系」就行。
+被问到「省的是什么」：省的是前台多一轮模型判断、多读一遍长上下文；Worker 照样要读这条消息、照样要干活。
+Fast/Slow 的思路也用在路由上：前台只处理新任务的冷启动和跨任务协调，已有主人的后续事件由代码直接送达。
 同一个 PR、同一串话题回复、同一封邮件往来，原文叫一个 Thread。前台为一个 Thread 的第一个事件派了 Worker 后，这个 Worker 就订阅这个 Thread；之后的事件由代码直接送过去，前台不用再调一次工具去转发。前台仍然能看到所有事件，用来掌握全局，但只评估还没有订阅者的新事件。
 如果新事件不属于当前任务，Worker 可以退订，或交还给前台重新派。
 （按 →）订阅是多对多的：几个 Worker 订阅同一个 Thread，就能同时收到同样的事件，自己发现并解决冲突，不需要点对点通信。
 原型里：飞书按话题根消息归并，GitHub 按 issue/PR 号。主聊天里不带话题的新消息，前台只有在它明确指向某个工单时才归过去——原型文档原话是「话题相似不够」。</div>
+</section>
+
+<!-- 谁收 ≠ 谁拍板 -->
+<section class="slide" data-title="谁收到和谁拍板" data-mod="2">
+<div class="rule"></div><div class="meta"><span><b class="no"></b>模块 2 · 事件驱动</span></div>
+<h2 class="ttl rv">谁收到消息，和谁来拍板，是两回事</h2>
+<p class="sub rv" style="--d:1">筛子管「要不要处理」，直送管「交给谁」，都不管「谁说了算」</p>
+<div class="dg"><svg viewBox="0 0 1920 1080">
+<path class="ln r draw" style="--d:3" d="M520 560 L636 560" marker-end="url(#mr)"/>
+<circle r="9" class="pk"><animateMotion dur="1.4s" begin="0s" repeatCount="indefinite" path="M520 560 L640 560"/></circle>
+<g class="f" data-f="1"><path class="ln" d="M980 560 C1070 560 1070 455 1156 455" marker-end="url(#ma)"/></g>
+<g class="f" data-f="2"><path class="ln r" d="M980 560 C1070 560 1070 675 1152 675" marker-end="url(#mr)"/></g>
+</svg></div>
+<div class="bx rv" style="--d:1;left:96px;top:480px;width:424px;height:160px"><div class="k">PR #42 下的新评论</div><div class="t" style="white-space:normal;font-size:26px">「这个先停一下，<br>优先做另一个项目」</div></div>
+<div class="bx blk rv" style="--d:3;left:640px;top:490px;width:340px;height:140px"><div class="k">直送到</div><div class="t">Worker A</div><div class="s">先读懂这条在说什么</div></div>
+<div class="bx f" data-f="1" style="left:1160px;top:400px;width:664px;height:110px"><div class="t">停下自己手上的活</div><div class="s">在自己职责内，按规则处理</div></div>
+<div class="bx redb f" data-f="2" style="left:1160px;top:620px;width:664px;height:110px"><div class="t">调别的项目的优先级</div><div class="s">超出自己的范围 → 交给前台</div></div>
+<div class="abs f" data-f="3" style="left:96px;top:820px"><div class="tgs"><span class="tg r">前提</span><span class="tg">评论的人得有这个权限</span><span class="tg">消息只是输入，改不了权限</span></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">例子是我们设想的场景，用来说明直送的边界</span></div>
+<div class="notes">一句话：消息由谁接收，和消息由谁决策，是两个问题。
+这页是我们自己加的一个例子，用来回答一个很自然的追问：如果用户在 PR 下面说「先停，优先做另一个项目」，这条还走直送吗？
+答案：照样直送给 Worker A，它读完会发现里面有两件事——（按 →）停下自己的活，在它职责之内，按规则处理；（按 →）调整别的项目的优先级，超出了它的范围，要交给前台做全局协调。
+（按 →）还有一个安全前提：不是谁在 PR 下留言，Worker 都照办。评论的人得有权限；原型文档也写了，消息、评论只是决策输入，不能改变权限。
+所以直送并没有绕开前台的全局协调，它只是省掉了不必要的那一次模型判断。</div>
 </section>
 
 <!-- 17 Inline & Spill -->
@@ -460,7 +497,9 @@ Super-agent 的前台只派发任务、在高层跟踪任务之间的关系，�
 <div class="dg"><svg viewBox="0 0 1920 1080"><g class="f" data-f="2"><path class="ln dash" d="M1190 842 L1636 842" marker-end="url(#ma)"/></g></svg></div>
 <div class="bx c f" data-f="2" style="left:1640px;top:790px;width:184px;height:104px;border-style:dashed"><div class="t" style="font-size:24px">外面存着</div><div class="s">要用再读</div></div>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型 · 示例内容为示意</span></div>
-<div class="notes">事件到了目标会话之后，要往上下文里放多少？放太多，窗口被塞满，模型注意力被冲淡；放太少，模型得反复调工具去读，步骤变多。原文一句话：浪费上下文窗口，就是浪费模型的智力。
+<div class="notes">一句话：Inline 是「提前放进来」，Spill 是「先放外面、留个引用」——它们决定信息放在哪；下一页的 Chain of Recall 决定怎么把外面的找回来。
+别说错：Inline 不是「从任务里直接拿到的信息」，而是系统挑出来、提前塞进上下文的信息；Spill 也不是「往回追溯」，追溯是下一页的事。
+事件到了目标会话之后，要往上下文里放多少？放太多，窗口被塞满，模型注意力被冲淡；放太少，模型得反复调工具去读，步骤变多。原文一句话：浪费上下文窗口，就是浪费模型的智力。
 所以把有限的窗口当缓存。两个基本操作：Inline，把马上可能要用的信息直接放进窗口，省掉工具往返；Spill，超预算或很少用的完整信息放在窗口外，窗口里只留引用或摘要。
 （按 → 逐步）配合「局部性」：
 第一步，只给当前对象的 ID 和内容摘要；
@@ -483,10 +522,34 @@ Super-agent 的前台只派发任务、在高层跟踪任务之间的关系，�
 <div class="bx redb rv" style="--d:14;left:1476px;top:480px;width:348px;height:160px"><div class="k">Thread · 代码评审</div><div class="t">PR #42</div><div class="s">评审意见都在这</div></div>
 <p class="abs cap rv" style="--d:16;left:96px;top:740px;width:1500px">每个对象都有 ID，连成一张引用图。<br><span class="g1" style="font-weight:500">前台不用记住全部历史，需要时顺着找。</span></p>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型 · 示例内容为示意</span></div>
-<div class="notes">前台有自己的上下文难题：很多后续消息直送给了 Worker，长期运行下来历史任务越积越多，它不可能把每个任务的完整历史都留在窗口里。但用户在另一个渠道提起一个老任务时，它还得能找回来。
+<div class="notes">一句话：靠的是系统里存好的 ID 关系，模型顺着关系一跳跳查，而不是靠 prompt 让它自己去猜去哪找。
+被问到「这比项目里放几个 markdown 记忆文件好吗」：不一定，也不冲突。可以把项目知识存在文件里，顺着 ID 链找到这些文件，再把最相关的部分 Inline 进来。哪种更省、更准，要实测。
+前台有自己的上下文难题：很多后续消息直送给了 Worker，长期运行下来历史任务越积越多，它不可能把每个任务的完整历史都留在窗口里。但用户在另一个渠道提起一个老任务时，它还得能找回来。
 做法是把 Inline &amp; Spill 一致地用在系统里所有对象上：Trigger、Thread、Worker 会话都有唯一 ID，注入一个对象时，顺带内联与它紧密相关的对象 ID。这些 ID 把对象连成一张引用图。
 每次通过工具召回一个对象，返回结果也遵循 Inline &amp; Spill，带上下一跳对象的摘要和 ID。于是模型可以从当前事件出发，按需要一跳跳召回下去。原文叫 Chain of Recall。
 原文举的例子正是这条链：从当前消息的 Thread 出发，顺着内联的 ID 找到相关的 Worker 会话，再找到和那个 Worker 关联的另一个代码评审 Thread。</div>
+</section>
+
+<!-- 100 万 token -->
+<section class="slide" data-title="窗口够大还要管上下文吗" data-mod="2">
+<div class="rule"></div><div class="meta"><span><b class="no"></b>模块 2 · 事件驱动</span></div>
+<h2 class="ttl rv">窗口有 100 万 token，还要管上下文吗？</h2>
+<div class="cols" style="top:400px">
+<div class="pt rv" style="--d:1;grid-column:span 4"><div class="pk2">装得下 ≠ 便宜</div><p>每次调用都要读一遍，<br>读缓存也不是免费的</p></div>
+<div class="pt f" data-f="1" style="grid-column:span 4"><div class="pk2">装得下 ≠ 用得好</div><p>无关的历史会干扰<br>它对眼前问题的判断</p></div>
+<div class="pt r f" data-f="2" style="grid-column:span 4"><div class="pk2 red">装得下 ≠ 还有效</div><p>历史里混着讨论、草案<br>和已经作废的决定</p></div></div>
+<div class="abs f" data-f="2" style="left:96px;top:740px;width:1728px;display:flex;align-items:center;gap:20px">
+<div class="chip" style="position:relative;color:var(--g2);text-decoration:line-through;border-color:var(--g3)">三个月前：定了方案 A</div><span style="font-size:30px;font-weight:900;color:var(--g2)">→</span>
+<div class="chip" style="position:relative;color:var(--g2);text-decoration:line-through;border-color:var(--g3)">一个月前：讨论过 B</div><span style="font-size:30px;font-weight:900;color:var(--g2)">→</span>
+<div class="chip" style="position:relative;border-color:var(--red);color:var(--red)">昨天：正式改成 C</div><span class="tg r" style="margin-left:10px">当前有效：C</span></div>
+<p class="abs cap f" data-f="3" style="left:96px;top:860px;width:1728px">上下文管理不只管「放多少」，还要管<span class="red">「放什么」「还对不对」</span></p>
+<div class="rule b"></div><div class="foot"><span class="src">我们的看法与疑问，不是原文结论</span></div>
+<div class="notes">这页是一个常见追问：既然模型窗口越来越大，干嘛不把所有历史全塞进去？
+一句话：容量不等于成本，不等于用得好，也不等于信息还有效。
+第一，装得下不等于便宜：每次调用都要处理这些输入，缓存能降价，但不是零。
+（按 →）第二，装得下不等于用得好：修一个布局 bug，你塞给它几十万 token 的发布计划、别的项目讨论、旧方案，帮不上忙，还可能干扰判断。很多任务需要的信息其实很聚焦。
+（按 →）第三，最容易被忽略：装得下不等于还有效。历史里三个月前定了 A，一个月前讨论过 B，昨天正式改成 C。全量塞进去，模型得自己分辨哪个是讨论、哪个作废了。维护好的项目状态可以直接告诉它：当前有效的是 C。
+（按 →）所以外部记忆的价值不只是压缩，还有维护时效、来源和有效状态。反过来，按需检索也有额外的工具调用和延迟，哪种更好，还是要拿真实任务比。</div>
 </section>
 
 <!-- 19 投机执行 -->
@@ -534,10 +597,43 @@ Super-agent 的前台只派发任务、在高层跟踪任务之间的关系，�
 <div class="chip rv" style="--d:10;left:1420px;top:660px;height:52px;font-size:22px;border-color:var(--red);color:var(--red)">结果当成一条新消息回来</div>
 <div class="head" style="left:400px;top:390px;height:480px"></div>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Harness 已实现这套异步机制，但默认没开</span></div>
-<div class="notes">经典 ReAct 循环里，模型调一个同步的 run() 工具，循环就一直阻塞到工具结束、返回最终结果。这期间会话没法回应任何新消息。
+<div class="notes">一句话：异步 ReAct 解决的是「一个会话内部」被慢工具卡住的问题。
+别说错：异步 ReAct 不等于「把任务交给 Worker」。交给 Worker 是任务之间的并行；这里是同一个会话等工具时不卡。下一页专门对比。
+经典 ReAct 循环里，模型调一个同步的 run() 工具，循环就一直阻塞到工具结束、返回最终结果。这期间会话没法回应任何新消息。
 要去掉这个阻塞，对话得从轮流说话的半双工，变成全双工。做法是把耗时的命令和工具换成异步的 start() 和 stop()：start() 立刻返回「已启动」，循环不等；工具在后台跑完后，系统把结果作为一条新事件送回会话。跑太久，模型也可以根据上下文调 stop() 结束它。
 这样前台对话和后台任务解耦了：耗时任务跑着，Agent 照样回应人；新输入在当前推理步结束时就能处理，不用等后台工具。
 注意：回得快，不等于你的新指令已经安全地作用到正在跑的任务上，取消、版本这些还要另外处理。</div>
+</section>
+
+<!-- 两层并发 -->
+<section class="slide" data-title="两层并发别混" data-mod="3">
+<div class="rule"></div><div class="meta"><span><b class="no"></b>模块 3 · 全双工 · 多通道</span></div>
+<h2 class="ttl rv">两种「不卡」，别混在一起</h2>
+<div class="abs rv" style="--d:1;left:96px;top:370px;width:820px">
+<div class="pt"><div class="pk2" style="font-size:36px">任务之间 <span class="g2" style="font-size:24px">前台 → 多个 Worker</span></div></div>
+<svg width="820" height="300" viewBox="0 0 820 300" style="margin-top:14px">
+<g class="ln"><path d="M200 150 C300 150 300 50 416 50" marker-end="url(#ma)"/><path d="M200 150 L416 150" marker-end="url(#ma)"/><path d="M200 150 C300 150 300 250 416 250" marker-end="url(#ma)"/></g>
+<rect x="40" y="110" width="160" height="80" fill="#e4321b"/><text x="120" y="158" text-anchor="middle" class="svt w">Router</text>
+<g fill="#f3f2ee" stroke="#111" stroke-width="3"><rect x="420" y="20" width="320" height="60"/><rect x="420" y="120" width="320" height="60"/><rect x="420" y="220" width="320" height="60"/></g>
+<text x="440" y="58" class="svt">任务 A</text><text x="440" y="158" class="svt">任务 B</text><text x="440" y="258" class="svt">任务 C</text>
+<g fill="#e4321b"><rect x="420" y="74" width="0" height="6"><animate attributeName="width" values="0;320" dur="1.8s" repeatCount="indefinite"/></rect><rect x="420" y="174" width="0" height="6"><animate attributeName="width" values="0;320" dur="1.8s" begin="-.6s" repeatCount="indefinite"/></rect><rect x="420" y="274" width="0" height="6"><animate attributeName="width" values="0;320" dur="1.8s" begin="-1.2s" repeatCount="indefinite"/></rect></g></svg>
+<p class="cap" style="margin-top:14px">不同的事，<br>交给不同的会话同时做</p></div>
+<div class="abs f" data-f="1" style="left:1004px;top:370px;width:820px">
+<div class="pt r"><div class="pk2 red" style="font-size:36px">会话之内 <span class="g2" style="font-size:24px">同一个 Worker</span></div></div>
+<div style="margin-top:14px;height:300px;border:3px solid var(--ink);padding:26px 28px;position:relative">
+<div style="display:flex;align-items:center;gap:20px"><span class="tg">前台</span><span class="chip" style="position:relative;height:52px;font-size:22px">你：再加个用例</span><span class="chip b" style="position:relative;height:52px;font-size:22px">好，加上了</span></div>
+<div style="display:flex;align-items:center;gap:20px;margin-top:40px"><span class="tg no">后台</span><div style="flex:1;height:18px;background:repeating-linear-gradient(90deg,var(--red) 0 18px,transparent 18px 28px)"></div></div>
+<div class="small" style="margin-top:14px;padding-left:96px">npm test 跑 10 分钟，结果回来当新消息</div></div>
+<p class="cap" style="margin-top:14px">同一个会话，<br>等工具的时候也不卡</p></div>
+<p class="abs small f" data-f="2" style="left:96px;top:880px;width:1728px;font-size:26px;color:var(--ink);font-weight:700">两层可以同时存在：派给了 Worker，它自己跑长测试时照样可能被卡住</p>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
+<div class="notes">这页专门防一个容易说混的点。
+一句话：两层架构解决「几件事之间」并行；异步 ReAct 解决「一个会话之内」不被卡住。
+左边：前台把不同任务派给不同 Worker，多个独立会话同时执行。
+（按 →）右边：同一个 Worker 里，start() 让测试在后台跑，它在等的时候还能接新消息、回话，测试跑完结果作为新事件送回来。
+（按 →）两者可以同时存在：任务已经派给 Worker A 了，但 A 自己要跑一个 10 分钟的测试，如果工具是同步的，A 照样没法及时处理发给它的后续消息。
+类比：Claude Code 的后台终端更像右边（同一个 Agent 起个后台命令接着聊）；后台 subagent 更像左边（另开一个执行上下文）。
+再严谨一点：后台工具在跑，不等于模型在同一个会话里同时做两次推理；是工具等待期间，会话被释放出来，可以在下一步推理时处理新事件。所以我们认为这更多是 Runtime 层面的工程优化。</div>
 </section>
 
 <!-- 21 多通道 -->
@@ -609,8 +705,13 @@ GitHub、邮件、文档这类异步渠道：给结构化、信息密度高的�
 <div class="scan" style="left:600px;top:380px;height:420px"></div>
 <div class="bx redb rv" style="--d:6;left:1440px;top:400px;width:384px;height:170px"><div class="k">独立于主系统</div><div class="t" style="font-size:34px">Watchdog</div><div class="s">定时醒来，巡一圈</div></div>
 <div class="abs f" data-f="1" style="left:1440px;top:600px;width:384px"><div class="tgs"><span class="tg">查接口报错</span><span class="tg">判断有没有进展</span><span class="tg">问它：为什么挂了</span><span class="tg">让它改规则</span></div></div>
+<div class="abs f" data-f="2" style="left:96px;top:840px;width:1728px;display:flex;align-items:center;gap:16px;font-size:24px;font-weight:800"><span class="g1" style="font-weight:700;margin-right:8px">发现不对，逐级来：</span><span class="tg">先问它在干嘛</span>→<span class="tg">给恢复建议</span>→<span class="tg">重启任务</span>→<span class="tg r">高风险的找人</span></div>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">光有存算分离还不够持续在线：长期运行的系统还得能自己从异常里恢复。一个常驻的分布式系统，只靠内部逻辑，很少能长期可靠，需要一个主系统之外的独立控制回路。
+<div class="notes">一句话：普通监控看「活没活着」，Watchdog 还要看「有没有在往前走」。
+我们补充的一个好处：职责分离。持续巡检交给 Watchdog，前台就能专心对人和做全局协调（用户问起进度时它照样可以去读状态）。
+被问到「怎么判断没进展」：跑得久不等于有问题，复杂调试本来就慢。要看几样证据——离目标近了没有、测试是不是在重复失败、代码是不是在反复改同一处、Worker 自己有没有报阻塞、执行轨迹是不是在打转。这些都只是信号，不是硬标准。
+（按 → 第二步）发现不对就逐级来：先问它在干嘛，再给恢复建议，必要时重启任务，高风险的改动找人批准。
+光有存算分离还不够持续在线：长期运行的系统还得能自己从异常里恢复。一个常驻的分布式系统，只靠内部逻辑，很少能长期可靠，需要一个主系统之外的独立控制回路。
 Agent 系统又比传统的存活探针、监控脚本多一层：很多异常不是崩溃，而是进程还在跑，模型却在原地打转，或者已经偏离目标。所以既要看基础设施活没活着，也要看任务有没有进展。
 他们的做法是一个独立的 Watchdog 会话，跑在主系统之外，由定时消息驱动：处理 API 报错、状态恢复失败这类基础设施故障；也用模型判断每个 Worker 是否有实质进展、是否偏离整体目标；及时修，遇到临时的外部故障就一直复查到恢复。
 （按 →）因为它本身就是一个带全套工具的 Agent 会话，维护的人可以直接用大白话问它为什么失败，也可以让它在运行中修正主系统的行为，比如增删 prompt、调整触发规则。
@@ -705,7 +806,12 @@ Agent 系统又比传统的存活探针、监控脚本多一层：很多异常�
 <div class="abs f" data-f="1" style="left:96px;top:830px;width:1728px"><div class="cap">去掉直送：<span class="red">+37%</span>，前台多做约 30% 的决策，完成时间几乎没变</div></div>
 <div class="abs f" data-f="2" style="left:96px;top:886px;width:1728px"><div class="cap">多会话各读各的缓存 → <span class="red">用 token 换更短、更稳的完成时间</span></div></div>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文 · 合成负载</span><a class="go" href="detail/handoff.html?from=28">动画对比：经前台 vs 直送</a></div>
-<div class="notes">（按 → 逐条）
+<div class="notes">别说错：+30% 是前台的「决策次数」，+37% 是「读缓存的 token」，两个数别记混。
+被问到「token 多了，时间为什么没变」，可以讲三个原因（是推测，原文没有逐项拆开测）：
+1）前台的活本来就轻，多判断一次只多几秒；
+2）前台会批处理，几条事件攒成一批一起算（第 14 页）；
+3）最关键：前台不在任务完成的关键路径上。Worker 干活要十几分钟，前台多几秒，还能和 Worker 执行重叠，总时间几乎看不出来。
+（按 → 逐条）
 第一个看点：话题直送没让任务变快，但省下了一截。去掉直送后完成时间差不多，但前台每次运行多做约 30% 的决策，所有会话读缓存的 token 从 23.2M 涨到 31.8M，约多 37%。原文原话大意：在这个负载下，直送不会让任务完成得更快或更好，但能显著减少前台的 token 和推理开销。
 为什么时间没变？前台不是关键路径上的瓶颈，加上批处理，多出来的负载被吸收了。
 第二个看点：Super-agent 维护着多个独立会话，读缓存的 token 是单会话的好几倍。它是在用 token 换更短、更稳的完成时间。
@@ -725,6 +831,31 @@ Agent 系统又比传统的存活探针、监控脚本多一层：很多异常�
 一、作者明确说是合成负载、简化环境，部分设置可以更严谨，结果仅供参考。
 二、表里是 cache-read token。缓存读取通常比普通输入便宜很多，所以不能把 +37% 直接读成「多花了 37% 的钱」。
 三、写代码是用耗时工具模拟的，测的是调度和协调。真实任务的质量、人工介入次数、总成本，都要在我们自己的负载上测。</div>
+</section>
+
+<!-- 测了 / 没测 -->
+<section class="slide" data-title="测了什么还没测什么">
+<div class="rule"></div><div class="meta"><span><b class="no"></b>实验</span></div>
+<h2 class="ttl rv">他们测了什么，还没测什么</h2>
+<div class="abs rv" style="--d:1;left:96px;top:390px;width:820px">
+<div class="pt"><div class="pk2" style="font-size:36px">测了</div></div>
+<div class="li" style="border-top:0;padding:18px 0"><b style="color:var(--ink)">·</b><span>多任务下的调度和完成时间</span></div>
+<div class="li" style="padding:18px 0"><b style="color:var(--ink)">·</b><span>读缓存的 token、前台决策次数</span></div>
+<div class="li" style="padding:18px 0;border-bottom:2px solid var(--g3)"><b style="color:var(--ink)">·</b><span>前台的批处理吞吐</span></div></div>
+<div class="abs f" data-f="1" style="left:1004px;top:390px;width:820px">
+<div class="pt r"><div class="pk2 red" style="font-size:36px">还没测</div></div>
+<div class="li" style="border-top:0;padding:18px 0"><b>·</b><span>真实开发任务做成了几个、质量如何</span></div>
+<div class="li" style="padding:18px 0"><b>·</b><span>Worker 之间的冲突能不能发现、解决</span></div>
+<div class="li" style="padding:18px 0;border-bottom:2px solid var(--g3)"><b>·</b><span>人工介入次数、返工、总成本</span></div></div>
+<p class="abs cap f" data-f="2" style="left:96px;top:830px;width:1728px">评价一个架构：<span class="red">花了多少，换来多少真正有用的产出</span></p>
+<div class="rule b"></div><div class="foot"><span class="src">我们的看法与疑问，不是原文结论</span></div>
+<div class="notes">一句话：实验验证了「模拟负载下的调度效率」，还没回答「真实复杂任务里做得好不好」。
+左边是他们测了的：第 7.1 节的四方案消融（完成时间、读缓存 token、决策次数），第 7.2 节的前台批处理压测。
+（按 →）右边是如果我们来补，最想测的三样：
+一、真实开发任务的成功率和质量——模拟工具只耗时间，反映不了代码质量、测试和架构冲突；
+二、跨 Worker 的协调质量——前面说过，Worker 不直接沟通时，协调压力可能往前台集中，这一点现有实验没回答；
+三、综合成本——token 之外，还有机器、返工和人的介入时间。
+（按 →）最后落到一句：架构是手段，最终看它以多大成本创造了多少有效价值。</div>
 </section>
 
 <!-- 30 原型 -->
@@ -786,7 +917,36 @@ Agent 系统又比传统的存活探针、监控脚本多一层：很多异常�
 <div class="notes">这是我们读的时候第一个冒出来的疑问。
 把五个会话合成一个入口，省掉的是「入口管理成本」：不用记哪个窗口在干嘛。但你要在五个项目之间切换，五套项目背景还是得装在脑子里，这是「认知切换成本」，入口合并并不直接减少它。
 反而有一个反面：Agent 越自主，平时人参与越少，真出问题时，人要恢复上下文、接手，成本可能更高。
-所以我会把「省注意力」拆成三件事看：入口管理、认知切换、做决策。原文这套架构主要解决第一件，第三件靠「只在需要拍板时开口」在压，第二件还是开放的。</div>
+所以我会把「省注意力」拆成三件事看：入口管理、认知切换、做决策。原文这套架构主要解决第一件，第三件靠「只在需要拍板时开口」在压，第二件还是开放的。
+可以这样收：Super-agent 是把管理会话的责任从人身上挪给了系统，但没有替人把五件事想完。下一页再往前推一步。</div>
+</section>
+
+<!-- 入口串台 -->
+<section class="slide" data-title="一个入口也会串台">
+<div class="rule"></div><div class="meta"><span><b class="no"></b>我们的思考</span></div>
+<h2 class="ttl rv">更糟一点：五件事挤进同一条聊天流</h2>
+<div class="mock rv" style="--d:1;left:96px;top:360px;width:800px;height:560px"><div class="hd"><i></i>和前台的对话</div>
+<div style="padding:22px 26px;display:flex;flex-direction:column;gap:14px;font-size:23px;font-weight:700">
+<div class="rv" style="--d:2;display:flex;gap:14px;align-items:center"><i style="width:18px;height:18px;background:var(--ink);flex:none"></i>项目 A：PR 要不要合？</div>
+<div class="rv" style="--d:3;display:flex;gap:14px;align-items:center"><i style="width:18px;height:18px;background:var(--red);flex:none"></i>项目 B：通信协议要改吗？</div>
+<div class="rv" style="--d:4;display:flex;gap:14px;align-items:center"><i style="width:18px;height:18px;background:var(--g2);flex:none"></i>项目 C：新版本发不发？</div>
+<div class="rv" style="--d:5;align-self:flex-end;padding:10px 18px;border:3px solid var(--ink);font-weight:600">你：A 先等等，我看下测试……</div>
+<div class="rv" style="--d:6;display:flex;gap:14px;align-items:center"><i style="width:18px;height:18px;background:var(--red);flex:none"></i>项目 B：补充一下背景……</div>
+<div class="rv" style="--d:7;display:flex;gap:14px;align-items:center"><i style="width:18px;height:18px;background:var(--g3);flex:none"></i>项目 D：测试结果出来了</div>
+<div class="rv" style="--d:8;align-self:flex-end;padding:10px 18px;border:3px solid var(--red);color:var(--red)">你：……刚才 C 问的是啥来着？</div></div></div>
+<div class="abs" style="left:1000px;top:380px;width:824px">
+<div class="li f" data-f="1" style="border-top:6px solid var(--ink)"><b>1</b><span>入口统一<br><span class="small">一个地方说话 · <span class="red" style="font-weight:800">Super-agent 主要做到这</span></span></span></div>
+<div class="li f" data-f="2"><b>2</b><span>交互组织<br><span class="small">每件事有自己的卡片、线程和状态</span></span></div>
+<div class="li f" data-f="3" style="border-bottom:2px solid var(--g3)"><b>3</b><span>少让人拍板<br><span class="small">低风险的自己办，要你定的带证据排好队</span></span></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">我们的看法与疑问，不是原文结论 · 示意</span></div>
+<div class="notes">接着上一页，再往前推一步：统一入口不仅没有消掉认知切换，还可能带来新的混乱。
+原来是在五个窗口之间切换；现在五个项目要你拍板的事、汇报的事，全挤在同一条聊天流里。你回第一个问题回到一半，前台又插进来别的项目的消息；再回头找第二个问题，只能往上翻。跨窗口切换，变成了同一个窗口里的跨任务切换。
+要说严谨一点：人不是绝对只能想一件事，简单的事可以穿插着做；但需要深入推理、要装复杂背景的工作，注意力和工作记忆确实有限。而且这是界面设计的问题，不是所有实现都必然这样——任务卡片、独立讨论线程、引用回复都能缓解。
+（按 → 逐层）我会把它拆成三层：
+一、入口统一：不用管多个窗口。DeepSeek 的两层架构主要解决的是这一层。
+二、交互组织：每件事有自己的上下文、状态和决策入口，而不是全混在一条聊天流里。
+三、减少决策：低风险的系统自己办，真正要人参与的，按优先级排好、附上证据和背景。
+后两层正好对应原文第 8 节的开放问题「没有会话之后怎么协作」。第一层做好了，不代表后两层自然成立。下一步值得优化的，不只是统一入口，而是怎么组织多任务交互、怎么减少人真正要参与的决策。</div>
 </section>
 
 <!-- 34 共享 ≠ 协作 -->
@@ -807,16 +967,26 @@ Agent 系统又比传统的存活探针、监控脚本多一层：很多异常�
 <!-- 35 Router 要多强 -->
 <section class="slide" data-title="前台要多强">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>我们的思考</span></div>
-<h2 class="ttl rv">前台要多强？看留给它多少判断</h2>
+<h2 class="ttl rv">前台：脑子可以强，手上的活要少</h2>
 <div class="abs rv" style="--d:1;left:200px;top:560px;width:1520px;height:8px;background:var(--ink)"><div class="thumb"></div></div>
 <div class="abs rv" style="--d:2;left:96px;top:420px"><div class="big2">判断空间小</div><div class="small" style="margin-top:6px">→ 轻模型就够</div></div>
 <div class="abs rv" style="--d:2;right:96px;top:420px;text-align:right"><div class="big2 red">判断空间大</div><div class="small" style="margin-top:6px">→ 强模型，或者问人</div></div>
 <div class="abs rv" style="--d:3;left:96px;top:640px;width:760px"><div class="tgs"><span class="tg">代码规则过滤</span><span class="tg">按话题直送</span><span class="tg">结果格式固定</span></div></div>
 <div class="abs rv" style="--d:4;right:96px;top:640px;width:800px"><div class="tgs" style="justify-content:flex-end"><span class="tg no">猜模糊的意图</span><span class="tg no">跨任务冲突</span><span class="tg no">要不要打扰人</span><span class="tg no">转述长报告</span></div></div>
-<p class="abs cap f" data-f="1" style="left:96px;top:840px;width:1728px">折中：<span class="red">默认用轻的，拿不准、要拍板时再升级</span></p>
+<div class="cols" style="top:740px">
+<div class="pt f" data-f="1" style="grid-column:span 4"><div class="pk2" style="font-size:32px">简单的冲突</div><p style="margin-top:8px">前台自己判断，或者 Worker 自己解决</p></div>
+<div class="pt r f" data-f="2" style="grid-column:span 4"><div class="pk2 red" style="font-size:32px">要长时间分析</div><p style="margin-top:8px">开一个专门做协调的 Worker</p></div>
+<div class="pt f" data-f="3" style="grid-column:span 4"><div class="pk2" style="font-size:32px">重大取舍</div><p style="margin-top:8px">带着证据交给人</p></div></div>
 <div class="rule b"></div><div class="foot"><span class="src">我们的看法与疑问，不是原文结论</span></div>
-<div class="notes">很多人直觉会说：不计成本，前台也上最强模型。
-我们的看法是：前台的模型能力和它承担的职责是两回事。前台要多强，取决于系统留给它多少判断空间。代码规则挡掉不用判断的、话题直送绕过它、Worker 交回来的结果格式固定（结论 / 前提 / 需要你决定的事），判断空间就被压小了，轻模型够用。反过来，如果它要从一团聊天里猜意图、处理跨任务冲突、决定要不要打扰人、把长报告压成一句话，就需要强模型。
+<div class="notes">一句话：能力可以很强，执行职责要有边界。
+先公平地讲作者的动机：前台不执行、不拆解，是为了不被某件复杂的事占住，耽误处理别的消息，也避免任务上下文混进来。
+我的不同意见：前台不该被严格限制成一个简单的分发器。比如一个项目有三个 Worker 在做三个 PR，可能出现代码冲突、技术依赖、优先级调整，甚至架构分歧。要识别这些，前台得懂一定的技术背景。
+但「冲突一定要前台解决」也太绝对：（按 → 逐个）
+简单的——改不同文件没冲突，或者普通的 merge 冲突——Worker 自己或前台顺手就能处理；
+要长时间分析的——比如三个 PR 有架构层面的冲突——前台识别出来后，开一个专门做协调的 Worker，深入分析依赖和取舍，输出方案，前台继续接别的消息，不被卡住；
+重大取舍——比如两个 PR 代表两种产品方向——带着证据交给人。
+被问到「前台用强模型，会不会又变回单会话那样又慢又膨胀」：所以才要有第二级——复杂分析交给专门的协调 Worker，前台只负责识别和最后拍板。也要注意别每次都开新的协调 Worker，不然协调层级会越叠越多。延迟和成本到底增加多少，要实验验证。
+补充：我们的看法是，前台的模型能力和它承担的职责是两回事。前台的模型能力和它承担的职责是两回事。前台要多强，取决于系统留给它多少判断空间。代码规则挡掉不用判断的、话题直送绕过它、Worker 交回来的结果格式固定（结论 / 前提 / 需要你决定的事），判断空间就被压小了，轻模型够用。反过来，如果它要从一团聊天里猜意图、处理跨任务冲突、决定要不要打扰人、把长报告压成一句话，就需要强模型。
 还有一个常被忽略的成本是延迟：前台在每条消息的必经路上，它慢一点，人每说一句都要等。
 所以折中是：默认轻量，低置信度、涉及对外或不可逆动作、要合并多个结果时，升级到强模型或者问人。原文把「为前台专门训练模型」列为开放方向。</div>
 </section>
@@ -857,6 +1027,31 @@ Agent 系统又比传统的存活探针、监控脚本多一层：很多异常�
 和 Super-agent 一对照，骨架几乎一样：一个入口、几个各管一摊的执行者、事件或定时触发、状态写在外面。
 差距主要在三处：同一话题的后续消息还要经入口读一遍再转，不够程序化；没有持续运行的 Watchdog，检查一天一次；主动性弱，主要是定时做固定的活。
 还没解决的：一条不带上下文的新消息到底该归哪件事。</div>
+</section>
+
+<!-- 走向团队 -->
+<section class="slide" data-title="从一个人到一个团队">
+<div class="rule"></div><div class="meta"><span><b class="no"></b>我们的思考</span></div>
+<h2 class="ttl rv">从一个人的 Agent，到一个团队的 Agent</h2>
+<div class="abs rv" style="--d:1;left:96px;top:380px;width:760px">
+<div class="pt"><div class="pk2" style="font-size:34px">先卡住的是：信息本来就拿不全</div></div>
+<div class="tgs" style="margin-top:28px"><span class="tg ok">群聊</span><span class="tg ok">会议纪要</span><span class="tg ok">文档</span><span class="tg ok">PR / CI</span></div>
+<div class="tgs" style="margin-top:16px"><span class="tg no" style="border-style:dashed">私聊</span><span class="tg no" style="border-style:dashed">线下一句话</span><span class="tg no" style="border-style:dashed">只在某人脑子里</span></div>
+<p class="small" style="margin-top:24px">拿到了也要分清：哪些是正式决定，<br>哪些只是讨论和猜测</p></div>
+<div class="abs f" data-f="1" style="left:1000px;top:380px;width:824px;display:grid;grid-template-columns:1fr 1fr;gap:28px 24px">
+<div class="pt"><div class="pk2" style="font-size:34px">知识</div><p style="margin-top:6px">谁能看、能存、能分享</p></div>
+<div class="pt"><div class="pk2" style="font-size:34px">执行</div><p style="margin-top:6px">谁能动哪些工具和环境</p></div>
+<div class="pt r"><div class="pk2 red" style="font-size:34px">决策</div><p style="margin-top:6px">谁能承诺、改优先级、批发布</p></div>
+<div class="pt"><div class="pk2" style="font-size:34px">责任</div><p style="margin-top:6px">出了事谁复核、谁接手</p></div></div>
+<p class="abs cap f" data-f="2" style="left:96px;top:850px;width:1728px">共享文档 ≠ 共享一个 Agent ≠ <span class="red">共享决定权</span></p>
+<div class="rule b"></div><div class="foot"><span class="src">接原文 8.3 节「上下文边界与 A2A」· 我们的看法与疑问</span></div>
+<div class="notes">原文 8.3 节提了一句很关键的话：组织变大以后，「怎么部署 Super-agent」本质上是在决定哪些上下文共享、哪些隔离。隔离的实例之间协作，就是 A2A，比如每个人的个人 Agent 和团队共享的 Agent 之间。原文也明确说这里还没解决。
+一句话：Agent 进组织，最先卡住的往往不是「它们怎么通信」，而是项目状态不完整、隐含的知识拿不到，以及谁有权作决定。
+左边：以前就有人试过从群聊、会议纪要、文档里分析项目进度和风险。最大的问题是信息根本拿不全——项目调整可能发生在私聊、线下，或者只在某人脑子里。即使拿到了，候选事实、正式决定、未确认的假设也得分开。
+（按 →）右边：几百个人、每人一个长期在线的 Agent，要分开想四道边界：知识（谁能看、存、分享）、执行（谁能动哪些工具）、决策（谁能承诺、改优先级、批准发布）、责任（出了事谁复核、接手、担责）。
+（按 →）所以共享项目文档，不等于共享一个 Agent 实例，更不等于共享决定权。
+一个可能的渐进路线（是推演，不是已有方案）：个人侧在授权下记录工作线索 → 生成候选的任务状态 → 用 PR、CI、文档或本人确认来核验 → 进入团队共享状态 → 在权限边界内让 Agent 之间协作 → 重大授权和目标冲突交给人。要注意：观察到「在忙」不等于「做完了」，也不该默认把个人原始数据集中到组织服务器上。
+最终拓扑不预设：中心化的团队 Agent、个人 Agent 直接协作、共享状态系统、分层混合，都要按信息完整度、任务依赖和冲突密度去比。</div>
 </section>
 
 <!-- 38 可以先试 -->
