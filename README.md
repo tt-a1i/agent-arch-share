@@ -1,18 +1,13 @@
 # 从单会话到 Super-agent
 
-面向团队的技术分享：读 DeepSeek《Super-agent》设计文和开源原型的笔记，共 44 页，分五段：
+基于原 44 页版本调整的 23 页 HTML 技术分享，保留原有视觉风格、交互图和演讲者视图。
 
-1. **问题**：瓶颈从模型换到了人的注意力
-2. **思路**：四个特征，以及撑起它们的五个模块
-3. **五个模块**：两层架构（含批处理）、事件驱动（两道过滤、按话题直送、Inline & Spill、Chain of Recall、投机执行）、全双工与多通道、计算/状态/环境分离、Watchdog
-4. **实验与原型**：消融实验的完成时间和 token，开源原型的做法和边界
-5. **我们的思考**：几个疑问和延伸，最后用三句话收尾
+1. **问题与分工（1–5）**：从多任务跟进的负担，解释 Router / Worker 的职责。
+2. **运行机制（6–14）**：过滤、直送、上下文召回、主动工作、异步工具、渠道表达、执行环境与 Watchdog。
+3. **对比与原型（15–16）**：只保留直送开关对比，实验边界与批处理解释放在备注；介绍公开原型的范围。
+4. **我们的讨论（17–23）**：多任务交互、跨 PR 冲突、交接成本，Hive / bot 团队的对照，以及有效生产力。
 
-讲解细节都在演讲者备注里（按 `N`）。
-
-**在线观看：** https://agent-arch-share.pages.dev/（Cloudflare Pages）
-
-![主幻灯片预览](shots/contact-main.jpg)
+演讲者备注保留具体例子、设计理由和追问所需的细节。网页版通过 GitHub Pages 发布。
 
 ## 键盘操作
 - `←` / `→`、空格：下一步 / 上一页（部分页面分步出现，按 `→` 逐步展开）
@@ -29,12 +24,11 @@ python3 -m http.server 8000
 # 打开 http://localhost:8000/
 ```
 
-## 部署
-站点托管在 Cloudflare Pages（项目名 `agent-arch-share`），推送到 GitHub 不会自动发布，改完后手动部署：
-```bash
-rm -rf /tmp/deck-dist && mkdir /tmp/deck-dist && cp -R index.html assets detail /tmp/deck-dist/
-npx wrangler@3.114.17 pages deploy /tmp/deck-dist --project-name agent-arch-share --branch main
-```
+## 发布
 
-## 回退
-在 Cloudflare 控制台的 Pages 项目里，找到上一次部署点「Rollback」；或者 `git revert` 后重新部署。
+GitHub Pages 从 `main` 分支根目录发布：
+https://tt-a1i.github.io/agent-arch-share/
+
+推送到 `main` 后由 GitHub Pages 构建。Cloudflare 保留既有版本，不执行 Cloudflare 部署。
+
+公开版共 23 页。个人聊天截图与本机路径不纳入公开仓库。

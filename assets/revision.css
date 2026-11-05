@@ -1,0 +1,69 @@
+/* Narrative revision: retain the existing 1920 × 1080 editorial grid. */
+.revision-body{position:absolute;left:96px;right:96px;top:352px;bottom:152px}
+.revision-body h3{font-size:38px;line-height:1.35;font-weight:850}
+.revision-body p{font-size:29px;line-height:1.6;color:var(--g1);margin-top:24px;font-weight:550}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:100px}
+.two-col>div{border-top:5px solid var(--ink);padding-top:26px}
+.two-col>div:last-child{border-color:var(--red)}
+.revision-body .large{font-size:34px;color:var(--ink);font-weight:750;margin-top:38px}
+.revision-body .takeaway{position:absolute;left:0;right:0;bottom:0;font-size:31px;color:var(--ink);font-weight:750;border-top:2px solid var(--g3);padding-top:23px;margin:0}
+.question-list>div{display:grid;grid-template-columns:100px 1fr;column-gap:30px;border-top:2px solid var(--g3);padding:32px 0}
+.question-list b{font-size:56px;line-height:1.2;color:var(--red);font-weight:900}
+.question-list h3{align-self:center;font-size:42px}
+.question-list p{grid-column:2;margin-top:9px;font-size:28px}
+.question-list.closing>div{padding:23px 0}
+.question-list.closing h3{font-size:37px}
+.result-table{border-collapse:collapse;width:100%;table-layout:fixed}
+.result-table th{text-align:left;font-size:26px;padding:0 20px 22px 0;border-bottom:5px solid var(--ink);color:var(--g1)}
+.result-table th:first-child{width:58%}
+.result-table td{font-size:34px;line-height:1.4;font-weight:700;padding:23px 20px 23px 0;border-bottom:2px solid var(--g3)}
+.result-table .accent td{color:var(--red)}
+.revision-body .result-note{font-size:28px;color:var(--ink);margin-top:30px}
+.revision-body .scenario{font-size:32px;color:var(--ink);margin:0 0 28px}
+.decision-rows>div{display:grid;grid-template-columns:450px 1fr;gap:40px;padding:25px 0;border-top:2px solid var(--g3)}
+.decision-rows h3{font-size:31px}
+.decision-rows p{font-size:28px;line-height:1.5;margin:0}
+/* A fixed two-minute threshold has not been measured; keep labels readable. */
+section[data-source-slide="41"] .cap{font-size:27px}
+@media (prefers-reduced-motion:reduce){.slide.on .rv,.slide.on .hb,.slide.on .vb{animation-duration:.01ms!important;animation-delay:0ms!important}}
+
+/* Slide 14: a concrete offline environment, with explicit connection semantics. */
+.separation-scene .scene-label{font-size:24px;font-weight:700;color:var(--g1)}
+.separation-scene .scene-heading{font-size:43px;line-height:1.2;margin-top:10px;font-weight:850}
+.separation-scene .scene-copy{font-size:29px;margin-top:12px;color:var(--g1)}
+.scene-environment{border-top:5px solid var(--ink);padding-top:18px}
+.scene-environment-title{display:flex;justify-content:space-between;align-items:center}
+.scene-environment-title h3{font-size:38px;font-weight:850;line-height:1.25}
+.scene-environment-title span{font-size:26px;font-weight:800}
+.scene-environment p{font-size:28px;line-height:1.5;margin-top:16px}
+.scene-environment small{display:block;font-size:23px;color:var(--g1);margin-top:15px;line-height:1.5}
+
+.pass-table th:first-child{width:45%}
+.pass-table th:nth-child(2){width:25%}
+.pass-table td{padding:26px 16px 26px 0}
+.pass-table small{font-size:25px;white-space:nowrap;margin-left:10px}
+
+.context-rule{border-top:2px solid var(--g3);padding:23px 0 25px}
+.context-rule:last-child{border-bottom:2px solid var(--g3)}
+.context-rule h3{font-size:35px;line-height:1.3;font-weight:850}
+.context-rule p{font-size:26px;line-height:1.5;margin-top:10px;color:var(--g1);font-weight:550}
+
+/* Larger presentation copy for the context-organization slide. */
+section[data-source-slide="18"] .context-rule{padding:22px 0 26px}
+section[data-source-slide="18"] .context-rule h3{font-size:44px;line-height:1.25}
+section[data-source-slide="18"] .context-rule p{font-size:32px;line-height:1.45;margin-top:14px}
+section[data-source-slide="18"] .chip{font-size:30px;padding:0 18px}
+section[data-source-slide="18"] .tg{font-size:28px;height:48px}
+section[data-source-slide="18"] .bx .t{font-size:29px!important}
+section[data-source-slide="18"] .bx .s{font-size:26px}
+
+/* Review additions reuse existing motion, fragments and editorial grid. */
+.scale-input h3,.scale-middle h3{font-size:38px;font-weight:850;margin-bottom:26px}
+.agent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.agent-grid span{border:2px solid var(--ink);font-size:28px;font-weight:750;padding:16px 8px;text-align:center}
+.scale-input p{font-size:30px;color:var(--g1);margin-top:24px}
+.scale-middle>div{font-size:33px;font-weight:800;border-top:2px solid var(--g3);padding:12px 0}
+.scale-middle span{display:block;font-size:29px;font-weight:500;color:var(--g1);margin-top:5px}
+section[data-review="organization"] .tg{font-size:29px;height:52px}
+section[data-review="organization"] .small,section[data-review="organization"] .pt p{font-size:31px;line-height:1.55}
+section[data-source-slide="42"] .cmp td{font-size:29px;line-height:1.45}

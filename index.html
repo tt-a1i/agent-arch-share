@@ -1,7 +1,8 @@
-<!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>从单会话到 Super-agent</title>
-<link rel="stylesheet" href="assets/d.css">
+<link href="assets/d.css" rel="stylesheet"/>
 <style>
 .ttl{position:absolute;left:96px;top:186px;right:96px;font-size:62px;line-height:1.2;font-weight:900;letter-spacing:-.01em}
 .sub{position:absolute;left:96px;top:282px;right:96px;font-size:28px;font-weight:500;color:var(--g1);line-height:1.5}
@@ -103,557 +104,295 @@ table.cmp{border-collapse:collapse;table-layout:fixed}
 .cmp td em{display:block;font-style:normal;font-size:20px;color:var(--red);font-weight:800;margin-top:4px}
 .cmp td.no{color:var(--red)}
 </style>
-</head><body><div class="stage">
-<svg width="0" height="0" style="position:absolute"><defs>
-<marker id="ma" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0 0L12 6L0 12z" fill="#111"/></marker>
-<marker id="mr" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="20" markerHeight="20" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0 0L12 6L0 12z" fill="#e4321b"/></marker>
-<marker id="mg" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0 0L12 6L0 12z" fill="#8d8a83"/></marker>
+<link href="assets/revision.css?v=e3949648de" rel="stylesheet"/></head><body><div class="stage">
+<svg height="0" style="position:absolute" width="0"><defs>
+<marker id="ma" markerheight="14" markerunits="userSpaceOnUse" markerwidth="14" orient="auto-start-reverse" refx="10" refy="6" viewbox="0 0 12 12"><path d="M0 0L12 6L0 12z" fill="#111"></path></marker>
+<marker id="mr" markerheight="20" markerunits="userSpaceOnUse" markerwidth="20" orient="auto-start-reverse" refx="10" refy="6" viewbox="0 0 12 12"><path d="M0 0L12 6L0 12z" fill="#e4321b"></path></marker>
+<marker id="mg" markerheight="14" markerunits="userSpaceOnUse" markerwidth="14" orient="auto-start-reverse" refx="10" refy="6" viewbox="0 0 12 12"><path d="M0 0L12 6L0 12z" fill="#8d8a83"></path></marker>
 </defs></svg>
-
-<!-- 01 封面 -->
-<section class="slide" data-title="封面">
+<!-- 谁收 ≠ 谁拍板 -->
+<!-- 两层并发 -->
+<!-- 测了 / 没测 -->
+<!-- 入口串台 -->
+<!-- 回顾 -->
+<section class="slide" data-source-slide="1" data-title="从单会话到 Super-agent">
 <div class="rule"></div>
 <div class="abs" style="left:96px;top:330px;width:1000px">
-<h1 class="t1 rv" style="--d:1;font-size:116px">从单会话<br>到 <span class="red">Super-agent</span></h1>
+<h1 class="t1 rv" style="--d:1;font-size:116px">从单会话<br/>到 <span class="red">Super-agent</span></h1>
 <p class="lede rv" style="--d:3;margin-top:56px;color:var(--g1)">DeepSeek 的常驻 Agent 架构解读与思考</p></div>
-<div class="dg rv" style="--d:4"><svg viewBox="0 0 1920 1080">
+<div class="dg rv" style="--d:4"><svg viewbox="0 0 1920 1080">
 <g class="ln thin" stroke="#cfccc4">
-<path id="c1" d="M1270 368 C1350 368 1340 593 1420 593"/><path id="c2" d="M1270 458 C1350 458 1340 593 1420 593"/><path id="c3" d="M1270 548 C1350 548 1340 593 1420 593"/><path id="c4" d="M1270 638 C1350 638 1340 593 1420 593"/><path id="c5" d="M1270 728 C1350 728 1340 593 1420 593"/><path id="c6" d="M1270 818 C1350 818 1340 593 1420 593"/>
-<path d="M1570 593 C1615 593 1615 463 1660 463"/><path d="M1570 593 L1660 593"/><path d="M1570 593 C1615 593 1615 723 1660 723"/></g>
-<circle r="7" class="pk"><animateMotion dur="1.8s" begin="0s" repeatCount="indefinite" path="M1270 368 C1350 368 1340 593 1420 593"/></circle>
-<circle r="7" class="pk"><animateMotion dur="1.8s" begin="-1.1s" repeatCount="indefinite" path="M1270 548 C1350 548 1340 593 1420 593"/></circle>
-<circle r="7" class="pk"><animateMotion dur="1.8s" begin="-.5s" repeatCount="indefinite" path="M1270 728 C1350 728 1340 593 1420 593"/></circle>
-<circle r="7" class="pk"><animateMotion dur="1.8s" begin="-1.5s" repeatCount="indefinite" path="M1270 818 C1350 818 1340 593 1420 593"/></circle>
-<circle r="7" class="pk k"><animateMotion dur="1.2s" begin="-.3s" repeatCount="indefinite" path="M1570 593 C1615 593 1615 463 1660 463"/></circle>
-<circle r="7" class="pk k"><animateMotion dur="1.2s" begin="-.9s" repeatCount="indefinite" path="M1570 593 C1615 593 1615 723 1660 723"/></circle>
+<path d="M1270 368 C1350 368 1340 593 1420 593" id="c1"></path><path d="M1270 458 C1350 458 1340 593 1420 593" id="c2"></path><path d="M1270 548 C1350 548 1340 593 1420 593" id="c3"></path><path d="M1270 638 C1350 638 1340 593 1420 593" id="c4"></path><path d="M1270 728 C1350 728 1340 593 1420 593" id="c5"></path><path d="M1270 818 C1350 818 1340 593 1420 593" id="c6"></path>
+<path d="M1570 593 C1615 593 1615 463 1660 463"></path><path d="M1570 593 L1660 593"></path><path d="M1570 593 C1615 593 1615 723 1660 723"></path></g>
+<circle class="pk" r="7"><animatemotion begin="0s" dur="1.8s" path="M1270 368 C1350 368 1340 593 1420 593" repeatcount="indefinite"></animatemotion></circle>
+<circle class="pk" r="7"><animatemotion begin="-1.1s" dur="1.8s" path="M1270 548 C1350 548 1340 593 1420 593" repeatcount="indefinite"></animatemotion></circle>
+<circle class="pk" r="7"><animatemotion begin="-.5s" dur="1.8s" path="M1270 728 C1350 728 1340 593 1420 593" repeatcount="indefinite"></animatemotion></circle>
+<circle class="pk" r="7"><animatemotion begin="-1.5s" dur="1.8s" path="M1270 818 C1350 818 1340 593 1420 593" repeatcount="indefinite"></animatemotion></circle>
+<circle class="pk k" r="7"><animatemotion begin="-.3s" dur="1.2s" path="M1570 593 C1615 593 1615 463 1660 463" repeatcount="indefinite"></animatemotion></circle>
+<circle class="pk k" r="7"><animatemotion begin="-.9s" dur="1.2s" path="M1570 593 C1615 593 1615 723 1660 723" repeatcount="indefinite"></animatemotion></circle>
 </svg></div>
 <div class="rv" style="--d:4"><div class="chip" style="left:1150px;top:340px;width:120px;height:56px;justify-content:center">IM</div><div class="chip" style="left:1150px;top:430px;width:120px;height:56px;justify-content:center">PR</div><div class="chip" style="left:1150px;top:520px;width:120px;height:56px;justify-content:center">邮件</div><div class="chip" style="left:1150px;top:610px;width:120px;height:56px;justify-content:center">CI</div><div class="chip" style="left:1150px;top:700px;width:120px;height:56px;justify-content:center">群聊</div><div class="chip" style="left:1150px;top:790px;width:120px;height:56px;justify-content:center">日程</div>
 <div class="bx blk c" style="left:1420px;top:518px;width:150px;height:150px"><div class="t" style="font-size:26px">Router</div></div>
 <div class="bx c" style="left:1660px;top:413px;width:164px;height:100px"><div class="t" style="font-size:24px">Worker</div></div><div class="bx c" style="left:1660px;top:543px;width:164px;height:100px"><div class="t" style="font-size:24px">Worker</div></div><div class="bx c" style="left:1660px;top:673px;width:164px;height:100px"><div class="t" style="font-size:24px">Worker</div></div></div>
 <div class="rule b"></div><div class="foot"><span class="src">← → 翻页 · P 演讲者视图 · N 备注 · F 全屏</span></div>
-<div class="notes">开场：这次就是一起读一篇文章。DeepSeek Harness 团队 10 月 31 日发了一篇讨论 agent 系统架构的长文，同时开源了一个研究原型。
-文章自己说明：这是在讨论架构思路，不是 DeepSeek Harness 的现有功能介绍；原型也只是研究用途。
-右边这张小图，就是今天要讲的整体样子：各种消息进来，一个前台接住，后面几个 Worker 干活。</div>
-</section>
+<div class="notes">今天一起读 DeepSeek 的 Super-agent 设计文章，看看一个能持续接活的 Agent，需要怎样的系统架构。
+我们先从日常体验说起，再沿着一条任务看它如何运行，最后讨论实验的边界和我们自己的取舍。
+这篇文章讨论架构思路。公开代码是研究原型，不能把文章里所有设计当成已经交付的产品功能。
 
-<!-- 02 目录 -->
-<section class="slide" data-title="今天聊什么">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>今天聊什么</span></div>
-<h2 class="ttl rv">今天分五段</h2>
-<div class="abs" style="left:96px;right:96px;top:440px;display:grid;grid-template-columns:repeat(5,1fr);column-gap:24px">
-<div class="pt rv" style="--d:1"><div class="pk2 red">01</div><p style="color:var(--ink);font-weight:800;font-size:34px">问题</p><p>人为什么成了瓶颈</p></div>
-<div class="pt rv" style="--d:2"><div class="pk2 red">02</div><p style="color:var(--ink);font-weight:800;font-size:34px">思路</p><p>想要一个什么样的 Agent</p></div>
-<div class="pt rv" style="--d:3"><div class="pk2 red">03</div><p style="color:var(--ink);font-weight:800;font-size:34px">五个模块</p><p>具体怎么拆</p></div>
-<div class="pt rv" style="--d:4"><div class="pk2 red">04</div><p style="color:var(--ink);font-weight:800;font-size:34px">实验与原型</p><p>数字和代码</p></div>
-<div class="pt rv" style="--d:5"><div class="pk2 red">05</div><p style="color:var(--ink);font-weight:800;font-size:34px">我们的思考</p><p>疑问和延伸</p></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">先讲问题，再讲他们的思路和五个模块，然后看实验数字和开源原型，最后是我们自己的几个疑问和可以马上试的小做法。
-第三段最长，每个模块右上角会标当前讲到第几个。</div>
-</section>
-
-<!-- 03 分隔：问题 -->
-<section class="slide dark" data-title="01 问题">
-<div class="rule"></div>
-<div class="dv-n rv">01</div><div class="dv-t rv" style="--d:2">问题</div><div class="dv-s rv" style="--d:3">模型越来越能干，<br>为什么人反而更忙了</div>
-<div class="rule b"></div>
-<div class="notes">第一段，先把问题讲清楚。</div>
-</section>
-
-<!-- 04 瓶颈换了地方 -->
-<section class="slide" data-title="瓶颈换了地方">
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div>
+</section><section class="slide" data-source-slide="4" data-title="同时开五个会话，谁在帮你跟进？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>问题</span></div>
-<h2 class="ttl rv">瓶颈换了地方</h2>
-<div class="dg"><svg viewBox="0 0 1920 1080">
-<path d="M96 572 H1824" stroke="#cfccc4" stroke-width="2"/>
-<path class="ln draw" style="--d:2" d="M560 450 L756 450" marker-end="url(#ma)"/>
-<g class="ln thin rv" style="--d:5"><path d="M560 625 C660 625 660 749 756 749"/><path d="M560 687 C660 687 660 749 756 749"/><path d="M560 749 L756 749"/><path d="M560 811 C660 811 660 749 756 749"/><path d="M560 873 C660 873 660 749 756 749"/></g>
-<circle r="8" class="pk k"><animateMotion dur="1.4s" begin="0s" repeatCount="indefinite" path="M560 450 L756 450"/></circle>
+<h2 class="ttl rv">同时开五个会话，谁在帮你跟进？</h2>
+<div class="dg"><svg viewbox="0 0 1920 1080">
+<path d="M96 572 H1824" stroke="#cfccc4" stroke-width="2"></path>
+<path class="ln draw" d="M560 450 L756 450" marker-end="url(#ma)" style="--d:2"></path>
+<g class="ln thin rv" style="--d:5"><path d="M560 625 C660 625 660 749 756 749"></path><path d="M560 687 C660 687 660 749 756 749"></path><path d="M560 749 L756 749"></path><path d="M560 811 C660 811 660 749 756 749"></path><path d="M560 873 C660 873 660 749 756 749"></path></g>
+<circle class="pk k" r="8"><animatemotion begin="0s" dur="1.4s" path="M560 450 L756 450" repeatcount="indefinite"></animatemotion></circle>
 <g class="rv" style="--d:6">
-<circle r="8" class="pk"><animateMotion dur="1.6s" begin="-.2s" repeatCount="indefinite" path="M560 625 C660 625 660 749 756 749"/></circle>
-<circle r="8" class="pk"><animateMotion dur="1.6s" begin="-.9s" repeatCount="indefinite" path="M560 687 C660 687 660 749 756 749"/></circle>
-<circle r="8" class="pk"><animateMotion dur="1.6s" begin="-.5s" repeatCount="indefinite" path="M560 749 L756 749"/></circle>
-<circle r="8" class="pk"><animateMotion dur="1.6s" begin="-1.3s" repeatCount="indefinite" path="M560 811 C660 811 660 749 756 749"/></circle>
-<circle r="8" class="pk"><animateMotion dur="1.6s" begin="-.7s" repeatCount="indefinite" path="M560 873 C660 873 660 749 756 749"/></circle></g>
+<circle class="pk" r="8"><animatemotion begin="-.2s" dur="1.6s" path="M560 625 C660 625 660 749 756 749" repeatcount="indefinite"></animatemotion></circle>
+<circle class="pk" r="8"><animatemotion begin="-.9s" dur="1.6s" path="M560 687 C660 687 660 749 756 749" repeatcount="indefinite"></animatemotion></circle>
+<circle class="pk" r="8"><animatemotion begin="-.5s" dur="1.6s" path="M560 749 L756 749" repeatcount="indefinite"></animatemotion></circle>
+<circle class="pk" r="8"><animatemotion begin="-1.3s" dur="1.6s" path="M560 811 C660 811 660 749 756 749" repeatcount="indefinite"></animatemotion></circle>
+<circle class="pk" r="8"><animatemotion begin="-.7s" dur="1.6s" path="M560 873 C660 873 660 749 756 749" repeatcount="indefinite"></animatemotion></circle></g>
 </svg></div>
 <div class="abs lbl rv" style="left:96px;top:434px;font-size:28px">做一件事</div>
 <div class="bx c rv" style="--d:1;left:400px;top:405px;width:160px;height:90px"><div class="t">你</div></div>
 <div class="bx c redb rv" style="--d:2;left:760px;top:405px;width:220px;height:90px"><div class="t">Agent</div></div>
 <div class="abs rv" style="--d:3;left:1060px;top:400px"><div class="big2">等模型想清楚</div><div class="small" style="margin-top:8px">这一块，模型进步得很快</div></div>
-<div class="abs lbl rv" style="--d:4;left:96px;top:733px;font-size:28px">同时做很多件</div>
+<div class="abs lbl rv" style="--d:4;left:96px;top:733px;font-size:28px">同时做五件事</div>
 <div class="rv" style="--d:5"><div class="bx c" style="left:400px;top:600px;width:160px;height:50px"><div class="t" style="font-size:20px">Agent</div></div><div class="bx c" style="left:400px;top:662px;width:160px;height:50px"><div class="t" style="font-size:20px">Agent</div></div><div class="bx c" style="left:400px;top:724px;width:160px;height:50px"><div class="t" style="font-size:20px">Agent</div></div><div class="bx c" style="left:400px;top:786px;width:160px;height:50px"><div class="t" style="font-size:20px">Agent</div></div><div class="bx c" style="left:400px;top:848px;width:160px;height:50px"><div class="t" style="font-size:20px">Agent</div></div></div>
 <div class="bx c redb rv pulse" style="--d:6;left:760px;top:704px;width:220px;height:90px"><div class="t">你</div></div>
-<div class="abs rv" style="--d:7;left:1060px;top:700px"><div class="big2 red">等你看、等你点头</div><div class="small" style="margin-top:8px">这一块，人没法跟着变快</div></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">文章开头的判断：做单个任务，瓶颈是模型能力；同时做很多任务，瓶颈变成了人的注意力。
-上面一行是过去的体验：我们等模型想清楚。下面一行是现在：好几个 Agent 都在等你看结果、等你确认。
-文章还说，人的角色正在往上走，从盯执行细节，变成做更高层的决策和签字。</div>
-</section>
+<div class="abs rv" style="--d:7;left:1060px;top:700px"><div class="big2 red">等你看、等你点头</div><div class="small" style="margin-top:8px">每件事都要恢复背景，再判断是否介入</div></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span><a class="go" href="detail/attention.html?from=2">试一下：会话越开越多</a></div>
+<div class="notes">先顺着动画讲：上面是一件事，人等 Agent 推进；下面是五个 Agent 并行，进展、问题和待确认事项都汇到一个人。图中的五个只是示例，重点是人的跟进负担。
 
-<!-- 05 3–5 -->
-<section class="slide" data-title="一个人能跟住几个会话">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>问题</span></div>
-<h2 class="ttl rv">一个人，同时能跟住几个会话？</h2>
-<div class="abs rv" style="--d:1;left:96px;top:400px"><div class="num red" style="font-size:300px">3–5</div></div>
-<div class="abs rv" style="--d:2;left:96px;top:700px;width:700px"><div class="cap">个活跃会话，大概就到头了</div><div class="small" style="margin-top:8px">作者的经验值，不是实验数据</div></div>
-<div class="sqg" style="left:900px;top:400px;grid-template-columns:repeat(5,150px)">
-<div class="sq on rv" style="--d:2">在跟</div><div class="sq on rv" style="--d:3">在跟</div><div class="sq on rv" style="--d:4">在跟</div><div class="sq on rv" style="--d:5">在跟</div><div class="sq on rv" style="--d:6">在跟</div>
-<div class="sq w hatch rv" style="--d:9">等你</div><div class="sq w hatch rv" style="--d:10">等你</div><div class="sq w hatch rv" style="--d:11">等你</div><div class="sq w hatch rv" style="--d:12">等你</div><div class="sq w hatch rv" style="--d:13">等你</div>
-<div class="sq w hatch rv" style="--d:14">等你</div><div class="sq w hatch rv" style="--d:15">等你</div><div class="sq w hatch rv" style="--d:16">等你</div><div class="sq w hatch rv" style="--d:17">等你</div><div class="sq w hatch rv" style="--d:18">等你</div></div>
-<div class="abs small rv" style="--d:19;left:900px;top:740px;width:830px">再多开几个，Agent 跑得再快，也只能排队等人。</div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span><a class="go" href="detail/attention.html?from=5">玩一下：会话越开越多</a></div>
-<div class="notes">3 到 5 是作者的经验值。可以问一下大家：你自己同时开几个 Agent 窗口会开始乱？
-右下角可以点开一个小模拟：会话越开越多时，排队等你的会越积越多；换成「入口替你盯」之后会好很多。模拟参数是假设的，只演示机制。</div>
-</section>
+先问大家：同时开几个 Agent 窗口，你会开始忘记谁在做什么？作者说自己通常只能跟住 3 到 5 个活跃会话，这是经验值，不是实验测出来的人类上限。
+这里有两个不同的问题。多个会话本来就能并行，难的是人要来回跟进。把所有事情放到同一个会话，又会碰到上下文混杂和传统同步工具阻塞的问题。
+所以不能说“多会话无法并发”。他们要同时保留任务之间的并行，以及对人的连续交互。现代 Agent 已经有异步工具和 subagent，后面会看这些能力为什么还需要系统组织起来。
 
-<!-- 06 三个痛点 -->
-<section class="slide" data-title="多接几个工具也不够">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>问题</span></div>
-<h2 class="ttl rv">给 Agent 多接几个工具，也解决不了</h2>
-<div class="cols" style="top:420px">
-<div class="rv pt" style="--d:2;grid-column:span 4"><svg width="120" height="120" viewBox="0 0 120 120" style="margin-bottom:24px"><rect x="28" y="20" width="22" height="80" fill="#e4321b"/><rect x="70" y="20" width="22" height="80" fill="#e4321b"/></svg><div class="pk2">同步等人</div><p>一次只做一件，<br>中途要确认就停下来</p></div>
-<div class="rv pt" style="--d:3;grid-column:span 4"><svg width="120" height="120" viewBox="0 0 120 120" style="margin-bottom:24px" fill="none" stroke-width="8"><path d="M6 30 C46 30 74 90 114 90" stroke="#111"/><path d="M6 60 C46 60 74 30 114 30" stroke="#e4321b"/><path d="M6 90 C46 90 74 60 114 60" stroke="#8d8a83"/></svg><div class="pk2">上下文串味</div><p>几件事挤在一个会话里，<br>越堆越乱</p></div>
-<div class="rv pt" style="--d:4;grid-column:span 4"><svg width="120" height="120" viewBox="0 0 120 120" style="margin-bottom:24px" fill="none" stroke-width="8"><rect x="18" y="26" width="84" height="54" stroke="#111"/><path d="M6 94 H114" stroke="#111"/><path d="M30 14 L92 104" stroke="#e4321b"/></svg><div class="pk2">电脑一关就停</div><p>跑在你的机器上，<br>你离线它也离线</p></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">很多人的第一反应是：给现有的单会话 Agent 接 CLI、MCP、各种连接器，让它能收外部消息。
-文章说这样能做的事是变多了，但根本问题还在：它还是一个同步的会话，长操作会卡住；不同任务的上下文混在一起；本地设备一离线就全停。维持这样一套东西本身也很费人。</div>
-</section>
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236
 
-<!-- 07 分隔：思路 -->
-<section class="slide dark" data-title="02 思路">
-<div class="rule"></div>
-<div class="dv-n rv">02</div><div class="dv-t rv" style="--d:2">思路</div><div class="dv-s rv" style="--d:3">不再是「一个会话」，<br>而是一个一直在的「它」</div>
-<div class="rule b"></div>
-<div class="notes">第二段，他们想要的到底是什么。</div>
-</section>
-
-<!-- 08 四个特征 -->
-<section class="slide" data-title="像一个一直在线的同事">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>思路</span></div>
-<h2 class="ttl rv">想要的是：像一个一直在线的同事</h2>
+右下角可打开“会话越开越多”互动演示。参数为假设，只演示等待如何累积，不作为真实收益证据。</div>
+</section><section class="slide" data-source-slide="8" data-title="希望它像一个持续工作的数字同事">
+<div class="rule"></div><div class="meta"><span><b class="no"></b>四个目标能力</span></div>
+<h2 class="ttl rv">希望它像一个持续工作的数字同事</h2>
 <div class="cols" style="top:440px">
-<div class="rv pt" style="--d:2;grid-column:span 3"><div class="en">Continuous</div><div class="pk2">一直是<br>同一个它</div><p>IM 里说方案 A，<br>PR 里改成 B，它接得上</p></div>
-<div class="rv pt" style="--d:3;grid-column:span 3"><div class="en">Productive</div><div class="pk2">同时<br>接好几件</div><p>上一件没做完，<br>也能接下一句</p></div>
-<div class="rv pt" style="--d:4;grid-column:span 3"><div class="en">Proactive</div><div class="pk2">自己<br>会留意</div><p>值得做就做，<br>不值得就安静</p></div>
-<div class="rv pt" style="--d:5;grid-column:span 3"><div class="en">Persistent</div><div class="pk2">一直<br>不掉线</div><p>常驻在线，<br>出了问题自己恢复</p></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">原文把这种 Agent 和它的系统架构叫 Super-agent，给了四个特征：Continuous、Productive、Proactive、Persistent。
-连续：你在哪找它都是同一个它，不用想「这个会话里有没有那段上下文」。
-并行：能同时把几件复杂的事做好，上一个命令没结束也能接新指令。
-主动：不用一步步指挥，监听环境事件，值得处理就处理，否则安静。
-持续：一直在线，直连真实工作环境，长期运行中出问题能自己恢复。
-他们内部有一个跑在 DeepSeek Harness 上的实例，能在 IM 和 GitHub 之间延续同一个开发任务，也会盯公开群里的反馈，没人 @ 它也能自己定位根因、提 PR。</div>
-</section>
+<div class="rv pt" style="--d:2;grid-column:span 3"><div class="en">Continuous</div><div class="pk2">跨会话<br/>仍能接着做</div><p>IM 改需求、GitHub 跟进，<br/>仍能关联同一任务</p></div>
+<div class="rv pt" style="--d:3;grid-column:span 3"><div class="en">Productive</div><div class="pk2">多个任务<br/>并行推进</div><p>几件事同时执行，<br/>长任务进行时仍能接新请求</p></div>
+<div class="rv pt" style="--d:4;grid-column:span 3"><div class="en">Proactive</div><div class="pk2">感知变化<br/>主动行动</div><p>监听外部事件，<br/>在授权内判断是否介入</p></div>
+<div class="rv pt" style="--d:5;grid-column:span 3"><div class="en">Persistent</div><div class="pk2">状态持久<br/>故障可恢复</div><p>持续运行、保存任务状态，<br/>发生故障后尝试恢复</p></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek 设计文 §1 · 目标能力，后续页面展开实现与限制</span></div>
+<div class="notes">这一页先讲四个目标，不急着介绍实现模块。
+第一，连续性。即使底层使用不同会话，用户的任务关系和相关上下文仍能延续。比如在 IM 改需求，到了 GitHub 评审仍接得上。连续的是交互和任务语义，不要求同一个 Session 永远运行。
+第二，多任务执行能力。几件事可以并行推进，长任务执行期间仍能及时接新请求。原文还强调任务结果的质量；并行只是其中一部分，不应把能接收多个请求等同于真正有产出。
+第三，主动性。系统持续接收环境事件，在既定授权和策略下判断是否值得行动。并非每条消息都要处理，更不意味着事件能自动授予权限。
+第四，持续运行。系统保存持久状态，并在长期运行出现故障时尝试恢复。它强调的是持续服务和恢复能力，不保证永不宕机，也不保证任意中间状态都能无损恢复。本地设备离线时，依赖它的操作仍需等待。
+Continuous 关心任务和交互能否接续；Persistent 关心系统能否长期运行、保留状态并恢复。下面看 DeepSeek 怎样用系统架构把这些目标组织起来。
 
-<!-- 09 特征 → 模块 -->
-<section class="slide" data-title="四个特征靠五个模块">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>思路</span></div>
-<h2 class="ttl rv">四个特征，靠五个模块撑起来</h2>
-<p class="sub rv" style="--d:1">一个 ReAct 循环再强也给不了，得靠系统架构</p>
-<div class="dg"><svg viewBox="0 0 1920 1080"><g class="ln thin">
-<path class="draw" style="--d:5" d="M516 440 C900 440 900 416 1296 416" marker-end="url(#ma)"/>
-<path class="draw" style="--d:6" d="M516 550 C900 550 900 416 1296 416" marker-end="url(#ma)"/>
-<path class="draw" style="--d:7" d="M516 660 C900 660 900 516 1296 516" marker-end="url(#ma)"/>
-<path class="draw" style="--d:8" d="M516 440 C900 440 900 616 1296 616" marker-end="url(#ma)"/>
-<path class="draw" style="--d:9" d="M516 550 C900 550 900 616 1296 616" marker-end="url(#ma)"/>
-<path class="draw" style="--d:10" d="M516 770 C900 770 900 716 1296 716" marker-end="url(#ma)"/>
-<path class="draw" style="--d:11" d="M516 770 C900 770 900 816 1296 816" marker-end="url(#ma)"/></g></svg></div>
-<div class="bx rv" style="--d:1;left:96px;top:400px;width:420px;height:80px"><div class="t">一直是同一个它</div></div>
-<div class="bx rv" style="--d:2;left:96px;top:510px;width:420px;height:80px"><div class="t">同时接好几件</div></div>
-<div class="bx rv" style="--d:3;left:96px;top:620px;width:420px;height:80px"><div class="t">自己会留意</div></div>
-<div class="bx rv" style="--d:4;left:96px;top:730px;width:420px;height:80px"><div class="t">一直不掉线</div></div>
-<div class="bx blk rv" style="--d:6;left:1300px;top:380px;width:524px;height:72px"><div class="t"><span class="red">1</span>&nbsp; 两层架构</div></div>
-<div class="bx blk rv" style="--d:7;left:1300px;top:480px;width:524px;height:72px"><div class="t"><span class="red">2</span>&nbsp; 事件驱动</div></div>
-<div class="bx blk rv" style="--d:8;left:1300px;top:580px;width:524px;height:72px"><div class="t"><span class="red">3</span>&nbsp; 全双工 · 多通道</div></div>
-<div class="bx blk rv" style="--d:9;left:1300px;top:680px;width:524px;height:72px"><div class="t"><span class="red">4</span>&nbsp; 计算、状态、环境分开</div></div>
-<div class="bx blk rv" style="--d:10;left:1300px;top:780px;width:524px;height:72px"><div class="t"><span class="red">5</span>&nbsp; Watchdog 值守</div></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">这页是整篇文章的地图。原文的对应关系：
-两层架构 → 连续 + 并行；事件驱动 → 主动；全双工多通道 → 让日常交互也连续、并行；计算/状态/环境分离和 Watchdog → 持续在线。
-文章很坦白：他们没有提新理论，是把计算机系统里的经典思路搬到 Agent 上——Fast/Slow Path、缓存与局部性、投机执行、存算分离、外部控制回路。后面每个模块都能看到这个影子。
-他们还预测：只要目标是常驻、并发响应事件的系统，个人 Agent 和研发用的 Agent 最后会长得很像。</div>
-</section>
-
-<!-- 10 分隔：五个模块 -->
-<section class="slide dark" data-title="03 五个模块">
-<div class="rule"></div>
-<div class="dv-n rv">03</div><div class="dv-t rv" style="--d:2">五个模块</div><div class="dv-s rv" style="--d:3">他们具体是怎么拆的</div>
-<div class="dv-l rv" style="--d:4"><span><i>1</i>两层架构</span><span><i>2</i>事件驱动</span><span><i>3</i>全双工 · 多通道</span><span><i>4</i>计算、状态、环境分开</span><span><i>5</i>Watchdog</span></div>
-<div class="rule b"></div>
-<div class="notes">第三段是重点，五个模块一个个过。</div>
-</section>
-
-<!-- 11 一个会话 vs 每件一个 -->
-<section class="slide" data-title="一个会话还是每件事一个会话" data-mod="1">
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div>
+</section><section class="slide" data-mod="1" data-source-slide="11" data-title="会话怎么分，才能兼顾连续性和并行？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>模块 1 · 两层架构</span></div>
-<h2 class="ttl rv">全塞一个会话？每件事开一个？都不行</h2>
+<h2 class="ttl rv">会话怎么分，才能兼顾连续性和并行？</h2>
 <div class="abs" style="left:96px;top:390px;width:540px">
 <div class="pt"><div class="pk2" style="font-size:36px">全塞进一个会话</div></div>
-<svg width="540" height="250" viewBox="0 0 540 250" style="margin-top:10px"><g fill="#111"><circle cx="40" cy="40" r="10"/><circle cx="40" cy="85" r="10"/><circle cx="40" cy="130" r="10"/><circle cx="40" cy="175" r="10"/><circle cx="40" cy="220" r="10"/></g>
-<g class="ln thin"><path d="M50 40 C170 40 170 130 290 130"/><path d="M50 85 C170 85 170 130 290 130"/><path d="M50 130 L290 130"/><path d="M50 175 C170 175 170 130 290 130"/><path d="M50 220 C170 220 170 130 290 130"/></g><rect x="290" y="80" width="200" height="100" fill="#111"/><text x="390" y="138" text-anchor="middle" class="svt w">一个会话</text></svg>
-<div class="tgs" style="margin-top:14px"><span class="tg ok">上下文连贯</span><span class="tg no">等工具时卡住</span><span class="tg no">几件事串味</span></div></div>
+<svg height="250" style="margin-top:10px" viewbox="0 0 540 250" width="540"><g fill="#111"><circle cx="40" cy="40" r="10"></circle><circle cx="40" cy="85" r="10"></circle><circle cx="40" cy="130" r="10"></circle><circle cx="40" cy="175" r="10"></circle><circle cx="40" cy="220" r="10"></circle></g>
+<g class="ln thin"><path d="M50 40 C170 40 170 130 290 130"></path><path d="M50 85 C170 85 170 130 290 130"></path><path d="M50 130 L290 130"></path><path d="M50 175 C170 175 170 130 290 130"></path><path d="M50 220 C170 220 170 130 290 130"></path></g><rect fill="#111" height="100" width="200" x="290" y="80"></rect><text class="svt w" text-anchor="middle" x="390" y="138">一个会话</text></svg>
+<div class="tgs" style="margin-top:14px"><span class="tg ok">历史集中</span><span class="tg no">等工具时卡住</span><span class="tg no">几件事串味</span></div></div>
 <div class="abs f" data-f="1" style="left:690px;top:390px;width:540px">
 <div class="pt"><div class="pk2" style="font-size:36px">每件事开一个 <span class="g2" style="font-size:24px">像开 5 个窗口</span></div></div>
-<svg width="540" height="250" viewBox="0 0 540 250" style="margin-top:10px"><g fill="#111"><circle cx="40" cy="40" r="10"/><circle cx="40" cy="85" r="10"/><circle cx="40" cy="130" r="10"/><circle cx="40" cy="175" r="10"/><circle cx="40" cy="220" r="10"/></g>
-<g class="ln thin"><path d="M50 40 L290 40"/><path d="M50 85 L290 85"/><path d="M50 130 L290 130"/><path d="M50 175 L290 175"/><path d="M50 220 L290 220"/></g><g fill="#f3f2ee" stroke="#111" stroke-width="3"><rect x="290" y="24" width="160" height="32"/><rect x="290" y="69" width="160" height="32"/><rect x="290" y="114" width="160" height="32"/><rect x="290" y="159" width="160" height="32"/><rect x="290" y="204" width="160" height="32"/></g></svg>
-<div class="tgs" style="margin-top:14px"><span class="tg ok">并行，快</span><span class="tg no">人来回切</span><span class="tg no">没有全局</span></div></div>
+<svg height="250" style="margin-top:10px" viewbox="0 0 540 250" width="540"><g fill="#111"><circle cx="40" cy="40" r="10"></circle><circle cx="40" cy="85" r="10"></circle><circle cx="40" cy="130" r="10"></circle><circle cx="40" cy="175" r="10"></circle><circle cx="40" cy="220" r="10"></circle></g>
+<g class="ln thin"><path d="M50 40 L290 40"></path><path d="M50 85 L290 85"></path><path d="M50 130 L290 130"></path><path d="M50 175 L290 175"></path><path d="M50 220 L290 220"></path></g><g fill="#f3f2ee" stroke="#111" stroke-width="3"><rect height="32" width="160" x="290" y="24"></rect><rect height="32" width="160" x="290" y="69"></rect><rect height="32" width="160" x="290" y="114"></rect><rect height="32" width="160" x="290" y="159"></rect><rect height="32" width="160" x="290" y="204"></rect></g></svg>
+<div class="tgs" style="margin-top:14px"><span class="tg ok">并行，快</span><span class="tg no">人来回切</span><span class="tg no">需另做协调</span></div></div>
 <div class="abs f" data-f="2" style="left:1284px;top:390px;width:540px">
 <div class="pt r"><div class="pk2 red" style="font-size:36px">分两层</div></div>
-<svg width="540" height="250" viewBox="0 0 540 250" style="margin-top:10px"><g fill="#111"><circle cx="40" cy="40" r="10"/><circle cx="40" cy="85" r="10"/><circle cx="40" cy="130" r="10"/><circle cx="40" cy="175" r="10"/><circle cx="40" cy="220" r="10"/></g>
-<g class="ln thin"><path d="M50 40 C120 40 120 130 190 130"/><path d="M50 85 C120 85 120 130 190 130"/><path d="M50 130 L190 130"/><path d="M50 175 C120 175 120 130 190 130"/><path d="M50 220 C120 220 120 130 190 130"/><path d="M290 130 C330 130 330 55 370 55"/><path d="M290 130 L370 130"/><path d="M290 130 C330 130 330 205 370 205"/></g>
-<rect x="190" y="90" width="100" height="80" fill="#e4321b"/><text x="240" y="138" text-anchor="middle" class="svt w" style="font-size:20px">前台</text>
-<g fill="#f3f2ee" stroke="#111" stroke-width="3"><rect x="370" y="35" width="150" height="40"/><rect x="370" y="110" width="150" height="40"/><rect x="370" y="185" width="150" height="40"/></g></svg>
+<svg height="250" style="margin-top:10px" viewbox="0 0 540 250" width="540"><g fill="#111"><circle cx="40" cy="40" r="10"></circle><circle cx="40" cy="85" r="10"></circle><circle cx="40" cy="130" r="10"></circle><circle cx="40" cy="175" r="10"></circle><circle cx="40" cy="220" r="10"></circle></g>
+<g class="ln thin"><path d="M50 40 C120 40 120 130 190 130"></path><path d="M50 85 C120 85 120 130 190 130"></path><path d="M50 130 L190 130"></path><path d="M50 175 C120 175 120 130 190 130"></path><path d="M50 220 C120 220 120 130 190 130"></path><path d="M290 130 C330 130 330 55 370 55"></path><path d="M290 130 L370 130"></path><path d="M290 130 C330 130 330 205 370 205"></path></g>
+<rect fill="#e4321b" height="80" width="100" x="190" y="90"></rect><text class="svt w" style="font-size:20px" text-anchor="middle" x="240" y="138">前台</text>
+<g fill="#f3f2ee" stroke="#111" stroke-width="3"><rect height="40" width="150" x="370" y="35"></rect><rect height="40" width="150" x="370" y="110"></rect><rect height="40" width="150" x="370" y="185"></rect></g></svg>
 <div class="tgs" style="margin-top:14px"><span class="tg ok">连贯</span><span class="tg ok">并行</span></div></div>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">一句话：一个会话太挤，五个会话太散，所以分两层。
-别说错：「多个会话不好并发」是错的——多个会话本来就能并行，卡的是人要来回切。真正会被同步工具卡住的，是「一个会话里塞所有事」。
-被问到「单会话加 subagent 不也行吗」：可以，但要靠 prompt 让它记得委派，后面实验会看到这不稳。
-（按 → 逐个出现）
-这是连续性和吞吐之间的取舍。
-全塞一个会话：上下文最连贯，因为它什么都看得到；但 ReAct 一次走一步，任务一多就慢，几件事的中间过程混在一起，结果也会变差。
-每件事开一个新会话：并发最高；但任务之间不完全独立时，没有全局上下文，结果对不上；几个会话分别回复你，也很乱。
-所以分两层：一个常驻的前台保证连贯，后面一层隔离的会话负责并发。
-原文有句话值得记：让用户自己管会话，很大程度上是从底层 LLM API 带过来的习惯。会话应该是系统的实现细节，不该是用户的心智负担。</div>
-</section>
+<div class="notes">一个会话保留完整历史，但多个任务的过程会混在一起。每件事独立开会话，能并行、能隔离，但任务之间的联系和对人的回复需要额外协调。
+两层架构的选择是：用一个长期存在的入口掌握任务之间的关系，让独立 Worker 执行完整任务。
+这里比较的是组织方式的取舍。并非前两种方式在所有场景都不能用，简单任务未必需要两层。
 
-<!-- 12 Router / Worker -->
-<section class="slide" data-title="前台只接话和派活" data-mod="1">
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div>
+</section><section class="slide" data-mod="1" data-source-slide="12" data-title="Router 保持交互连续，Worker 执行完整任务">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>模块 1 · 两层架构</span></div>
-<h2 class="ttl rv">前台只接话和派活，干活的在后面</h2>
-<div class="dg"><svg viewBox="0 0 1920 1080">
-<path class="ln draw" style="--d:2" d="M420 600 L636 600" marker-end="url(#ma)"/>
-<path class="ln draw" style="--d:3" d="M960 600 C1060 600 1060 470 1156 470" marker-end="url(#ma)"/>
-<path class="ln draw" style="--d:3" d="M960 600 L1156 600" marker-end="url(#ma)"/>
-<path class="ln draw" style="--d:3" d="M960 600 C1060 600 1060 730 1156 730" marker-end="url(#ma)"/>
-<circle r="9" class="pk"><animateMotion dur="3s" begin="0s" repeatCount="indefinite" path="M420 600 L640 600 L960 600 C1060 600 1060 470 1160 470"/></circle>
-<circle r="9" class="pk"><animateMotion dur="3s" begin="-1s" repeatCount="indefinite" path="M420 600 L640 600 L960 600 L1160 600"/></circle>
-<circle r="9" class="pk"><animateMotion dur="3s" begin="-2s" repeatCount="indefinite" path="M420 600 L640 600 L960 600 C1060 600 1060 730 1160 730"/></circle>
+<h2 class="ttl rv">Router 保持交互连续，Worker 执行完整任务</h2>
+<div class="dg"><svg viewbox="0 0 1920 1080">
+<path class="ln draw" d="M420 600 L636 600" marker-end="url(#ma)" style="--d:2"></path>
+<path class="ln draw" d="M960 600 C1060 600 1060 470 1156 470" marker-end="url(#ma)" style="--d:3"></path>
+<path class="ln draw" d="M960 600 L1156 600" marker-end="url(#ma)" style="--d:3"></path>
+<path class="ln draw" d="M960 600 C1060 600 1060 730 1156 730" marker-end="url(#ma)" style="--d:3"></path>
+<circle class="pk" r="9"><animatemotion begin="0s" dur="3s" path="M420 600 L640 600 L960 600 C1060 600 1060 470 1160 470" repeatcount="indefinite"></animatemotion></circle>
+<circle class="pk" r="9"><animatemotion begin="-1s" dur="3s" path="M420 600 L640 600 L960 600 L1160 600" repeatcount="indefinite"></animatemotion></circle>
+<circle class="pk" r="9"><animatemotion begin="-2s" dur="3s" path="M420 600 L640 600 L960 600 C1060 600 1060 730 1160 730" repeatcount="indefinite"></animatemotion></circle>
 </svg></div>
 <div class="bx c rv" style="left:150px;top:540px;width:270px;height:120px"><div class="t">你</div><div class="s">IM · GitHub · 邮件</div></div>
-<div class="bx blk rv" style="--d:1;left:640px;top:510px;width:320px;height:180px"><div class="k">前台 · 常驻</div><div class="t" style="font-size:36px">Router</div><div class="s">接话 · 派活 · 汇总给你</div></div>
+<div class="bx blk rv" style="--d:1;left:640px;top:510px;width:320px;height:180px"><div class="k">Router 层 · 常驻</div><div class="t" style="font-size:36px">Router</div><div class="s">交互 · 派活 · 全局协调</div></div>
 <div class="bx rv" style="--d:4;left:1160px;top:420px;width:420px;height:100px"><div class="t">Worker A</div><div class="s">修 PR #42</div></div>
 <div class="bx rv" style="--d:5;left:1160px;top:550px;width:420px;height:100px"><div class="t">Worker B</div><div class="s">复现一个 bug</div></div>
 <div class="bx rv" style="--d:6;left:1160px;top:680px;width:420px;height:100px"><div class="t">Worker C</div><div class="s">回一封邮件</div></div>
-<div class="abs f" data-f="1" style="left:640px;top:730px;width:360px"><div class="tgs"><span class="tg">不拿命令行</span><span class="tg">通常用轻模型</span></div></div>
-<div class="abs f" data-f="1" style="left:1160px;top:820px;width:700px"><div class="tgs"><span class="tg">一任务一会话</span><span class="tg">全套工具</span><span class="tg">强模型</span><span class="tg no">不直接找你</span></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span><a class="go" href="detail/arch-deepseek.html?from=12">完整结构图</a><a class="go" href="detail/architecture-in-motion.html?from=12">看一条消息怎么走</a></div>
-<div class="notes">一句话：前台管「对人说话、派给谁」，Worker 管「把事做完」。
-别说错：别说「所有消息都由 Router 转发」——已经有主人的后续消息是代码直送的（后面第 16 页）。
-Router 层：所有和人的交互、跨任务的信息和决策都汇在这里，是全局的顺序点、协调点和记忆。为了不让它自己变成瓶颈，它不执行任务，只和人打交道、派活，可以完全不给 Bash。
-Worker 层：每个任务一个隔离会话，全套执行工具，直接决定代码质量，所以一般用最强的模型。Worker 不直接跟人说话，推理过程和工具调用不外泄，状态汇报给前台，由前台统一回复。
-两层是逻辑分工，内部不一定各是一个会话：Worker 内部可以再开 subagent，甚至本身就是一个 Agent Team，前台不用关心。
-右下两个按钮：一个是可点击的完整结构图，一个是 7 步动画。</div>
-</section>
+<div class="abs f" data-f="1" style="left:640px;top:730px;width:360px"><div class="tgs"><span class="tg">限制执行职责</span><span class="tg">保留路由判断</span></div></div>
+<div class="abs f" data-f="1" style="left:1160px;top:820px;width:700px"><div class="tgs"><span class="tg">一任务一会话</span><span class="tg">全套工具</span><span class="tg">按任务选模型</span><span class="tg no">不直接找你</span></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span><a class="go" href="detail/arch-deepseek.html?from=5">完整结构图</a><a class="go" href="detail/architecture-in-motion.html?from=5">看一条消息怎么走</a></div>
+<div class="notes">比如你同时要求修一个 PR、复现一个 bug、回一封邮件。Router 负责理解请求、关联已有任务、派活，以及把需要你知道的结果带回来。每个 Worker 有隔离的上下文和执行工具，负责把一件事情做完。
+为什么 Router 不自己深入执行？因为一个复杂调试可能占很久，还会带入大量细节，影响它接其他消息。
+它与常见 Agent Team 的侧重点不同：Team Lead 往往要把一件大事拆成紧密关联的步骤；这里 Router 主要派发完整任务，任务内部仍然可以由 Worker 再组织 subagent。
+限制的是执行职责。原文说轻模型通常够用，并没有要求 Router 缺乏判断能力。后续消息也并非每次都由 Router 的模型转发，接下来会讲直送。
 
-<!-- 13 派活 vs 拆活 -->
-<section class="slide" data-title="只派活，不拆活" data-mod="1">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>模块 1 · 两层架构</span></div>
-<h2 class="ttl rv">和 Agent Team 的区别：只派活，不拆活</h2>
-<div class="abs rv" style="--d:1;left:96px;top:380px;width:820px">
-<div class="pt"><div class="pk2" style="font-size:36px">Agent Team</div></div>
-<svg width="820" height="320" viewBox="0 0 820 320" style="margin-top:12px">
-<g class="ln thin dash"><path d="M410 84 L140 220" marker-end="url(#ma)" marker-start="url(#ma)"/><path d="M410 84 L410 220" marker-end="url(#ma)" marker-start="url(#ma)"/><path d="M410 84 L680 220" marker-end="url(#ma)" marker-start="url(#ma)"/></g>
-<g class="ln"><path d="M230 258 L316 258" marker-end="url(#ma)"/><path d="M500 258 L586 258" marker-end="url(#ma)"/></g>
-<rect x="320" y="20" width="180" height="64" fill="#111"/><text x="410" y="61" text-anchor="middle" class="svt w">队长</text>
-<g fill="#f3f2ee" stroke="#111" stroke-width="3"><rect x="50" y="226" width="180" height="64"/><rect x="320" y="226" width="180" height="64"/><rect x="590" y="226" width="180" height="64"/></g>
-<text x="140" y="267" text-anchor="middle" class="svt">步骤 1</text><text x="410" y="267" text-anchor="middle" class="svt">步骤 2</text><text x="680" y="267" text-anchor="middle" class="svt">步骤 3</text></svg>
-<p class="cap" style="margin-top:16px">一件大事拆成步骤，<br>队长得懂细节、来回协调</p></div>
-<div class="abs rv" style="--d:3;left:1004px;top:380px;width:820px">
-<div class="pt r"><div class="pk2 red" style="font-size:36px">Super-agent 的前台</div></div>
-<svg width="820" height="320" viewBox="0 0 820 320" style="margin-top:12px">
-<g class="ln"><path d="M410 84 L140 220" marker-end="url(#ma)"/><path d="M410 84 L410 220" marker-end="url(#ma)"/><path d="M410 84 L680 220" marker-end="url(#ma)"/></g>
-<rect x="320" y="20" width="180" height="64" fill="#e4321b"/><text x="410" y="61" text-anchor="middle" class="svt w">Router</text>
-<g fill="#f3f2ee" stroke="#111" stroke-width="3"><rect x="50" y="226" width="180" height="64"/><rect x="320" y="226" width="180" height="64"/><rect x="590" y="226" width="180" height="64"/></g>
-<text x="140" y="267" text-anchor="middle" class="svt">修 bug</text><text x="410" y="267" text-anchor="middle" class="svt">审 PR</text><text x="680" y="267" text-anchor="middle" class="svt">写功能</text></svg>
-<p class="cap" style="margin-top:16px">几件互不相干的事，<br>前台只管派给谁、谁和谁有关</p></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">一句话：DeepSeek 限制的是前台的「执行职责」，不是它的「智力」。
-别说错：别说「作者主张 Router 越轻越好、越笨越好」。原文是：前台不拆解、不执行，所以活比想象中简单，轻模型「通常」够用。能力和职责是两个维度，第 40 页会展开我们的看法。
-乍一看，一个中心派活给几个执行者，很像常见的 Agent Team。但关注点不同：
-Agent Team 通常把一个复杂任务拆成紧耦合的步骤，队长要深入理解任务、规划子任务、频繁协调成员，推理负担很重。
-Super-agent 的前台只派发任务、在高层跟踪任务之间的关系，不拆解单个任务。
-所以作者的经验是：前台的活往往比想象中简单，轻一点的模型通常就能兼顾速度和质量。注意原文是「通常」，不是规定。
-反过来，Agent Team 也可以当两层架构用，只要用 prompt 限制主会话不自己干活、只对外交互和派活。
-可以顺带一句：我们自己做的 Hive，Orchestrator 要规划、拆解、验收，其实更像左边这种；第 42 页会对照。</div>
-</section>
-
-<!-- 14 批处理 -->
-<section class="slide" data-title="越忙越省" data-mod="1">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>模块 1 · 两层架构</span></div>
-<h2 class="ttl rv">一个前台扛得住吗？越忙，每个决策越便宜</h2>
-<div class="abs rv" style="--d:1;left:1300px;top:300px;display:flex;gap:28px;font-size:22px;font-weight:800"><span><i style="display:inline-block;width:22px;height:22px;background:var(--g3);vertical-align:-3px;margin-right:10px"></i>每分钟约 1 条</span><span><i style="display:inline-block;width:22px;height:22px;background:var(--ink);vertical-align:-3px;margin-right:10px"></i>约 40 条</span></div>
-<div class="abs" style="left:96px;right:96px;top:840px;height:3px;background:var(--ink)"></div>
-<div class="vb" style="--d:1;left:250px;height:129px;background:var(--g3)"></div><div class="vb" style="--d:2;left:400px;height:360px;background:var(--ink)"></div>
-<div class="vl rv" style="--d:3;left:250px;top:660px">1.0</div><div class="vl rv" style="--d:4;left:400px;top:430px">2.8</div>
-<div class="vb" style="--d:3;left:810px;height:231px;background:var(--g3)"></div><div class="vb" style="--d:4;left:960px;height:360px;background:var(--ink)"></div>
-<div class="vl rv" style="--d:5;left:810px;top:558px">2.5s</div><div class="vl rv" style="--d:6;left:960px;top:430px">3.9s</div>
-<div class="vb" style="--d:5;left:1370px;height:360px;background:var(--g3)"></div><div class="vb" style="--d:6;left:1520px;height:90px;background:var(--red)"></div>
-<div class="vl rv" style="--d:7;left:1370px;top:430px">6.4s</div><div class="vl rv red" style="--d:8;left:1520px;top:700px">1.6s</div>
-<div class="abs lbl rv" style="--d:2;left:250px;top:860px;width:270px;text-align:center;font-size:26px">一批合几条</div>
-<div class="abs lbl rv" style="--d:4;left:810px;top:860px;width:270px;text-align:center;font-size:26px">单次请求耗时</div>
-<div class="abs lbl rv red" style="--d:6;left:1370px;top:860px;width:270px;text-align:center;font-size:26px">摊到每个决策</div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek 对 Router 的单独压测 · 真实模型 + mock Worker</span></div>
-<div class="notes">很多人会担心：所有事都经过一个前台，它会不会成瓶颈？
-他们的做法：前台推理的这一轮里到达的事件先排队，下一轮合成一批一起送进模型。前台每一步都是长输入、短输出，合在一起的事件在 Prefill 阶段并行计算，所以单次请求耗时涨得比批大小慢得多。
-压测数字：需要决策的事件从每分钟约 1 条加到约 40 条，平均一批从 1.0 条涨到 2.8 条，单次请求从 2.5 秒到 3.9 秒，摊到每个决策的推理时间反而从 6.4 秒降到 1.6 秒。
-（一个决策可能要好几次 LLM 请求，比如先召回上下文再派活，所以每决策时间可以大于每请求时间。）
-结论：按他们现在团队的规模，不需要为了吞吐提前把前台拆成多个，拆了反而丢全局连续性。真要扩展，可以多级过滤或水平分片，但分得越细，共享的记忆越少。</div>
-</section>
-
-<!-- 15 漏斗 -->
-<section class="slide" data-title="不是每条消息都值得模型看" data-mod="2">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>模块 2 · 事件驱动</span></div>
-<h2 class="ttl rv">一大堆消息里，真要动手的没几条</h2>
-<div class="dg"><svg viewBox="0 0 1920 1080">
-<path d="M300 540 L1596 540" class="ln thin" stroke="#cfccc4" marker-end="url(#ma)"/>
-<g fill="#111">
-<circle r="7"><animateMotion dur="2.2s" begin="0s" repeatCount="indefinite" path="M300 520 L670 520 L670 800"/></circle>
-<circle r="7"><animateMotion dur="2.2s" begin="-.3s" repeatCount="indefinite" path="M300 545 L640 545 L640 800"/></circle>
-<circle r="7"><animateMotion dur="2.2s" begin="-.6s" repeatCount="indefinite" path="M300 560 L700 560 L700 800"/></circle>
-<circle r="7"><animateMotion dur="2.2s" begin="-.9s" repeatCount="indefinite" path="M300 530 L660 530 L660 800"/></circle>
-<circle r="7"><animateMotion dur="2.2s" begin="-1.2s" repeatCount="indefinite" path="M300 550 L690 550 L690 800"/></circle>
-<circle r="7"><animateMotion dur="2.2s" begin="-1.5s" repeatCount="indefinite" path="M300 525 L650 525 L650 800"/></circle>
-<circle r="7"><animateMotion dur="2.2s" begin="-1.8s" repeatCount="indefinite" path="M300 555 L680 555 L680 800"/></circle>
-<circle r="7"><animateMotion dur="3.4s" begin="-.4s" repeatCount="indefinite" path="M300 540 L1210 540 L1210 800"/></circle>
-<circle r="7"><animateMotion dur="3.4s" begin="-2s" repeatCount="indefinite" path="M300 530 L1190 530 L1190 800"/></circle></g>
-<circle r="10" class="pk"><animateMotion dur="4.2s" begin="-1s" repeatCount="indefinite" path="M300 540 L1600 540"/></circle>
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236
+职责轻量不等于模型必须更弱。选型要结合路由准确性、延迟和成本，不在这页给出统一配置。</div>
+</section><section class="slide event-overview" data-mod="2" data-source-slide="15" data-title="一条外部事件，怎样找到负责的 Worker？">
+<div class="rule"></div><div class="meta"><span><b class="no"></b>模块 2 · 事件处理链路</span></div>
+<h2 class="ttl">一条外部事件，怎样找到负责的 Worker？</h2>
+<p class="sub">先按规则准入，再依据订阅关系，走模型判断或代码直送。</p>
+<div class="dg"><svg viewbox="0 0 1920 1080">
+<path class="ln draw" d="M376 505 H466" marker-end="url(#ma)"></path>
+<path class="ln draw" d="M786 505 H886 V415 H986" marker-end="url(#ma)"></path>
+<path class="ln draw" d="M1326 415 H1414 V505 H1504" marker-end="url(#ma)"></path>
+<path class="ln r draw" d="M786 505 H836 V710 H1670 V570" marker-end="url(#mr)"></path>
+<path class="ln dash" d="M626 570 V652" marker-end="url(#mg)"></path>
 </svg></div>
-<div class="bx c rv" style="left:96px;top:470px;width:204px;height:140px"><div class="t">所有消息</div><div class="s">群聊 · PR · 邮件 · CI</div></div>
-<div class="bx rv" style="--d:2;left:520px;top:460px;width:320px;height:160px"><div class="k">第一道 · 代码</div><div class="t">先用规则筛</div><div class="s">来源 · 哪个群 · 白名单</div></div>
-<div class="bx blk rv" style="--d:4;left:1060px;top:460px;width:320px;height:160px"><div class="k">第二道 · 模型</div><div class="t">再判断值不值</div><div class="s">策略写在 prompt 里</div></div>
-<div class="bx c redb rv" style="--d:6;left:1600px;top:470px;width:224px;height:140px"><div class="t">派活</div></div>
-<div class="bx c rv" style="--d:3;left:520px;top:800px;width:320px;height:80px;border-style:dashed;border-color:var(--g2)"><div class="t" style="font-size:24px;color:var(--g1)">闲聊、无关通知</div></div>
-<div class="bx c rv" style="--d:5;left:1060px;top:800px;width:320px;height:80px;border-style:dashed;border-color:var(--g2)"><div class="t" style="font-size:24px;color:var(--g1)">看过了，不值得做</div></div>
-<div class="abs lbl f" data-f="1" style="left:96px;top:370px;font-size:30px">约 300 条</div>
-<div class="abs lbl red f" data-f="1" style="left:1600px;top:370px;font-size:30px">约 20 条</div>
-<div class="rule b"></div><div class="foot"><span class="src">300 / 20 是他们实验负载里的比例</span><a class="go" href="detail/arch-deepseek.html?from=15">完整结构图</a></div>
-<div class="notes">一句话：两道筛子管的是「要不要处理」；下一页的直送管的是「交给谁」。
-举例：CI 失败、群里随口一句「这个页面好像有点慢」——第一道看来源和名单，第二道让模型判断值不值得管。
-注意：CI 成功也不能一律丢掉，如果有 Worker 正在等这个结果，就得通知它。规则看的是事件加上系统当前状态。
-Super-agent 的主要输入不再是人一句句敲的 prompt，而是环境里的半结构化事件：群聊、邮件、日历提醒、代码评审评论、CI 结果……原文统一叫 Trigger。
-接进真实群聊和代码平台，事件流噪声大、需要动手的比例很低。每条都让大模型从头判断，延迟和算力都受不了。
-他们借了计算机系统的 Fast Path / Slow Path：
-第一道是代码：按来源、群、用户或 bot 白名单做确定性准入。每个来源可以设成「只响应明确请求」「当作候选」或「忽略」。大部分消息在这里就被挡掉，不花一个 token。
-第二道是模型：过了第一道的候选，才交给 LLM 结合上下文判断，策略写成 prompt。这一层也是自然语言的扩展点，团队随时可以用一段话开关、增加策略。
-原型里的规则也是这样：名单里的人 @ 它或私聊算明确请求；其它按准入表判断；已经在处理的话题里的消息算跟进。</div>
-</section>
+<div class="bx" style="left:96px;top:440px;width:280px;height:130px"><div class="k">外部事件 · Trigger</div><div class="t">PR / CI / 群消息</div><div class="s">环境产生的新输入</div></div>
+<div class="bx" style="left:466px;top:440px;width:320px;height:130px"><div class="k">Fast Path · 代码</div><div class="t">规则准入</div><div class="s">来源、群组、白名单</div></div>
+<div class="abs" style="left:506px;top:671px;font-size:25px;color:var(--g1)">不符合准入规则：忽略</div>
+<div class="abs" style="left:986px;top:303px;font-size:26px;font-weight:750">没有订阅者</div>
+<div class="bx blk" style="left:986px;top:350px;width:340px;height:130px"><div class="k">Slow Path · 模型</div><div class="t">Router 判断、派活</div><div class="s">结合上下文判断是否行动</div></div>
+<div class="abs" style="left:1360px;top:359px;font-size:23px;color:var(--g1)">值得处理</div>
+<div class="bx" style="left:1504px;top:440px;width:320px;height:130px"><div class="k">执行任务</div><div class="t">Worker</div><div class="s">订阅话题，接收后续事件</div></div>
+<div class="abs red" style="left:936px;top:646px;font-size:30px;font-weight:800">已有订阅：Pass-through 代码直送</div>
+<div class="abs" style="left:936px;top:735px;font-size:25px;color:var(--g1)">省去 Router 再次判断和转发；Router 仍可掌握事件。</div>
+<p class="abs" style="left:96px;top:850px;width:1728px;border-top:2px solid var(--g3);padding-top:24px;font-size:29px;font-weight:700">Worker 回报关键状态与结论，由 Router 协调并统一对外回复。</p>
+<div class="rule b"></div><div class="foot"><span class="src">原文 §3.1–3.2 · 准入、路由与执行授权是不同职责；直送不改变权限</span></div>
+<div class="notes">先用这张图把整条事件链路串起来。外部输入可以是 PR 评论、CI 结果，也可以是群消息，不要求每次都有人给 Agent 下明确指令。
+代码先做来源、群组、白名单等确定性的准入判断，过滤不需要进入系统的噪声。准入策略还应考虑任务当前状态，不能把某类 CI 结果无条件全部丢掉。
+对于通过准入的事件，再看话题有没有订阅者。有订阅者，代码直接投递给 Worker，省去 Router 再判断和转发的一轮。没有订阅者，则由 Router 结合上下文和语义策略判断是否行动、如何派发。图上的分支概括逻辑职责，不代表每个实现只有固定的几次函数调用。
+举例：PR #42 已有 Worker 负责，新的评论直接送给它。一个全新的问题则需要 Router 理解，决定是否建立任务。Worker 接手后订阅相关话题，持续接收后续事件；它也可以订阅多个相关话题。同一话题可有多个订阅者，下一页展开。
+直送只是消息路由。Worker 仍按自己的职责和授权执行，遇到超出任务范围的事件可以交回 Router。消息本身不能授予新的权限。关键结论由 Worker 回报 Router，Router 负责全局协调和对外交流。
+接下来依次看：后续消息为什么要直送、收到事件时该带多少背景，以及在允许主动行动的策略下，可以提前做哪些准备。
 
-<!-- 16 话题直送 -->
-<section class="slide" data-title="后续消息直接送达" data-mod="2">
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div></section><section class="slide" data-mod="2" data-source-slide="16" data-title="PR 已有人接手，新评论还要前台转发吗？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>模块 2 · 事件驱动</span></div>
-<h2 class="ttl rv">同一件事的后续消息，直接送到在做的那个</h2>
-<div class="dg"><svg viewBox="0 0 1920 1080">
-<path class="ln thin dash" d="M440 560 C620 560 640 380 816 380" stroke="#8d8a83" marker-end="url(#mg)"/>
-<path class="ln thin dash" d="M1100 380 C1260 380 1240 560 1396 560" stroke="#8d8a83" marker-end="url(#mg)"/>
-<path class="ln r draw" style="--d:3" d="M440 600 L1392 600" marker-end="url(#mr)"/>
-<circle r="10" class="pk"><animateMotion dur="2s" begin="0s" repeatCount="indefinite" path="M440 600 L1396 600"/></circle>
-<circle r="10" class="pk"><animateMotion dur="2s" begin="-1s" repeatCount="indefinite" path="M440 600 L1396 600"/></circle>
-<g class="f" data-f="1"><path class="ln r" d="M440 630 C900 630 1000 800 1392 800" marker-end="url(#mr)"/>
-<circle r="10" class="pk"><animateMotion dur="2.4s" begin="-.5s" repeatCount="indefinite" path="M440 630 C900 630 1000 800 1396 800"/></circle></g>
+<h2 class="ttl rv">PR 已有人接手，新评论还要前台转发吗？</h2>
+<div class="dg"><svg viewbox="0 0 1920 1080">
+<path class="ln thin dash" d="M440 560 C620 560 640 380 816 380" marker-end="url(#mg)" stroke="#8d8a83"></path>
+<path class="ln thin dash" d="M1100 380 C1260 380 1240 560 1396 560" marker-end="url(#mg)" stroke="#8d8a83"></path>
+<path class="ln r draw" d="M440 600 L1392 600" marker-end="url(#mr)" style="--d:3"></path>
+<circle class="pk" r="10"><animatemotion begin="0s" dur="2s" path="M440 600 L1396 600" repeatcount="indefinite"></animatemotion></circle>
+<circle class="pk" r="10"><animatemotion begin="-1s" dur="2s" path="M440 600 L1396 600" repeatcount="indefinite"></animatemotion></circle>
+<g class="f" data-f="1"><path class="ln r" d="M440 630 C900 630 1000 800 1392 800" marker-end="url(#mr)"></path>
+<circle class="pk" r="10"><animatemotion begin="-.5s" dur="2.4s" path="M440 630 C900 630 1000 800 1396 800" repeatcount="indefinite"></animatemotion></circle></g>
 </svg></div>
 <div class="bx rv" style="left:120px;top:540px;width:320px;height:120px"><div class="k">话题 · PR #42</div><div class="t">新评论：补个测试</div></div>
 <div class="bx blk rv" style="--d:1;left:820px;top:320px;width:280px;height:120px"><div class="t">Router</div><div class="s">看得到，不用转</div></div>
 <div class="bx redb rv" style="--d:2;left:1400px;top:540px;width:424px;height:120px"><div class="t">正在修 #42 的 Worker</div><div class="s">订阅了这个话题</div></div>
 <div class="abs small rv" style="--d:4;left:1130px;top:330px;width:400px;font-size:22px">没订阅时：先绕前台判断一圈</div>
 <div class="abs lbl red rv" style="--d:4;left:600px;top:548px;font-size:24px">代码查订阅表，直接送</div>
-<div class="bx redb f" data-f="1" style="left:1400px;top:740px;width:424px;height:120px"><div class="t">另一个 Worker</div><div class="s">也订阅了 → 自己发现冲突</div></div>
+<div class="bx redb f" data-f="1" style="left:1400px;top:740px;width:424px;height:120px"><div class="t">另一个 Worker</div><div class="s">也订阅了 → 有机会发现冲突</div></div>
 <p class="abs small rv" style="--d:5;left:120px;top:890px;width:1200px">话题 = 同一个 PR、同一串群聊回复、同一封邮件往来</p>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span><a class="go" href="detail/handoff.html?from=16">动画对比：经前台 vs 直送</a></div>
-<div class="notes">一句话：已经有主人的消息，用代码查订阅表直接送，不用再让前台的模型判断一次。
-别说错：别说两件事「强一致」——那是分布式里讲数据读写的术语。这里说「有明确的归属关系」就行。
-被问到「省的是什么」：省的是前台多一轮模型判断、多读一遍长上下文；Worker 照样要读这条消息、照样要干活。
-Fast/Slow 的思路也用在路由上：前台只处理新任务的冷启动和跨任务协调，已有主人的后续事件由代码直接送达。
-同一个 PR、同一串话题回复、同一封邮件往来，原文叫一个 Thread。前台为一个 Thread 的第一个事件派了 Worker 后，这个 Worker 就订阅这个 Thread；之后的事件由代码直接送过去，前台不用再调一次工具去转发。前台仍然能看到所有事件，用来掌握全局，但只评估还没有订阅者的新事件。
-如果新事件不属于当前任务，Worker 可以退订，或交还给前台重新派。
-（按 →）订阅是多对多的：几个 Worker 订阅同一个 Thread，就能同时收到同样的事件，自己发现并解决冲突，不需要点对点通信。
-原型里：飞书按话题根消息归并，GitHub 按 issue/PR 号。主聊天里不带话题的新消息，前台只有在它明确指向某个工单时才归过去——原型文档原话是「话题相似不够」。</div>
-</section>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span><a class="go" href="detail/handoff.html?from=7">动画对比：经前台 vs 直送</a></div>
+<div class="notes">Worker 接手 PR #42 时，系统记录它对这个话题的订阅。新的评论到达后，代码查订阅表，直接送到这个 Worker，省掉 Router 再判断和转发的一轮。
+Router 仍然能看到事件，但主要评估没有订阅者的新事件。Worker 发现消息不属于自己当前的任务，可以退订或交还 Router。
+如果评论说“先停这个任务，优先做另一个项目”，仍然可以先直送。Worker 在授权范围内处理自己的暂停要求，把跨项目优先级交给 Router 协调。收到消息和有权决策是两回事，评论本身不能授予权限。
+多个 Worker 可以订阅同一话题。这样有机会发现冲突，但不能保证状态一致或自动达成协调。
 
-<!-- 谁收 ≠ 谁拍板 -->
-<section class="slide" data-title="谁收到和谁拍板" data-mod="2">
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div>
+</section><section class="slide" data-mod="2" data-source-slide="18" data-title="一次事件进入时，系统如何组织上下文？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>模块 2 · 事件驱动</span></div>
-<h2 class="ttl rv">谁收到消息，和谁来拍板，是两回事</h2>
-<p class="sub rv" style="--d:1">筛子管「要不要处理」，直送管「交给谁」，都不管「谁说了算」</p>
-<div class="dg"><svg viewBox="0 0 1920 1080">
-<path class="ln r draw" style="--d:3" d="M520 560 L636 560" marker-end="url(#mr)"/>
-<circle r="9" class="pk"><animateMotion dur="1.4s" begin="0s" repeatCount="indefinite" path="M520 560 L640 560"/></circle>
-<g class="f" data-f="1"><path class="ln" d="M980 560 C1070 560 1070 455 1156 455" marker-end="url(#ma)"/></g>
-<g class="f" data-f="2"><path class="ln r" d="M980 560 C1070 560 1070 675 1152 675" marker-end="url(#mr)"/></g>
-</svg></div>
-<div class="bx rv" style="--d:1;left:96px;top:480px;width:424px;height:160px"><div class="k">PR #42 下的新评论</div><div class="t" style="white-space:normal;font-size:26px">「这个先停一下，<br>优先做另一个项目」</div></div>
-<div class="bx blk rv" style="--d:3;left:640px;top:490px;width:340px;height:140px"><div class="k">直送到</div><div class="t">Worker A</div><div class="s">先读懂这条在说什么</div></div>
-<div class="bx f" data-f="1" style="left:1160px;top:400px;width:664px;height:110px"><div class="t">停下自己手上的活</div><div class="s">在自己职责内，按规则处理</div></div>
-<div class="bx redb f" data-f="2" style="left:1160px;top:620px;width:664px;height:110px"><div class="t">调别的项目的优先级</div><div class="s">超出自己的范围 → 交给前台</div></div>
-<div class="abs f" data-f="3" style="left:96px;top:820px"><div class="tgs"><span class="tg r">前提</span><span class="tg">评论的人得有这个权限</span><span class="tg">消息只是输入，改不了权限</span></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">例子是我们设想的场景，用来说明直送的边界</span></div>
-<div class="notes">一句话：消息由谁接收，和消息由谁决策，是两个问题。
-这页是我们自己加的一个例子，用来回答一个很自然的追问：如果用户在 PR 下面说「先停，优先做另一个项目」，这条还走直送吗？
-答案：照样直送给 Worker A，它读完会发现里面有两件事——（按 →）停下自己的活，在它职责之内，按规则处理；（按 →）调整别的项目的优先级，超出了它的范围，要交给前台做全局协调。
-（按 →）还有一个安全前提：不是谁在 PR 下留言，Worker 都照办。评论的人得有权限；原型文档也写了，消息、评论只是决策输入，不能改变权限。
-所以直送并没有绕开前台的全局协调，它只是省掉了不必要的那一次模型判断。</div>
-</section>
+<h2 class="ttl">一次事件进入时，系统如何组织上下文？</h2><p class="sub">系统按规则准备输入；模型发现信息不足，再通过工具读取。</p>
+<div class="abs" style="left:96px;top:420px;width:560px"><div class="context-rule"><h3>基础信息</h3><p>ID、摘要、关联对象</p></div><div class="context-rule"><h3>提前内联 · Inline</h3><p>邻近消息与关键背景</p></div><div class="context-rule"><h3>超长外置 · Spill</h3><p>完整内容在外部，留读取引用</p></div></div>
+<div class="abs" style="--d:1;left:740px;top:380px;width:860px;height:540px;border:3px solid var(--ink)"><span class="tg ok" style="position:absolute;left:-3px;top:-45px">本次上下文</span></div>
+<div class="chip b" style="--d:2;left:780px;top:420px">#T-812 · Safari 登录白屏</div>
+<div class="chip" style="left:780px;top:510px">相关：PR #42 · Worker W-3</div>
+<div class="chip" style="left:780px;top:600px">消息预览：Safari 登录没反应…</div>
+<div class="chip" style="left:780px;top:690px">被回复消息 + 邻近讨论</div>
+<div class="chip d" style="left:780px;top:810px">完整历史的读取引用</div>
+<div class="dg"><svg viewbox="0 0 1920 1080"><g><path class="ln dash" d="M1190 842 L1636 842" marker-end="url(#ma)"></path></g></svg></div>
+<div class="bx c" style="left:1640px;top:790px;width:184px;height:104px;border-style:dashed"><div class="t" style="font-size:24px">外部存储</div><div class="s">需要时读取</div></div>
+<div class="rule b"></div><div class="foot"><span class="src">原文 §3.3 · 并列的上下文构建规则，不对应三轮模型推理 · 右图内容为示意</span></div>
+<div class="notes">这一页讲系统如何组织提供给模型的信息。左边是可以同时使用的构建规则，不是模型依次执行的三个步骤，也不代表要发起三轮模型调用。
+举例：PR #42 收到一条 Safari 白屏的反馈。系统可以在准备输入时，同时给出当前对象的 ID、摘要、关联 PR 和 Worker，附带被回复的消息、邻近讨论，再为放不下的完整内容留下引用。右侧展示的是这些规则共同作用后的一份上下文示意，不是标准 API 或规定的数据结构。
+Inline 是把预计马上有用的内容直接放入窗口，减少后续工具往返。Spill 是把超出预算或暂时不常用的完整内容保留在外部，在窗口里留下摘要或读取引用。
+模型拿到这些输入后，信息够用就处理；信息不足再调用工具按引用读取。工具返回内容也可以遵循同样的规则，因此上下文组织既发生在事件注入时，也发生在后续工具返回时。
+原文按“最小信息、利用局部性补充、超长内容外置”讲策略如何逐步完善，没有规定每条事件必须分三轮推理。原文举过前 50 个字符的例子，但不是统一的固定参数，所以图中只写消息预览。
+这些原则适用于 Router 和 Worker。它权衡窗口占用、信息相关性与检索开销，不保证在所有任务里都更省。下一页再讲，Router 如何沿着对象之间的关系找回跨话题、跨会话的历史。
 
-<!-- 17 Inline & Spill -->
-<section class="slide" data-title="上下文当缓存用" data-mod="2">
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div>
+</section><section class="slide" data-mod="2" data-source-slide="19" data-title="换个渠道问旧任务，Router 怎么找回来？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>模块 2 · 事件驱动</span></div>
-<h2 class="ttl rv">把上下文窗口当缓存：先放索引，要用再翻</h2>
-<div class="abs" style="left:96px;top:420px;width:560px">
-<div class="li rv" style="--d:1"><b>1</b><span>先给最少的：<br>ID + 摘要</span></div>
-<div class="li f" data-f="1"><b>2</b><span>按「局部性」<br>带上邻居</span></div>
-<div class="li f" data-f="2" style="border-bottom:2px solid var(--g3)"><b>3</b><span>太长就截断，<br>留个指针</span></div></div>
-<div class="abs rv" style="--d:1;left:740px;top:380px;width:860px;height:540px;border:3px solid var(--ink)"><span class="tg ok" style="position:absolute;left:-3px;top:-45px">上下文窗口</span></div>
-<div class="chip b rv" style="--d:2;left:780px;top:420px">#T-812 · 群话题：Safari 登录白屏</div>
-<div class="chip f" data-f="1" style="left:780px;top:510px">相关：PR #42 · Worker W-3</div>
-<div class="chip f" data-f="1" style="left:780px;top:600px">前 50 字：「Safari 上点登录没反应……」</div>
-<div class="chip f" data-f="1" style="left:780px;top:690px">被回复的那条 + 前后两条消息</div>
-<div class="chip d f" data-f="2" style="left:780px;top:810px">……其余 3,000 字 → 指针</div>
-<div class="dg"><svg viewBox="0 0 1920 1080"><g class="f" data-f="2"><path class="ln dash" d="M1190 842 L1636 842" marker-end="url(#ma)"/></g></svg></div>
-<div class="bx c f" data-f="2" style="left:1640px;top:790px;width:184px;height:104px;border-style:dashed"><div class="t" style="font-size:24px">外面存着</div><div class="s">要用再读</div></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型 · 示例内容为示意</span></div>
-<div class="notes">一句话：Inline 是「提前放进来」，Spill 是「先放外面、留个引用」——它们决定信息放在哪；下一页的 Chain of Recall 决定怎么把外面的找回来。
-别说错：Inline 不是「从任务里直接拿到的信息」，而是系统挑出来、提前塞进上下文的信息；Spill 也不是「往回追溯」，追溯是下一页的事。
-事件到了目标会话之后，要往上下文里放多少？放太多，窗口被塞满，模型注意力被冲淡；放太少，模型得反复调工具去读，步骤变多。原文一句话：浪费上下文窗口，就是浪费模型的智力。
-所以把有限的窗口当缓存。两个基本操作：Inline，把马上可能要用的信息直接放进窗口，省掉工具往返；Spill，超预算或很少用的完整信息放在窗口外，窗口里只留引用或摘要。
-（按 → 逐步）配合「局部性」：
-第一步，只给当前对象的 ID 和内容摘要；
-第二步，按局部性逐步内联：先放紧密相关对象的 ID，再放时间或空间上相邻的内容，比如原文前 50 个字、这条消息前后的 IM 消息、它回复的那条、同一个代码评审讨论里相邻的评论；
-第三步，超出长度的就截断，留个指针，模型需要时再调工具读后面的。
-这页的话题和 PR 编号都是示意。</div>
-</section>
-
-<!-- 18 Chain of Recall -->
-<section class="slide" data-title="顺着 ID 找回来" data-mod="2">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>模块 2 · 事件驱动</span></div>
-<h2 class="ttl rv">顺着 ID，一跳一跳找回来</h2>
-<p class="sub rv" style="--d:1">场景：有人在另一个渠道，提起一个老任务</p>
-<div class="dg"><svg viewBox="0 0 1920 1080"><g class="ln">
-<path class="draw" style="--d:4" d="M444 560 L552 560" marker-end="url(#ma)"/><path class="draw" style="--d:8" d="M904 560 L1012 560" marker-end="url(#ma)"/><path class="draw" style="--d:12" d="M1364 560 L1472 560" marker-end="url(#ma)"/></g>
-<g class="svt g"><text x="498" y="540" text-anchor="middle">ID</text><text x="958" y="540" text-anchor="middle">ID</text><text x="1418" y="540" text-anchor="middle">ID</text></g></svg></div>
-<div class="bx blk rv" style="--d:2;left:96px;top:480px;width:348px;height:160px"><div class="k">当前消息 · IM 私聊</div><div class="t" style="white-space:normal;font-size:26px">「上次那个登录问题<br>怎么样了？」</div></div>
+<h2 class="ttl rv">换个渠道问旧任务，Router 怎么找回来？</h2>
+<p class="sub rv" style="--d:1">先定位相关话题，再沿已建立的 ID 关系召回历史</p>
+<div class="dg"><svg viewbox="0 0 1920 1080"><g class="ln">
+<path class="draw" d="M444 560 L552 560" marker-end="url(#ma)" style="--d:4"></path><path class="draw" d="M904 560 L1012 560" marker-end="url(#ma)" style="--d:8"></path><path class="draw" d="M1364 560 L1472 560" marker-end="url(#ma)" style="--d:12"></path></g>
+<g class="svt g"><text text-anchor="middle" x="498" y="540">定位</text><text text-anchor="middle" x="958" y="540">ID</text><text text-anchor="middle" x="1418" y="540">ID</text></g></svg></div>
+<div class="bx blk rv" style="--d:2;left:96px;top:480px;width:348px;height:160px"><div class="k">当前消息 · IM 私聊</div><div class="t" style="white-space:normal;font-size:26px">「上次那个登录问题<br/>怎么样了？」</div></div>
 <div class="bx rv" style="--d:6;left:556px;top:480px;width:348px;height:160px"><div class="k">Thread · 群话题</div><div class="t">#T-812</div><div class="s">有人报了 Safari 白屏</div></div>
 <div class="bx rv" style="--d:10;left:1016px;top:480px;width:348px;height:160px"><div class="k">Worker 会话</div><div class="t">W-3</div><div class="s">做过复现和修复</div></div>
 <div class="bx redb rv" style="--d:14;left:1476px;top:480px;width:348px;height:160px"><div class="k">Thread · 代码评审</div><div class="t">PR #42</div><div class="s">评审意见都在这</div></div>
-<p class="abs cap rv" style="--d:16;left:96px;top:740px;width:1500px">每个对象都有 ID，连成一张引用图。<br><span class="g1" style="font-weight:500">前台不用记住全部历史，需要时顺着找。</span></p>
+<p class="abs cap rv" style="--d:16;left:96px;top:740px;width:1500px">引用关系让历史可追溯，但不会自动建立所有跨渠道关联。<br/><span class="g1" style="font-weight:500">“上次那个问题”有歧义时，仍需检索、确认或补充信息。</span></p>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型 · 示例内容为示意</span></div>
-<div class="notes">一句话：靠的是系统里存好的 ID 关系，模型顺着关系一跳跳查，而不是靠 prompt 让它自己去猜去哪找。
-被问到「这比项目里放几个 markdown 记忆文件好吗」：不一定，也不冲突。可以把项目知识存在文件里，顺着 ID 链找到这些文件，再把最相关的部分 Inline 进来。哪种更省、更准，要实测。
-前台有自己的上下文难题：很多后续消息直送给了 Worker，长期运行下来历史任务越积越多，它不可能把每个任务的完整历史都留在窗口里。但用户在另一个渠道提起一个老任务时，它还得能找回来。
-做法是把 Inline &amp; Spill 一致地用在系统里所有对象上：Trigger、Thread、Worker 会话都有唯一 ID，注入一个对象时，顺带内联与它紧密相关的对象 ID。这些 ID 把对象连成一张引用图。
-每次通过工具召回一个对象，返回结果也遵循 Inline &amp; Spill，带上下一跳对象的摘要和 ID。于是模型可以从当前事件出发，按需要一跳跳召回下去。原文叫 Chain of Recall。
-原文举的例子正是这条链：从当前消息的 Thread 出发，顺着内联的 ID 找到相关的 Worker 会话，再找到和那个 Worker 关联的另一个代码评审 Thread。</div>
-</section>
+<div class="notes">用户在 IM 私聊里问“上次那个登录问题怎么样了”，Router 不必一直把每个任务的完整过程塞在窗口里。
+系统给消息、话题和 Worker 会话分配 ID，并保存关联关系。读取一个对象时，同时返回相关对象的摘要和 ID，模型便可以沿着关系继续查：当前话题、相关 Worker、另一个代码评审话题。
+这就是 Chain of Recall。Inline 与 Spill 决定信息怎么放，这里的引用关系决定外部信息怎么找。原文重点讨论 Router 的历史召回问题。
+它也可以和 Markdown 项目记忆一起使用，并不意味着文件记忆应被替代。文章自己说，运行数月之后的长期记忆仍是开放问题。
 
-<!-- 100 万 token -->
-<section class="slide" data-title="窗口够大还要管上下文吗" data-mod="2">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>模块 2 · 事件驱动</span></div>
-<h2 class="ttl rv">窗口有 100 万 token，还要管上下文吗？</h2>
-<div class="cols" style="top:400px">
-<div class="pt rv" style="--d:1;grid-column:span 4"><div class="pk2">装得下 ≠ 便宜</div><p>每次调用都要读一遍，<br>读缓存也不是免费的</p></div>
-<div class="pt f" data-f="1" style="grid-column:span 4"><div class="pk2">装得下 ≠ 用得好</div><p>无关的历史会干扰<br>它对眼前问题的判断</p></div>
-<div class="pt r f" data-f="2" style="grid-column:span 4"><div class="pk2 red">装得下 ≠ 还有效</div><p>历史里混着讨论、草案<br>和已经作废的决定</p></div></div>
-<div class="abs f" data-f="2" style="left:96px;top:740px;width:1728px;display:flex;align-items:center;gap:20px">
-<div class="chip" style="position:relative;color:var(--g2);text-decoration:line-through;border-color:var(--g3)">三个月前：定了方案 A</div><span style="font-size:30px;font-weight:900;color:var(--g2)">→</span>
-<div class="chip" style="position:relative;color:var(--g2);text-decoration:line-through;border-color:var(--g3)">一个月前：讨论过 B</div><span style="font-size:30px;font-weight:900;color:var(--g2)">→</span>
-<div class="chip" style="position:relative;border-color:var(--red);color:var(--red)">昨天：正式改成 C</div><span class="tg r" style="margin-left:10px">当前有效：C</span></div>
-<p class="abs cap f" data-f="3" style="left:96px;top:860px;width:1728px">上下文管理不只管「放多少」，还要管<span class="red">「放什么」「还对不对」</span></p>
-<div class="rule b"></div><div class="foot"><span class="src">我们的看法与疑问，不是原文结论</span></div>
-<div class="notes">这页是一个常见追问：既然模型窗口越来越大，干嘛不把所有历史全塞进去？
-一句话：容量不等于成本，不等于用得好，也不等于信息还有效。
-第一，装得下不等于便宜：每次调用都要处理这些输入，缓存能降价，但不是零。
-（按 →）第二，装得下不等于用得好：修一个布局 bug，你塞给它几十万 token 的发布计划、别的项目讨论、旧方案，帮不上忙，还可能干扰判断。很多任务需要的信息其实很聚焦。
-（按 →）第三，最容易被忽略：装得下不等于还有效。历史里三个月前定了 A，一个月前讨论过 B，昨天正式改成 C。全量塞进去，模型得自己分辨哪个是讨论、哪个作废了。维护好的项目状态可以直接告诉它：当前有效的是 C。
-（按 →）所以外部记忆的价值不只是压缩，还有维护时效、来源和有效状态。反过来，按需检索也有额外的工具调用和延迟，哪种更好，还是要拿真实任务比。</div>
-</section>
-
-<!-- 19 投机执行 -->
-<section class="slide" data-title="先悄悄做" data-mod="2">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>模块 2 · 事件驱动</span></div>
-<h2 class="ttl rv">先悄悄做，有把握再开口</h2>
-<div class="dg"><svg viewBox="0 0 1920 1080">
-<path class="ln draw" style="--d:2" d="M426 540 L536 540" marker-end="url(#ma)"/>
-<path class="ln draw" style="--d:4" d="M900 540 L1016 540" marker-end="url(#ma)"/>
-<polygon class="rv" style="--d:5" points="1140,420 1264,540 1140,660 1016,540" fill="#f3f2ee" stroke="#111" stroke-width="3"/>
-<g class="f" data-f="1"><path class="ln r" d="M1202 480 L1202 420 L1396 420" marker-end="url(#mr)"/><text x="1230" y="406" class="svt" fill="#e4321b" style="fill:#e4321b">是</text></g>
-<g class="f" data-f="2"><path class="ln" stroke="#8d8a83" d="M1202 600 L1202 680 L1396 680" marker-end="url(#mg)"/><text x="1230" y="724" class="svt g">否</text></g>
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236
+这个示例的前提是 Router 能定位到 #T-812，且后续对象间已有引用。第一段不是凭空得到 ID：可以来自明确链接、当前上下文或检索，无法确定就要澄清。Chain of Recall 解决沿关系读取历史，不保证任意跨渠道消息都能自动识别为同一个任务。</div>
+</section><section class="slide" data-mod="2" data-source-slide="21" data-title="主动行动：什么时候值得先在后台做准备？">
+<div class="rule"></div><div class="meta"><span><b class="no"></b>模块 2 · 主动行动策略</span></div>
+<h2 class="ttl rv">主动行动：什么时候值得先在后台做准备？</h2>
+<div class="dg"><svg viewbox="0 0 1920 1080">
+<path class="ln draw" d="M426 540 L536 540" marker-end="url(#ma)" style="--d:2"></path>
+<path class="ln draw" d="M900 540 L1016 540" marker-end="url(#ma)" style="--d:4"></path>
+<polygon class="rv" fill="#f3f2ee" points="1140,420 1264,540 1140,660 1016,540" stroke="#111" stroke-width="3" style="--d:5"></polygon>
+<g class="f" data-f="1"><path class="ln r" d="M1202 480 L1202 420 L1396 420" marker-end="url(#mr)"></path><text class="svt" fill="#e4321b" style="fill:#e4321b" x="1230" y="406">是</text></g>
+<g class="f" data-f="2"><path class="ln" d="M1202 600 L1202 680 L1396 680" marker-end="url(#mg)" stroke="#8d8a83"></path><text class="svt g" x="1230" y="724">否</text></g>
 </svg></div>
 <div class="bx rv" style="--d:1;left:96px;top:480px;width:330px;height:120px"><div class="k">群里</div><div class="t">有人报了个 bug</div></div>
-<div class="bx rv" style="--d:3;left:540px;top:480px;width:360px;height:120px"><div class="k">后台 · 没人知道</div><div class="t">复现、找修复</div><div class="work"><i></i></div></div>
-<div class="abs rv" style="--d:6;left:1040px;top:500px;width:200px;text-align:center;font-size:24px;font-weight:900;line-height:1.3">确认了？<br>修复简单？</div>
-<div class="bx redb f" data-f="1" style="left:1400px;top:360px;width:424px;height:120px"><div class="t">带着修复出声</div><div class="s">在群里说一声，提 PR</div></div>
-<div class="bx f" data-f="2" style="left:1400px;top:620px;width:424px;height:120px;border-style:dashed;border-color:var(--g2)"><div class="t" style="color:var(--g1)">从头到尾不出声</div><div class="s">结果直接丢掉</div></div>
+<div class="bx rv" style="--d:3;left:540px;top:480px;width:360px;height:120px"><div class="k">策略允许的后台工作</div><div class="t">复现、找修复</div><div class="work"><i></i></div></div>
+<div class="abs rv" style="--d:6;left:1040px;top:500px;width:200px;text-align:center;font-size:24px;font-weight:900;line-height:1.3">确认了？<br/>修复简单？</div>
+<div class="bx redb f" data-f="1" style="left:1400px;top:360px;width:424px;height:120px"><div class="t">带着修复出声</div><div class="s">在授权范围内汇报、提 PR</div></div>
+<div class="bx f" data-f="2" style="left:1400px;top:620px;width:424px;height:120px;border-style:dashed;border-color:var(--g2)"><div class="t" style="color:var(--g1)">暂不主动通知</div><div class="s">没有可交付成果时，减少打扰</div></div>
 <p class="abs small f" data-f="3" style="left:96px;top:830px;width:1700px;font-size:26px">个人场景也一样：收到会议邀请 → 先查冲突、找背景、起草回复，你只要看一眼再发</p>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">这一招借的是计算机系统里的「投机执行」：根据环境信号，在还不知道结果会不会被用上的时候，就先在后台开始做。多花一点后台算力，换人少等、少插手。用上的就交付，用不上的丢掉。
-他们在 DeepSeek Harness 内部用户群里配了一条「静默复现和修复」策略：有人报问题或讨论改动时，Agent 先在后台尝试复现、找修复；只有确认了问题、并且找到了简单修复，才交付结果，否则全程沉默。
-（按 → 逐步出现两条分支和个人场景的例子）
-个人场景：会议邀请邮件或待办消息一到，先查日程冲突、收集背景、起草回复，用户只需要看一眼草稿再发。
-这里有个前提要提醒：后台先做的动作最好没有对外副作用。</div>
-</section>
+<div class="rule b"></div><div class="foot"><span class="src">原文 §3.4 · 投机执行：事件系统之上的主动行动策略</span></div>
+<div class="notes">前面讲事件怎么进入系统、怎么找到 Worker、怎么组织上下文。这一页是建立在这些机制之上的一种主动行动策略，原文把它类比为投机执行（Speculative Execution）。它不代表事件驱动架构的全部。
+例如群里有人报 bug，团队事先允许 Agent 静默尝试复现和找修复。它可以先在后台做准备，确认问题并找到简单修复后，再交付有用结果；没有可交付成果时，尽量不主动打扰用户。个人场景可以先查会议冲突、收集背景和起草回复。
+要区分对外通知和内部记录。原文对一般投机执行说，结果有用就交付，其余丢弃；但这不能解释为系统会删除所有失败日志或执行记录。这页只表达“不主动通知”的策略，不声称公开原型已经有某种统一的记录保留机制。实际实现应另行明确如何保留和检查必要的执行证据。
+主动工作要在既定授权内。后台准备和对外提交有不同影响，不能仅因事件到达就获得执行或发布权限。没有成果时保持安静也不应被推广成所有失败、阻塞和授权问题都不报告；那些仍需遵循任务的汇报和升级规则。
 
-<!-- 20 全双工 -->
-<section class="slide" data-title="慢工具不卡对话" data-mod="3">
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div>
+</section><section class="slide" data-mod="3" data-source-slide="22" data-title="Worker 跑十分钟测试，还能接新消息吗？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>模块 3 · 全双工 · 多通道</span></div>
-<h2 class="ttl rv">慢的工具不再卡住对话</h2>
-<div class="abs lbl rv" style="left:96px;top:430px;font-size:28px">以前<br><span class="g1" style="font-weight:600;font-size:22px">run() 一直等</span></div>
+<h2 class="ttl rv">Worker 跑十分钟测试，还能接新消息吗？</h2>
+<div class="abs lbl rv" style="left:96px;top:430px;font-size:28px">以前<br/><span class="g1" style="font-weight:600;font-size:22px">run() 一直等</span></div>
 <div class="abs rv" style="--d:1;left:400px;top:500px;width:1420px;height:3px;background:var(--g3)"></div>
 <div class="hb" style="--d:1;left:480px;top:482px;width:920px;background:var(--ink)"></div>
 <div class="abs rv" style="--d:2;left:500px;top:486px;color:#fff;font-size:22px;font-weight:800">run(跑测试)……等结果</div>
 <div class="chip rv" style="--d:3;left:760px;top:400px;height:52px;font-size:22px">你：顺便改下文案</div><span class="tg no rv" style="--d:3;position:absolute;left:1032px;top:405px">排队</span>
 <div class="abs lbl red rv" style="--d:4;left:1420px;top:478px;font-size:24px">→ 这时才能回你</div>
-<div class="abs lbl rv" style="--d:5;left:96px;top:680px;font-size:28px">现在<br><span class="g1" style="font-weight:600;font-size:22px">start() 马上返回</span></div>
+<div class="abs lbl rv" style="--d:5;left:96px;top:680px;font-size:28px">现在<br/><span class="g1" style="font-weight:600;font-size:22px">start() 马上返回</span></div>
 <div class="abs rv" style="--d:5;left:400px;top:750px;width:1420px;height:3px;background:var(--g3)"></div>
 <div class="chip b rv" style="--d:6;left:480px;top:726px;height:52px;font-size:22px">start()</div>
 <div class="hb" style="--d:7;left:620px;top:826px;width:780px;height:16px;background:repeating-linear-gradient(90deg,var(--red) 0 18px,transparent 18px 28px)"></div>
 <div class="abs small rv" style="--d:8;left:640px;top:850px;font-size:22px">测试在后台跑</div>
-<div class="chip rv" style="--d:8;left:760px;top:650px;height:52px;font-size:22px">你：顺便改下文案</div><span class="tg ok rv" style="--d:8;position:absolute;left:1032px;top:655px">马上回</span>
-<div class="dg"><svg viewBox="0 0 1920 1080"><g class="rv" style="--d:10"><path class="ln r" d="M1400 834 L1400 762" marker-end="url(#mr)"/></g></svg></div>
+<div class="chip rv" style="--d:8;left:760px;top:650px;height:52px;font-size:22px">你：顺便改下文案</div><span class="tg ok rv" style="--d:8;position:absolute;left:1032px;top:655px">下一推理步可回应</span>
+<div class="dg"><svg viewbox="0 0 1920 1080"><g class="rv" style="--d:10"><path class="ln r" d="M1400 834 L1400 762" marker-end="url(#mr)"></path></g></svg></div>
 <div class="chip rv" style="--d:10;left:1420px;top:660px;height:52px;font-size:22px;border-color:var(--red);color:var(--red)">结果当成一条新消息回来</div>
 <div class="head" style="left:400px;top:390px;height:480px"></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Harness 已实现这套异步机制，但默认没开</span></div>
-<div class="notes">一句话：异步 ReAct 解决的是「一个会话内部」被慢工具卡住的问题。
-别说错：异步 ReAct 不等于「把任务交给 Worker」。交给 Worker 是任务之间的并行；这里是同一个会话等工具时不卡。下一页专门对比。
-经典 ReAct 循环里，模型调一个同步的 run() 工具，循环就一直阻塞到工具结束、返回最终结果。这期间会话没法回应任何新消息。
-要去掉这个阻塞，对话得从轮流说话的半双工，变成全双工。做法是把耗时的命令和工具换成异步的 start() 和 stop()：start() 立刻返回「已启动」，循环不等；工具在后台跑完后，系统把结果作为一条新事件送回会话。跑太久，模型也可以根据上下文调 stop() 结束它。
-这样前台对话和后台任务解耦了：耗时任务跑着，Agent 照样回应人；新输入在当前推理步结束时就能处理，不用等后台工具。
-注意：回得快，不等于你的新指令已经安全地作用到正在跑的任务上，取消、版本这些还要另外处理。</div>
-</section>
+<div class="rule b"></div><div class="foot"><span class="src">多个 Worker：任务间并行 · 异步工具：会话内不阻塞（原文 §4.1）</span></div>
+<div class="notes">任务派给 Worker，并没有自动解决 Worker 内部的阻塞。如果它同步等一个十分钟测试，发给它的新消息仍可能排队。
+异步 ReAct 把耗时工具改成 start 和 stop。start 先返回已启动，工具继续在后台跑；结束时，结果作为新事件送回同一个会话。模型在当前推理步结束后，就可以处理新输入。
+所以要区分：多个 Worker 是任务之间的并行，异步工具是同一会话内不必一直等工具。后台工具在跑，不等于模型在同一会话同时进行两次推理。
+及时收到新指令，也不等于运行中的工具已经安全取消或修改了。取消与版本仍需要运行时处理。
+原文发布时，Harness 已实现该机制，但尚未默认开启。
 
-<!-- 两层并发 -->
-<section class="slide" data-title="两层并发别混" data-mod="3">
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div>
+</section><section class="slide" data-mod="3" data-source-slide="24" data-title="结果该怎么说，才不会占满群聊？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>模块 3 · 全双工 · 多通道</span></div>
-<h2 class="ttl rv">两种「不卡」，别混在一起</h2>
-<div class="abs rv" style="--d:1;left:96px;top:370px;width:820px">
-<div class="pt"><div class="pk2" style="font-size:36px">任务之间 <span class="g2" style="font-size:24px">前台 → 多个 Worker</span></div></div>
-<svg width="820" height="300" viewBox="0 0 820 300" style="margin-top:14px">
-<g class="ln"><path d="M200 150 C300 150 300 50 416 50" marker-end="url(#ma)"/><path d="M200 150 L416 150" marker-end="url(#ma)"/><path d="M200 150 C300 150 300 250 416 250" marker-end="url(#ma)"/></g>
-<rect x="40" y="110" width="160" height="80" fill="#e4321b"/><text x="120" y="158" text-anchor="middle" class="svt w">Router</text>
-<g fill="#f3f2ee" stroke="#111" stroke-width="3"><rect x="420" y="20" width="320" height="60"/><rect x="420" y="120" width="320" height="60"/><rect x="420" y="220" width="320" height="60"/></g>
-<text x="440" y="58" class="svt">任务 A</text><text x="440" y="158" class="svt">任务 B</text><text x="440" y="258" class="svt">任务 C</text>
-<g fill="#e4321b"><rect x="420" y="74" width="0" height="6"><animate attributeName="width" values="0;320" dur="1.8s" repeatCount="indefinite"/></rect><rect x="420" y="174" width="0" height="6"><animate attributeName="width" values="0;320" dur="1.8s" begin="-.6s" repeatCount="indefinite"/></rect><rect x="420" y="274" width="0" height="6"><animate attributeName="width" values="0;320" dur="1.8s" begin="-1.2s" repeatCount="indefinite"/></rect></g></svg>
-<p class="cap" style="margin-top:14px">不同的事，<br>交给不同的会话同时做</p></div>
-<div class="abs f" data-f="1" style="left:1004px;top:370px;width:820px">
-<div class="pt r"><div class="pk2 red" style="font-size:36px">会话之内 <span class="g2" style="font-size:24px">同一个 Worker</span></div></div>
-<div style="margin-top:14px;height:300px;border:3px solid var(--ink);padding:26px 28px;position:relative">
-<div style="display:flex;align-items:center;gap:20px"><span class="tg">前台</span><span class="chip" style="position:relative;height:52px;font-size:22px">你：再加个用例</span><span class="chip b" style="position:relative;height:52px;font-size:22px">好，加上了</span></div>
-<div style="display:flex;align-items:center;gap:20px;margin-top:40px"><span class="tg no">后台</span><div style="flex:1;height:18px;background:repeating-linear-gradient(90deg,var(--red) 0 18px,transparent 18px 28px)"></div></div>
-<div class="small" style="margin-top:14px;padding-left:96px">npm test 跑 10 分钟，结果回来当新消息</div></div>
-<p class="cap" style="margin-top:14px">同一个会话，<br>等工具的时候也不卡</p></div>
-<p class="abs small f" data-f="2" style="left:96px;top:880px;width:1728px;font-size:26px;color:var(--ink);font-weight:700">两层可以同时存在：派给了 Worker，它自己跑长测试时照样可能被卡住</p>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">这页专门防一个容易说混的点。
-一句话：两层架构解决「几件事之间」并行；异步 ReAct 解决「一个会话之内」不被卡住。
-左边：前台把不同任务派给不同 Worker，多个独立会话同时执行。
-（按 →）右边：同一个 Worker 里，start() 让测试在后台跑，它在等的时候还能接新消息、回话，测试跑完结果作为新事件送回来。
-（按 →）两者可以同时存在：任务已经派给 Worker A 了，但 A 自己要跑一个 10 分钟的测试，如果工具是同步的，A 照样没法及时处理发给它的后续消息。
-类比：Claude Code 的后台终端更像右边（同一个 Agent 起个后台命令接着聊）；后台 subagent 更像左边（另开一个执行上下文）。
-再严谨一点：后台工具在跑，不等于模型在同一个会话里同时做两次推理；是工具等待期间，会话被释放出来，可以在下一步推理时处理新事件。所以我们认为这更多是 Runtime 层面的工程优化。</div>
-</section>
-
-<!-- 21 多通道 -->
-<section class="slide" data-title="换个地方换种说法" data-mod="3">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>模块 3 · 全双工 · 多通道</span></div>
-<h2 class="ttl rv">同一件事，换个地方换种说法</h2>
+<h2 class="ttl rv">结果该怎么说，才不会占满群聊？</h2>
 <div class="mock rv" style="--d:1;left:96px;top:370px;width:780px;height:470px"><div class="hd"><i></i>群聊</div>
-<div style="padding:30px 28px"><div class="bub u">登录那个问题有进展吗？</div><div style="margin-top:26px;text-align:right"><div class="bub" style="text-align:left">已修复，测试通过。<br>等你确认后合并。</div></div></div></div>
+<div style="padding:30px 28px"><div class="bub u">登录那个问题有进展吗？</div><div style="margin-top:26px;text-align:right"><div class="bub" style="text-align:left">已修复，测试通过。<br/>等你确认后合并。</div></div></div></div>
 <div class="abs rv" style="--d:2;left:96px;top:862px"><div class="tgs"><span class="tg r">每条 ≤ 100 词</span><span class="tg">只在要你拍板时开口</span></div></div>
 <div class="mock rv" style="--d:3;left:1044px;top:370px;width:780px;height:470px"><div class="hd"><i></i>GitHub · Pull Request</div>
 <div style="padding:26px 30px"><div style="font-size:28px;font-weight:900">fix: Safari 登录页点击无响应</div>
@@ -662,53 +401,51 @@ Fast/Slow 的思路也用在路由上：前台只处理新任务的冷启动和�
 <div style="margin-top:20px;font-size:22px;font-weight:800">验证</div><div class="gl" style="width:75%"></div></div></div>
 <div class="abs rv" style="--d:4;left:1044px;top:862px"><div class="tgs"><span class="tg ok">写完整</span><span class="tg">结构化、信息密度高</span></div></div>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型 · 示例内容为示意</span></div>
-<div class="notes">人在群聊、邮件、GitHub 讨论里说话方式不一样，Agent 也要跟着调整详细程度和回复方式。终端里一大段推理和工具日志没问题，原样贴进群里就是刷屏。
-两层架构已经解决了一半：每个任务啰嗦的推理和频繁的工具调用都留在 Worker 里，只有前台对外说话。
-剩下的靠为每个渠道定交互规范：
-IM 这类即时渠道：轻、少打扰。像一个人类同事一样，只在需要决策或签字时通知，只问直接的问题，给简短结论。原文说他们验证过的一条简单有效的硬规则：每条回复不超过 100 词。
-GitHub、邮件、文档这类异步渠道：给结构化、信息密度高的输出。比如提 PR 时按项目规范写清楚问题背景、改动说明和验证结果。</div>
-</section>
+<div class="notes">同一件事，在不同渠道需要不同的信息量。群聊里给简短结论，指出需要对方决定什么；PR 里则写完整背景、改动和验证。
+Worker 的推理和工具日志留在内部，Router 负责对外表达，避免几个 Worker 同时向人倾倒过程。
+作者实践过 IM 每条回复不超过 100 词。这个数字是一种交互规则，不是适用于所有语言和场景的最优长度。更重要的是让接收者知道是否需要行动，并能找到详细证据。
 
-<!-- 22 分离 -->
-<section class="slide" data-title="脑子、记性和手分开" data-mod="4">
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div>
+</section><section class="slide separation-scene" data-mod="4" data-source-slide="25" data-title="电脑离线后，哪些工作还能继续？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>模块 4 · 计算、状态、环境分开</span></div>
-<h2 class="ttl rv">把「脑子」「记性」和「手」分开放</h2>
-<div class="frame rv" style="left:96px;top:360px;width:1728px;height:240px"><span>云上</span></div>
-<div class="frame rv" style="--d:2;left:96px;top:660px;width:1728px;height:230px"><span>执行环境 · 留在原地</span></div>
-<div class="dg"><svg viewBox="0 0 1920 1080"><g class="ln">
-<path class="draw" style="--d:2" d="M680 480 L896 480" marker-end="url(#ma)" marker-start="url(#ma)"/>
-<path class="draw" style="--d:4" d="M470 560 L470 706" marker-end="url(#ma)"/>
-<path class="draw" style="--d:5" d="M530 560 C530 640 1110 620 1110 706" marker-end="url(#ma)"/>
-<path class="draw" style="--d:6" d="M590 560 C590 640 1550 620 1550 706" marker-end="url(#ma)"/></g></svg></div>
-<div class="bx blk rv" style="--d:1;left:260px;top:405px;width:420px;height:150px"><div class="k" style="color:#ff8a78">脑子</div><div class="t">Agent 循环</div><div class="s">无状态容器，能扩、能重启</div></div>
-<div class="bx rv" style="--d:2;left:900px;top:405px;width:420px;height:150px"><div class="k red">记性</div><div class="t">会话状态</div><div class="s">存在数据库里</div></div>
-<div class="abs rv" style="--d:3;left:1440px;top:440px"><span class="tg r">BYOM</span><div class="small" style="margin-top:12px">带上你自己的机器</div></div>
-<div class="bx rv offl" style="--d:4;left:260px;top:710px;width:420px;height:130px"><div class="k red">手</div><div class="t">你的开发机</div><div class="s">只装一个轻量 daemon</div></div>
-<div class="bx rv" style="--d:5;left:900px;top:710px;width:420px;height:130px"><div class="k red">手</div><div class="t">云上的机器</div><div class="s">长期在线</div></div>
-<div class="bx rv" style="--d:6;left:1340px;top:710px;width:420px;height:130px"><div class="k red">手</div><div class="t">按需开的环境</div><div class="s">用完就关</div></div>
-<div class="abs cap rv" style="--d:7;left:96px;top:906px;width:1700px;height:50px">
-<span class="abs m0" style="left:0;top:0">三样东西分开，谁掉线都不拖垮别人</span>
-<span class="abs m1 red" style="left:0;top:0">开发机合上了：云上照常接活、记状态</span>
-<span class="abs m2" style="left:0;top:0">重新连上：需要这台机器的活，自动接着做</span></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">本地 Agent 默认把三样东西绑在一台设备上：跑 Agent 循环的计算、要持久保存的会话状态、执行环境（代码仓库、本地工具链）。设备一睡眠或离线，Agent 就停；也够不着别的设备上的环境。
-他们借的是存算分离，分两步解耦：
-第一步，计算和状态分开：Agent 循环跑在无状态、可弹性扩缩的云容器里，会话和其它持久状态进数据库。容器可以扩、重启、替换，任务的连续性靠存储保住。
-第二步，计算和执行环境分开：真实环境里有未提交的改动、私有凭证、内网依赖、特定硬件，同步到云上又贵又容易漏；让用户整个搬去云上，迁移成本又太高。所以环境留在原地，每台端只装一个轻量 daemon，不存会话状态，只负责执行命令、回结果。
-这就是 BYOM：把自己的开发机或个人电脑接到云上的 Agent，也支持云上机器和按需环境。设备断断续续在线也行：重新连上后，需要在这台设备上跑的任务会自动开始、做完。
-文章自己对比了 Anthropic 的《Decoupling the brain from the hands》：思路一样，区别是 Anthropic 那篇讲托管服务，DeepSeek 先要接的是每个人每天用的开发机。
-（页面底部的小动画演示开发机掉线再重连。）</div>
-</section>
+<h2 class="ttl">电脑离线后，哪些工作还能继续？</h2>
+<p class="sub">场景：修复要用到 Mac 上未提交的代码，但这台 Mac 已经离线。</p>
+<div class="abs" style="left:96px;top:350px;width:800px;border-top:5px solid var(--ink);padding-top:18px">
+<p class="scene-label">云端 · 计算</p><h3 class="scene-heading">Agent Loop</h3><p class="scene-copy">继续接收消息、协调任务</p></div>
+<div class="abs" style="left:1200px;top:350px;width:624px;border-top:5px solid var(--ink);padding-top:18px">
+<p class="scene-label">持久化存储 · 状态</p><h3 class="scene-heading">Session 数据库</h3><p class="scene-copy">保存会话与任务状态</p></div>
+<div class="abs" style="left:910px;top:410px;width:270px;text-align:center;font-size:24px;color:var(--g1)">读取 / 保存状态</div>
+<svg aria-label="Agent Loop 读写数据库，并通过远程工具连接本地和云端执行环境" class="archsvg" viewbox="0 0 1920 1080">
+<path class="ae" d="M900 465 H1180" marker-end="url(#ma)" marker-start="url(#ma)"></path>
+<path class="ae" d="M496 520 V610 H1414 V675" marker-end="url(#ma)"></path>
+<path class="ae d" d="M496 610 V675" stroke="#8d8a83"></path>
+</svg>
+<div class="abs scene-label" style="left:96px;top:562px">执行环境</div>
+<div class="abs" style="left:650px;top:562px;font-size:25px;color:var(--g1)">远程工具：下发命令，返回执行结果</div>
+<div class="abs scene-environment" style="left:96px;top:680px;width:800px;border-color:var(--red)">
+<div class="scene-environment-title"><h3>本地 Mac</h3><span class="red">已离线</span></div>
+<p>依赖本地代码的操作，等设备恢复连接。</p><small>BYOM：接入自己的机器，通过本地 daemon 执行</small></div>
+<div class="abs scene-environment" style="left:1004px;top:680px;width:820px">
+<div class="scene-environment-title"><h3>云端机器 / 沙箱</h3><span>可用</span></div>
+<p>具备所需代码与工具的其他任务，可以继续。</p><small>不会自动接替 Mac 上尚未同步的工作环境</small></div>
+<p class="abs" style="left:96px;top:905px;font-size:31px;font-weight:750">Mac 离线时，本地操作暂停，云端仍可接消息、保存状态。</p>
+<div class="rule b"></div><div class="foot"><span class="src">DeepSeek 设计文 §5 · 架构示意，假设云端服务与存储正常可用</span></div>
+<div class="notes">先看一个具体场景：修复需要 Mac 上还没提交的代码，但 Mac 离线了。此时这部分本地操作无法继续。不过，云端仍可以接消息、保存状态，也可以处理不依赖这台 Mac、且其他环境具备所需条件的任务。
+为什么能这样？因为作者把三部分分开。Agent Loop 负责推进任务，Session 数据库持久保存状态，执行环境负责真正运行命令。图中横向箭头是状态读写，向下的线是远程工具调用；到 Mac 的虚线表示当前不可用。云端机器并不会凭空拥有 Mac 上的未提交改动。
+BYOM 就是接入自己的机器。Mac 上的轻量 daemon 接命令、回结果，真实代码和工具链可以留在本地，不必把整个环境迁走。手机发指令、Mac 执行本身并不能证明计算也已经在云端，要看 Agent Loop 实际部署在哪里。
+原文进一步把循环计算放进无状态容器，持久状态另存数据库。“无状态”说的是容器不独占持久记录，不是 Agent 没有记忆，也不等于模型推理服务就部署在这个容器里。
+等 Mac 恢复连接，作者的目标是让依赖它的任务继续运行。具体怎样恢复、在途命令如何确认，需要实现支持；这一页不承诺任意一步都能无损重放，也不展开队列、幂等或检查点的具体方案。
+这里讲的是设计文章，不表示公开原型已完整实现所有能力。
 
-<!-- 23 Watchdog -->
-<section class="slide" data-title="活着不等于在往前走" data-mod="5">
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div>
+</section><section class="slide" data-mod="5" data-source-slide="26" data-title="Worker 跑了两小时，怎么知道有没有进展？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>模块 5 · Watchdog</span></div>
-<h2 class="ttl rv">进程活着，不等于活在往前走</h2>
-<div class="dg"><svg viewBox="0 0 1920 1080"><g fill="none" stroke-width="5">
-<path class="draw" style="--d:3" d="M620 490 L760 478 L900 460 L1040 446 L1180 428 L1360 410" stroke="#111"/>
-<path class="draw" style="--d:4" d="M620 630 L760 622 L900 604 L1040 590 L1180 574 L1360 558" stroke="#111"/>
-<path class="draw" style="--d:5" d="M620 770 L940 770" stroke="#e4321b"/>
-<circle class="spin" cx="990" cy="740" r="34" stroke="#e4321b" stroke-dasharray="150 64"/></g></svg></div>
+<h2 class="ttl rv">Worker 跑了两小时，怎么知道有没有进展？</h2>
+<div class="dg"><svg viewbox="0 0 1920 1080"><g fill="none" stroke-width="5">
+<path class="draw" d="M620 490 L760 478 L900 460 L1040 446 L1180 428 L1360 410" stroke="#111" style="--d:3"></path>
+<path class="draw" d="M620 630 L760 622 L900 604 L1040 590 L1180 574 L1360 558" stroke="#111" style="--d:4"></path>
+<path class="draw" d="M620 770 L940 770" stroke="#e4321b" style="--d:5"></path>
+<circle class="spin" cx="990" cy="740" r="34" stroke="#e4321b" stroke-dasharray="150 64"></circle></g></svg></div>
 <div class="bx rv" style="--d:1;left:96px;top:400px;width:260px;height:100px"><div class="t">Worker A</div><div class="s">修 PR #42</div></div>
 <div class="bx rv" style="--d:2;left:96px;top:540px;width:260px;height:100px"><div class="t">Worker B</div><div class="s">写新功能</div></div>
 <div class="bx rv" style="--d:3;left:96px;top:680px;width:260px;height:100px"><div class="t">Worker C</div><div class="s">排查 CI</div></div>
@@ -716,228 +453,45 @@ GitHub、邮件、文档这类异步渠道：给结构化、信息密度高的�
 <span class="tg r rv pulse" style="--d:7;position:absolute;left:1060px;top:700px">原地打转？</span>
 <div class="scan" style="left:600px;top:380px;height:420px"></div>
 <div class="bx redb rv" style="--d:6;left:1440px;top:400px;width:384px;height:170px"><div class="k">独立于主系统</div><div class="t" style="font-size:34px">Watchdog</div><div class="s">定时醒来，巡一圈</div></div>
-<div class="abs f" data-f="1" style="left:1440px;top:600px;width:384px"><div class="tgs"><span class="tg">查接口报错</span><span class="tg">判断有没有进展</span><span class="tg">问它：为什么挂了</span><span class="tg">让它改规则</span></div></div>
-<div class="abs f" data-f="2" style="left:96px;top:840px;width:1728px;display:flex;align-items:center;gap:16px;font-size:24px;font-weight:800"><span class="g1" style="font-weight:700;margin-right:8px">发现不对，逐级来：</span><span class="tg">先问它在干嘛</span>→<span class="tg">给恢复建议</span>→<span class="tg">重启任务</span>→<span class="tg r">高风险的找人</span></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">一句话：普通监控看「活没活着」，Watchdog 还要看「有没有在往前走」。
-我们补充的一个好处：职责分离。持续巡检交给 Watchdog，前台就能专心对人和做全局协调（用户问起进度时它照样可以去读状态）。
-被问到「怎么判断没进展」：跑得久不等于有问题，复杂调试本来就慢。要看几样证据——离目标近了没有、测试是不是在重复失败、代码是不是在反复改同一处、Worker 自己有没有报阻塞、执行轨迹是不是在打转。这些都只是信号，不是硬标准。
-（按 → 第二步）发现不对就逐级来：先问它在干嘛，再给恢复建议，必要时重启任务，高风险的改动找人批准。
-光有存算分离还不够持续在线：长期运行的系统还得能自己从异常里恢复。一个常驻的分布式系统，只靠内部逻辑，很少能长期可靠，需要一个主系统之外的独立控制回路。
-Agent 系统又比传统的存活探针、监控脚本多一层：很多异常不是崩溃，而是进程还在跑，模型却在原地打转，或者已经偏离目标。所以既要看基础设施活没活着，也要看任务有没有进展。
-他们的做法是一个独立的 Watchdog 会话，跑在主系统之外，由定时消息驱动：处理 API 报错、状态恢复失败这类基础设施故障；也用模型判断每个 Worker 是否有实质进展、是否偏离整体目标；及时修，遇到临时的外部故障就一直复查到恢复。
-（按 →）因为它本身就是一个带全套工具的 Agent 会话，维护的人可以直接用大白话问它为什么失败，也可以让它在运行中修正主系统的行为，比如增删 prompt、调整触发规则。
-可以想一下：这种「让另一个模型来监督」本身会不会误判？额外的调用和人读报告的成本值不值？
-可以顺带一句对照：Hive 是反过来的选择，故意不做卡死检测，因为从外面看「在想」和「卡死」一样；但它拒绝的是靠信号判定，DeepSeek 是让模型读内容判断，两者不矛盾。我们 bot 团队的系统观察员类似 Watchdog，但一天才看一次。</div>
-</section>
+<div class="abs f" data-f="1" style="left:1440px;top:600px;width:384px"><div class="tgs"><span class="tg">查接口报错</span><span class="tg">判断有没有进展</span><span class="tg">问它：为什么挂了</span><span class="tg">按授权调整规则</span></div></div>
+<div class="abs f" data-f="2" style="left:96px;top:840px;width:1728px;display:flex;align-items:center;gap:16px;font-size:24px;font-weight:800"><span class="g1" style="font-weight:700;margin-right:8px">我们的建议：</span><span class="tg">先问它在干嘛</span>→<span class="tg">给恢复建议</span>→<span class="tg">重启任务</span>→<span class="tg r">高风险的找人</span></div>
+<div class="rule b"></div><div class="foot"><span class="src">原文 §6 · 下方干预顺序为我们的建议</span></div>
+<div class="notes">进程在线、API 正常，并不能说明任务在向目标靠近。一个 Worker 可能一直重复修改同一个 bug，也可能只是正在进行很难的调试。
+原文让独立的 Watchdog 定时醒来，既看基础设施故障，也用模型读任务内容、判断进展，并处理异常。
+我们讨论中补充的是职责分离：持续巡检独立出来，Router 可以专注交互和全局协调，用户问进度时再读取状态。
+图里的逐级处理是我们的建议，不是原文给出的一套固定算法。可以先询问进展、检查证据，再按授权采取恢复措施。运行时间、重复失败、反复修改都只是信号。模型监督也可能误判，需要比较新增调用成本和实际收益。
 
-<!-- 24 分隔：实验与原型 -->
-<section class="slide dark" data-title="04 实验与原型">
-<div class="rule"></div>
-<div class="dv-n rv">04</div><div class="dv-t rv" style="--d:2">实验与原型</div><div class="dv-s rv" style="--d:3">数字怎么说，代码怎么写</div>
-<div class="rule b"></div>
-<div class="notes">第四段，看他们的实验和开源原型。</div>
-</section>
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div>
+</section><section class="slide" data-title="关掉 Pass-through，多花了什么？">
+<div class="rule"></div><div class="meta"><span><b class="no"></b>实验 · 直送开关对比</span></div>
+<h2 class="ttl">关掉 Pass-through，多花了什么？</h2>
+<p class="sub">同一套两层架构，只比较后续消息是否按订阅关系直接送给 Worker。</p>
+<div class="revision-body" style="top:375px">
+<table class="result-table pass-table"><thead><tr><th>指标</th><th>开启直送</th><th>关闭直送</th></tr></thead><tbody>
+<tr class="accent"><td>每次运行的缓存读取量</td><td>23.2M token</td><td>31.8M token <small>约 +37%</small></td></tr>
+<tr><td>完成时间 · 中位数 p50</td><td>12.4 分钟</td><td>12.6 分钟</td></tr>
+<tr><td>完成时间 · p95</td><td>15.7 分钟</td><td>15.5 分钟</td></tr>
+</tbody></table>
+<p class="result-note">为何时间接近？Router 批处理可吸收额外事件；这组负载尚未压满吞吐。</p>
+<p class="takeaway">这组负载里，直送减少了额外读取和路由开销，未明显缩短完成时间。</p>
+</div>
+<div class="rule b"></div><div class="foot"><span class="src">原文 §7 · 合成负载，每方案 5 次；编码用耗时工具模拟 · 缓存读取量为所有会话合计，不等于总费用</span></div>
+<div class="notes">这里我们只看一个开关：后续事件有没有经过代码直送。两边都是 Router / Worker 两层架构，关闭直送后，后续消息需要 Router 再判断和转发。
+结果很直观：每次运行所有会话的缓存读取量从 23.2M 增至 31.8M，约增加 37%；Router 的决策次数约增加 30%。但完成时间的中位数和 p95 基本相当。这说明在这组负载里，直送的主要收益是减少额外读取和路由开销。
+为什么多花了 token，时间却没明显增加？原文第 7.2 节解释，Router 会把一轮推理期间积累的事件合并到下一轮，关闭直送后负载上升仍未达到吞吐上限。我们可以进一步推测，额外路由没有成为整体完成时间的主要瓶颈，但实验没有逐项拆分各因素的贡献。
+如果有人追问批处理：作者单独压测 Router，事件到达率从每分钟约 1 条到 40 条，平均批大小从 1.0 到 2.8，单次请求耗时从 2.5 秒到 3.9 秒，每决策摊销推理时间从 6.4 秒到 1.6 秒。一个决策可能包含多次模型请求。
+实验边界用一句话交代即可：这是合成消息流，每次约 300 条消息、约 20 个工作请求，每种设计跑 5 次，编码只用耗时工具模拟。它测的是调度表现，没有验证真实代码质量。缓存读取也不能直接换算为总账单，不能说“费用增加了 37%”。p95 是第 95 百分位完成时间，不是最慢 5% 的平均值。
+延伸讨论可以问：在我们的任务里，哪些消息有明确归属，可以省掉一次模型判断？最终还要用真实任务看人工介入、返工和总成本。
 
-<!-- 25 实验设置 -->
-<section class="slide" data-title="实验怎么做的">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>实验</span></div>
-<h2 class="ttl rv">实验怎么做的</h2>
-<div class="cols" style="top:420px">
-<div class="rv pt" style="--d:1;grid-column:span 3"><div class="num" style="font-size:140px">~<span data-count="300">300</span></div><p style="color:var(--ink);font-weight:700">条消息 / 每次</p></div>
-<div class="rv pt r" style="--d:2;grid-column:span 3"><div class="num red" style="font-size:140px">~<span data-count="20" data-delay="500">20</span></div><p style="color:var(--ink);font-weight:700">条是真要干的活</p></div>
-<div class="rv pt" style="--d:3;grid-column:span 3"><div class="num" style="font-size:140px" data-count="4" data-delay="700">4</div><p style="color:var(--ink);font-weight:700">种设计同时跑</p></div>
-<div class="rv pt" style="--d:4;grid-column:span 3"><div class="num" style="font-size:140px" data-count="5" data-delay="900">5</div><p style="color:var(--ink);font-weight:700">次 / 每种设计</p></div></div>
-<div class="abs f" data-f="1" style="left:96px;top:780px;width:1728px;border-left:8px solid var(--red);padding-left:32px"><div class="cap">写代码用一个「只耗时间」的工具代替</div><div class="small" style="margin-top:6px">→ 测的是调度和协调，不是代码写得好不好</div></div>
-<div class="rule b"></div><div class="foot"><span class="src">合成负载、简化环境；作者说结果仅供参考</span></div>
-<div class="notes">端到端的消融实验：四种设计同时跑，喂同一股群聊加 GitHub CI 的消息流。每次大约 300 条消息，其中约 20 条是工作请求，其余是闲聊、追问、取消和 CI 消息。
-关键一点（按 →）：编码工作用一个只消耗时间的工具模拟，所以测的是系统的调度和协调能力，不是单个任务做得好不好。
-四种设计：完整 Super-agent；去掉话题直送的 Super-agent；单会话 + subagent 工具，分别配两种 prompt。每种跑 5 次。</div>
-</section>
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236
+主画面只保留这一个开关实验，完整消融与批处理压测在原文第 7 节，不能把局部结果扩展为所有任务上的收益。</div></section><section class="slide" data-title="公开原型可以读什么，使用时要注意什么？"><div class="rule"></div><div class="meta"><span><b class="no"></b>开源原型</span></div><h2 class="ttl rv">公开原型可以读什么，使用时要注意什么？</h2><div class="revision-body"><div class="two-col"><div><h3>面向单个 GitHub 仓库</h3><p>一事一工单，每项任务有独立会话与目录。</p><p>通过规则和授权决定能做什么，<br/>面板集中呈现需要人处理的事项。</p><p>主动工作可以先以“只记录”方式观察。</p></div><div><h3>仍然是研究代码</h3><p>公开版本、内部实例和文章设计<br/>并不完全一致。</p><p>默认以操作者的系统用户运行，权限较宽。<br/>部署文档建议使用专门的系统账号隔离。</p></div></div><p class="takeaway">适合从文档理解职责、授权和工作流程；生产可用性仍需单独评估。</p></div><div class="rule b"></div><div class="foot"><span class="src">dsh-superagent-prototype · MIT · 研究原型</span></div><div class="notes">文章之外，DeepSeek 公开了 dsh-superagent-prototype，作为 Harness 的一个 bundle，主要盯一个 GitHub 仓库，可选接飞书。
+值得读的是它怎么定义工单、执行者、授权和面板：谁可以提出请求、什么时候允许主动行动、什么事情需要人处理。文档强调消息只是输入，不能通过聊天改变权限。
+同时，README 明确说是研究代码，文章中的一些设计还没有在原型里实现。部署文档说明预设以操作者的系统用户运行，建议专用账号隔离。因此不要把架构目标当成原型已经充分保证的行为。
+推荐从 docs/000-philosophy.md 开始读。
 
-<!-- 26 完成时间 -->
-<section class="slide" data-title="完成时间">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>实验</span></div>
-<h2 class="ttl rv">完成时间：两层架构更快，也更稳</h2>
-<div class="abs rv" style="--d:1;left:1180px;top:300px;display:flex;gap:28px;font-size:22px;font-weight:800"><span><i style="display:inline-block;width:22px;height:22px;background:var(--ink);vertical-align:-3px;margin-right:10px"></i>中位数 p50</span><span><i style="display:inline-block;width:22px;height:22px;background:var(--g3);vertical-align:-3px;margin-right:10px"></i>最慢的 5% p95</span></div>
-<div class="abs lbl red rv" style="left:96px;top:410px;font-size:30px">完整 Super-agent</div>
-<div class="abs lbl rv" style="--d:1;left:96px;top:530px;font-size:30px">去掉话题直送</div>
-<div class="abs lbl rv" style="--d:2;left:96px;top:650px;font-size:30px">单会话 + 子 agent<br><span class="g1" style="font-size:22px;font-weight:600">中性 prompt</span></div>
-<div class="abs lbl rv" style="--d:3;left:96px;top:770px;font-size:30px">单会话 + 子 agent<br><span class="g1" style="font-size:22px;font-weight:600">提示优先委派</span></div>
-<div class="abs" style="left:696px;top:380px;width:3px;height:480px;background:var(--ink)"></div>
-<div class="hb" style="--d:1;left:700px;top:400px;width:397px;height:34px;background:var(--red)"></div><div class="hb" style="--d:2;left:700px;top:440px;width:502px;height:34px;background:#f2b3a9"></div>
-<div class="hb" style="--d:3;left:700px;top:520px;width:403px;height:34px;background:var(--ink)"></div><div class="hb" style="--d:4;left:700px;top:560px;width:496px;height:34px;background:var(--g3)"></div>
-<div class="hb" style="--d:5;left:700px;top:640px;width:653px;height:34px;background:var(--ink)"></div><div class="hb" style="--d:6;left:700px;top:680px;width:944px;height:34px;background:var(--g3)"></div>
-<div class="hb" style="--d:7;left:700px;top:760px;width:442px;height:34px;background:var(--ink)"></div><div class="hb" style="--d:8;left:700px;top:800px;width:928px;height:34px;background:var(--g3)"></div>
-<div class="rv" style="--d:9;font-size:24px;font-weight:900">
-<span class="abs red" style="left:1112px;top:400px">12.4</span><span class="abs red" style="left:1216px;top:440px">15.7</span>
-<span class="abs" style="left:1118px;top:520px">12.6</span><span class="abs" style="left:1210px;top:560px">15.5</span>
-<span class="abs" style="left:1368px;top:640px">20.4</span><span class="abs" style="left:1658px;top:680px">29.5 分钟</span>
-<span class="abs" style="left:1156px;top:760px">13.8</span><span class="abs" style="left:1642px;top:800px">29.0 分钟</span></div>
-<p class="abs cap f" data-f="1" style="left:96px;top:886px;width:1728px;font-size:26px">单会话的 p95 都在 29 分钟上下：<span class="red">主会话常常自己动手，被新消息不停打断</span></p>
-<div class="rule b"></div><div class="foot"><span class="src">完成时间 = 从提出工作请求到收到结果消息 · 合成负载</span></div>
-<div class="notes">p50 是中位数，p95 可以理解成「最慢的那 5% 要多久」，代表长尾。
-完整 Super-agent：p50 12.4 分钟，p95 15.7 分钟。去掉话题直送：12.6 / 15.5，几乎一样。
-单会话 + subagent、中性 prompt：20.4 / 29.5；换成优先委派的 prompt：中位数降到 13.8，但 p95 还在 29.0。
-（按 →）为什么单会话慢且不稳？因为它高度依赖 prompt：主会话经常决定自己干，新消息不断打断它。下一页细看。</div>
-</section>
-
-<!-- 27 委派 -->
-<section class="slide" data-title="靠 prompt 委派靠不住">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>实验</span></div>
-<h2 class="ttl rv">靠 prompt 让模型「记得委派」，靠不住</h2>
-<div class="abs rv" style="left:96px;top:410px;width:740px"><div class="lbl" style="font-size:32px">中性 prompt</div><div class="small" style="margin-top:8px">「合适的时候用 subagent……」</div></div>
-<div class="sqg" style="left:900px;top:390px;grid-template-columns:repeat(5,120px)"><div class="sq rv" style="--d:1;height:120px"></div><div class="sq rv" style="--d:2;height:120px"></div><div class="sq rv" style="--d:3;height:120px"></div><div class="sq rv" style="--d:4;height:120px"></div><div class="sq rv" style="--d:5;height:120px"></div></div>
-<div class="abs num rv" style="--d:6;left:1620px;top:400px;font-size:110px">0<span style="font-size:50px">/5</span></div>
-<div class="abs rv" style="--d:7;left:96px;top:640px;width:740px"><div class="lbl" style="font-size:32px">提示「优先委派」</div><div class="small" style="margin-top:8px">「每条消息都会打断你，<br>优先交给 subagent，小事才自己做……」</div></div>
-<div class="sqg" style="left:900px;top:620px;grid-template-columns:repeat(5,120px)"><div class="sq on rv" style="--d:8;height:120px"></div><div class="sq on rv" style="--d:9;height:120px"></div><div class="sq on rv" style="--d:10;height:120px"></div><div class="sq on rv" style="--d:11;height:120px"></div><div class="sq w hatch rv pulse" style="--d:13;height:120px">自己干</div></div>
-<div class="abs num red rv" style="--d:12;left:1620px;top:630px;font-size:110px">4<span style="font-size:50px">/5</span></div>
-<p class="abs small rv" style="--d:14;left:900px;top:760px;width:900px">剩下那 1 次，模型觉得活「小」，自己上了 → 长尾</p>
-<p class="abs cap red f" data-f="1" style="left:96px;top:870px;width:1728px">该不该委派，交给结构定，别交给模型临场判断</p>
-<div class="rule b"></div><div class="foot"><span class="src">方块 = 一次运行；实心 = 这次委派了子 agent</span></div>
-<div class="notes">中性 prompt 下，5 次运行里模型一次都没有调用 subagent，所有活都在主会话里干，新消息不停打断它，p95 到了 29.5 分钟。
-写明优先委派后，5 次里有 4 次委派了，完成时间有所下降，但整体还是比 Super-agent 长。剩下那 1 次，模型判断活「小」就自己干了，拖出了长尾。
-原文的结论：单会话只能靠 prompt 工程和模型临场判断来决定是否委派；两层架构在系统层面缓解了这个问题——前台自己不干活，每个 Worker 只收到它订阅的话题的消息。
-（按 →）这一点我觉得是整篇最值得带走的：要它守的规矩，尽量放进结构里。</div>
-</section>
-
-<!-- 28 token -->
-<section class="slide" data-title="多花的 token 换来了什么">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>实验</span></div>
-<h2 class="ttl rv">多花的 token，换来了什么</h2>
-<p class="sub rv" style="--d:1">每次运行、所有会话加起来「读缓存」的 token</p>
-<div class="abs lbl red rv" style="left:96px;top:420px;font-size:30px">完整 Super-agent</div>
-<div class="abs lbl rv" style="--d:1;left:96px;top:520px;font-size:30px">去掉话题直送</div>
-<div class="abs lbl rv" style="--d:2;left:96px;top:620px;font-size:30px">单会话 · 中性</div>
-<div class="abs lbl rv" style="--d:3;left:96px;top:720px;font-size:30px">单会话 · 优先委派</div>
-<div class="abs" style="left:696px;top:396px;width:3px;height:400px;background:var(--ink)"></div>
-<div class="hb" style="--d:1;left:700px;top:410px;width:729px;height:56px;background:var(--red)"></div>
-<div class="hb" style="--d:2;left:700px;top:510px;width:1000px;height:56px;background:var(--ink)"></div>
-<div class="hb" style="--d:3;left:700px;top:610px;width:192px;height:56px;background:var(--g3)"></div>
-<div class="hb" style="--d:4;left:700px;top:710px;width:340px;height:56px;background:var(--g3)"></div>
-<div class="rv" style="--d:7;font-size:30px;font-weight:900"><span class="abs red" style="left:1446px;top:418px">23.2M</span><span class="abs" style="left:1716px;top:518px">31.8M</span><span class="abs" style="left:910px;top:618px">6.1M</span><span class="abs" style="left:1058px;top:718px">10.8M</span></div>
-<div class="abs f" data-f="1" style="left:96px;top:830px;width:1728px"><div class="cap">去掉直送：<span class="red">+37%</span>，前台多做约 30% 的决策，完成时间几乎没变</div></div>
-<div class="abs f" data-f="2" style="left:96px;top:886px;width:1728px"><div class="cap">多会话各读各的缓存 → <span class="red">用 token 换更短、更稳的完成时间</span></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文 · 合成负载</span><a class="go" href="detail/handoff.html?from=28">动画对比：经前台 vs 直送</a></div>
-<div class="notes">别说错：+30% 是前台的「决策次数」，+37% 是「读缓存的 token」，两个数别记混。
-被问到「token 多了，时间为什么没变」，可以讲三个原因（是推测，原文没有逐项拆开测）：
-1）前台的活本来就轻，多判断一次只多几秒；
-2）前台会批处理，几条事件攒成一批一起算（第 14 页）；
-3）最关键：前台不在任务完成的关键路径上。Worker 干活要十几分钟，前台多几秒，还能和 Worker 执行重叠，总时间几乎看不出来。
-（按 → 逐条）
-第一个看点：话题直送没让任务变快，但省下了一截。去掉直送后完成时间差不多，但前台每次运行多做约 30% 的决策，所有会话读缓存的 token 从 23.2M 涨到 31.8M，约多 37%。原文原话大意：在这个负载下，直送不会让任务完成得更快或更好，但能显著减少前台的 token 和推理开销。
-为什么时间没变？前台不是关键路径上的瓶颈，加上批处理，多出来的负载被吸收了。
-第二个看点：Super-agent 维护着多个独立会话，读缓存的 token 是单会话的好几倍。它是在用 token 换更短、更稳的完成时间。
-注意：这里是「读缓存」的 token，不是总花费，也不是推理 token。</div>
-</section>
-
-<!-- 29 怎么读数字 -->
-<section class="slide" data-title="这些数字怎么读">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>实验</span></div>
-<h2 class="ttl rv">这些数字怎么读</h2>
-<div class="cols" style="top:430px">
-<div class="rv pt" style="--d:1;grid-column:span 4"><div class="pk2 red" style="font-size:80px">01</div><div class="pk2" style="margin-top:14px">合成负载</div><p>简化环境，作者自己说<br>「仅供参考」，当方向看</p></div>
-<div class="rv pt" style="--d:2;grid-column:span 4"><div class="pk2 red" style="font-size:80px">02</div><div class="pk2" style="margin-top:14px">读缓存 ≠ 花费</div><p>cache-read token 不等于总账单，<br>也不等于推理 token</p></div>
-<div class="rv pt" style="--d:3;grid-column:span 4"><div class="pk2 red" style="font-size:80px">03</div><div class="pk2" style="margin-top:14px">只测了调度</div><p>不说明代码写得更好；<br>换成我们的群聊和 PR 要重测</p></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">我们的读法</span></div>
-<div class="notes">这页是给大家打个预防针，避免把实验结论说过头。
-一、作者明确说是合成负载、简化环境，部分设置可以更严谨，结果仅供参考。
-二、表里是 cache-read token。缓存读取通常比普通输入便宜很多，所以不能把 +37% 直接读成「多花了 37% 的钱」。
-三、写代码是用耗时工具模拟的，测的是调度和协调。真实任务的质量、人工介入次数、总成本，都要在我们自己的负载上测。</div>
-</section>
-
-<!-- 测了 / 没测 -->
-<section class="slide" data-title="测了什么还没测什么">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>实验</span></div>
-<h2 class="ttl rv">他们测了什么，还没测什么</h2>
-<div class="abs rv" style="--d:1;left:96px;top:390px;width:820px">
-<div class="pt"><div class="pk2" style="font-size:36px">测了</div></div>
-<div class="li" style="border-top:0;padding:18px 0"><b style="color:var(--ink)">·</b><span>多任务下的调度和完成时间</span></div>
-<div class="li" style="padding:18px 0"><b style="color:var(--ink)">·</b><span>读缓存的 token、前台决策次数</span></div>
-<div class="li" style="padding:18px 0;border-bottom:2px solid var(--g3)"><b style="color:var(--ink)">·</b><span>前台的批处理吞吐</span></div></div>
-<div class="abs f" data-f="1" style="left:1004px;top:390px;width:820px">
-<div class="pt r"><div class="pk2 red" style="font-size:36px">还没测</div></div>
-<div class="li" style="border-top:0;padding:18px 0"><b>·</b><span>真实开发任务做成了几个、质量如何</span></div>
-<div class="li" style="padding:18px 0"><b>·</b><span>Worker 之间的冲突能不能发现、解决</span></div>
-<div class="li" style="padding:18px 0;border-bottom:2px solid var(--g3)"><b>·</b><span>人工介入次数、返工、总成本</span></div></div>
-<p class="abs cap f" data-f="2" style="left:96px;top:830px;width:1728px">评价一个架构：<span class="red">花了多少，换来多少真正有用的产出</span></p>
-<div class="rule b"></div><div class="foot"><span class="src">我们的看法与疑问，不是原文结论</span></div>
-<div class="notes">一句话：实验验证了「模拟负载下的调度效率」，还没回答「真实复杂任务里做得好不好」。
-左边是他们测了的：第 7.1 节的四方案消融（完成时间、读缓存 token、决策次数），第 7.2 节的前台批处理压测。
-（按 →）右边是如果我们来补，最想测的三样：
-一、真实开发任务的成功率和质量——模拟工具只耗时间，反映不了代码质量、测试和架构冲突；
-二、跨 Worker 的协调质量——前面说过，Worker 不直接沟通时，协调压力可能往前台集中，这一点现有实验没回答；
-三、综合成本——token 之外，还有机器、返工和人的介入时间。
-（按 →）最后落到一句：架构是手段，最终看它以多大成本创造了多少有效价值。</div>
-</section>
-
-<!-- 30 原型 -->
-<section class="slide" data-title="开源原型">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>原型</span></div>
-<h2 class="ttl rv">开源原型：一个盯着 GitHub 仓库的主动 Agent</h2>
-<div class="mock rv" style="--d:1;left:96px;top:370px;width:880px;height:500px"><div class="hd"><i></i>需要你处理 · 2<span style="margin-left:auto;font-size:18px;color:#8d8a83">示意</span></div>
-<div class="card rv" style="--d:3">#128 用方案 A 还是 B？<div class="bt"><span>A</span><span>B</span></div></div>
-<div class="card rv" style="--d:4">#131 已过 CI，批准合并？<div class="bt"><span class="r">批准</span></div></div>
-<div style="margin:30px 24px 0;padding-top:22px;border-top:2px dashed var(--g3);font-size:24px;font-weight:600;color:var(--g2)">另外 9 个工单在跑，不打扰你</div></div>
-<div class="abs" style="left:1060px;top:370px;width:764px">
-<div class="pt rv" style="--d:2"><div class="pk2" style="font-size:36px">一事一工单</div><p style="margin-top:8px;font-size:26px">每个工单一个 Worker 会话、一个独立目录</p></div>
-<div class="pt rv" style="--d:3;margin-top:30px"><div class="pk2" style="font-size:36px">权限不听聊天的</div><p style="margin-top:8px;font-size:26px">白名单、规则由宿主程序强制，消息只是参考</p></div>
-<div class="pt rv" style="--d:4;margin-top:30px"><div class="pk2 red" style="font-size:36px">主动先「只记录」</div><p style="margin-top:8px;font-size:26px">先记下会做什么，团队看过再放开</p></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">github.com/deepseek-ai/dsh-superagent-prototype · MIT · 研究用途</span></div>
-<div class="notes">原型 dsh-superagent-prototype，MIT 许可，是 DeepSeek Harness 的一个 bundle：面向单个 GitHub 仓库的主动 coding agent，可以选配接飞书。
-几个概念：Ticket（工单）、Executor（每个工单一个 Worker 会话和目录/worktree）、Mandate（授权）、SQLite 账本。Web 面板只显示需要人处理的事，左边这个面板是示意。
-权限由宿主强制：白名单、规则、Mandate。原文档说：消息、评论和引用文档只是决策输入，不能改变权限。为看上下文而订阅一个话题，也不会因此获得权限。
-主动做事需要团队写规则，并且先以「只记录会做什么」的模式起步。
-说话原则很朴素：尽量少占人的注意力，尽量多给价值；只在有人必须行动或能用上结果时开口；一次只问一个具体问题。
-工单结束后保留订阅，人再说话就按原授权复活。安装方式也有意思：让 coding agent 照着 SETUP.md 带着你装。推荐看 docs/000-philosophy。</div>
-</section>
-
-<!-- 31 边界 -->
-<section class="slide" data-title="这还是一份研究代码">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>原型</span></div>
-<h2 class="ttl rv">也要看清楚：这还是一份研究代码</h2>
-<div class="cols" style="top:460px">
-<div class="rv pt" style="--d:2;grid-column:span 4"><div class="pk2">不是正式产品</div><p>原型和内部版本、<br>和文章都不完全一致</p></div>
-<div class="rv pt" style="--d:3;grid-column:span 4"><div class="pk2">权限给得很宽</div><p>默认完全访问、用你的系统用户跑；<br>文档建议用专门账号隔离</p></div>
-<div class="rv pt r" style="--d:4;grid-column:span 4"><div class="pk2 red">安全是公开难题</div><p>常驻、主动、吃群聊输入，<br>提示注入的面变大了</p></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">原型自己声明是研究代码，不是生产可用；文章里部分设计原型没有实现。
-两个预设都以 danger-full-access 模式、用运维者的系统用户运行，Worker 能读到用户 home 目录，所以文档建议用专门的系统账号隔离。
-也有第三方评论指出：主会话能改团队的 skills、策略和接受模式，靠的只是 prompt 里要求它先等人确认。这和前面「规矩写进结构」的结论正好形成对照。
-原文把安全列为开放问题：云端循环一旦被注入，所有连着的端设备都可能被接管。</div>
-</section>
-
-<!-- 32 分隔：我们的思考 -->
-<section class="slide dark" data-title="05 我们的思考">
-<div class="rule"></div>
-<div class="dv-n rv">05</div><div class="dv-t rv" style="--d:2">我们的思考</div><div class="dv-s rv" style="--d:3">下面是我们的看法和疑问，<br>不是原文结论</div>
-<div class="rule b"></div>
-<div class="notes">最后一段，从文章出来，说说我们读完之后的几个疑问，以及能马上试的东西。这一段都是讨论，不代表原文观点。</div>
-</section>
-
-<!-- 33 入口 ≠ 认知 -->
-<section class="slide" data-title="入口合成一个">
+资料：https://github.com/deepseek-ai/dsh-superagent-prototype</div></section><section class="slide" data-source-slide="38" data-title="五个项目都在问你，一个聊天窗口够吗？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>我们的思考</span></div>
-<h2 class="ttl rv">入口合成一个，脑子里还是五件事</h2>
-<div class="abs lbl rv" style="left:96px;top:440px;font-size:32px">要盯的窗口</div>
-<div class="sqg" style="left:700px;top:410px;grid-template-columns:repeat(5,110px)"><div class="sq on rv" style="--d:1;height:110px"></div><div class="sq on rv fadeq" style="--d:2;height:110px"></div><div class="sq on rv fadeq" style="--d:3;height:110px"></div><div class="sq on rv fadeq" style="--d:4;height:110px"></div><div class="sq on rv fadeq" style="--d:5;height:110px"></div></div>
-<div class="abs num rv" style="--d:6;left:1500px;top:420px;font-size:90px">5 → 1</div>
-<div class="abs lbl rv" style="--d:7;left:96px;top:640px;font-size:32px">脑子里要装的<br>项目背景</div>
-<div class="sqg" style="left:700px;top:620px;grid-template-columns:repeat(5,110px)"><div class="sq rv" style="--d:8;height:110px;background:var(--ink)"></div><div class="sq rv" style="--d:9;height:110px;background:var(--red);border-color:var(--red)"></div><div class="sq rv" style="--d:10;height:110px;background:var(--g1);border-color:var(--g1)"></div><div class="sq rv" style="--d:11;height:110px;background:var(--g2);border-color:var(--g2)"></div><div class="sq rv" style="--d:12;height:110px;background:var(--g3);border-color:var(--g3)"></div></div>
-<div class="abs num red rv" style="--d:13;left:1500px;top:630px;font-size:90px">5 → 5</div>
-<p class="abs cap f" data-f="1" style="left:96px;top:850px;width:1728px">省掉的是找窗口；在几件事之间切换的脑力还在，<span class="red">出了问题接手可能更难</span></p>
-<div class="rule b"></div><div class="foot"><span class="src">我们的看法与疑问，不是原文结论</span></div>
-<div class="notes">这是我们读的时候第一个冒出来的疑问。
-把五个会话合成一个入口，省掉的是「入口管理成本」：不用记哪个窗口在干嘛。但你要在五个项目之间切换，五套项目背景还是得装在脑子里，这是「认知切换成本」，入口合并并不直接减少它。
-反而有一个反面：Agent 越自主，平时人参与越少，真出问题时，人要恢复上下文、接手，成本可能更高。
-所以我会把「省注意力」拆成三件事看：入口管理、认知切换、做决策。原文这套架构主要解决第一件，第三件靠「只在需要拍板时开口」在压，第二件还是开放的。
-可以这样收：Super-agent 是把管理会话的责任从人身上挪给了系统，但没有替人把五件事想完。下一页再往前推一步。</div>
-</section>
-
-<!-- 入口串台 -->
-<section class="slide" data-title="一个入口也会串台">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>我们的思考</span></div>
-<h2 class="ttl rv">更糟一点：五件事挤进同一条聊天流</h2>
+<h2 class="ttl rv">五个项目都在问你，一个聊天窗口够吗？</h2>
 <div class="mock rv" style="--d:1;left:96px;top:360px;width:800px;height:560px"><div class="hd"><i></i>和前台的对话</div>
 <div style="padding:22px 26px;display:flex;flex-direction:column;gap:14px;font-size:23px;font-weight:700">
 <div class="rv" style="--d:2;display:flex;gap:14px;align-items:center"><i style="width:18px;height:18px;background:var(--ink);flex:none"></i>项目 A：PR 要不要合？</div>
@@ -948,133 +502,87 @@ Agent 系统又比传统的存活探针、监控脚本多一层：很多异常�
 <div class="rv" style="--d:7;display:flex;gap:14px;align-items:center"><i style="width:18px;height:18px;background:var(--g3);flex:none"></i>项目 D：测试结果出来了</div>
 <div class="rv" style="--d:8;align-self:flex-end;padding:10px 18px;border:3px solid var(--red);color:var(--red)">你：……刚才 C 问的是啥来着？</div></div></div>
 <div class="abs" style="left:1000px;top:380px;width:824px">
-<div class="li f" data-f="1" style="border-top:6px solid var(--ink)"><b>1</b><span>入口统一<br><span class="small">一个地方说话 · <span class="red" style="font-weight:800">Super-agent 主要做到这</span></span></span></div>
-<div class="li f" data-f="2"><b>2</b><span>交互组织<br><span class="small">每件事有自己的卡片、线程和状态</span></span></div>
-<div class="li f" data-f="3" style="border-bottom:2px solid var(--g3)"><b>3</b><span>少让人拍板<br><span class="small">低风险的自己办，要你定的带证据排好队</span></span></div></div>
+<div class="li f" data-f="1" style="border-top:6px solid var(--ink)"><b>1</b><span>入口统一<br/><span class="small">一个地方说话 · <span class="red" style="font-weight:800">底层会话由系统管理</span></span></span></div>
+<div class="li f" data-f="2"><b>2</b><span>交互组织<br/><span class="small">每件事有自己的卡片、线程和状态</span></span></div>
+<div class="li f" data-f="3" style="border-bottom:2px solid var(--g3)"><b>3</b><span>少让人拍板<br/><span class="small">低风险的自己办，要你定的带证据排好队</span></span></div></div>
 <div class="rule b"></div><div class="foot"><span class="src">我们的看法与疑问，不是原文结论 · 示意</span></div>
-<div class="notes">接着上一页，再往前推一步：统一入口不仅没有消掉认知切换，还可能带来新的混乱。
-原来是在五个窗口之间切换；现在五个项目要你拍板的事、汇报的事，全挤在同一条聊天流里。你回第一个问题回到一半，前台又插进来别的项目的消息；再回头找第二个问题，只能往上翻。跨窗口切换，变成了同一个窗口里的跨任务切换。
-要说严谨一点：人不是绝对只能想一件事，简单的事可以穿插着做；但需要深入推理、要装复杂背景的工作，注意力和工作记忆确实有限。而且这是界面设计的问题，不是所有实现都必然这样——任务卡片、独立讨论线程、引用回复都能缓解。
-（按 → 逐层）我会把它拆成三层：
-一、入口统一：不用管多个窗口。DeepSeek 的两层架构主要解决的是这一层。
-二、交互组织：每件事有自己的上下文、状态和决策入口，而不是全混在一条聊天流里。
-三、减少决策：低风险的系统自己办，真正要人参与的，按优先级排好、附上证据和背景。
-后两层正好对应原文第 8 节的开放问题「没有会话之后怎么协作」。第一层做好了，不代表后两层自然成立。下一步值得优化的，不只是统一入口，而是怎么组织多任务交互、怎么减少人真正要参与的决策。</div>
-</section>
+<div class="notes">这是我读完后最关心的使用问题。Router 把入口统一起来，确实不用记哪个窗口在干什么。但理解五个项目、处理五个决策的成本仍然存在。
+假设 A 问 PR 要不要合，B 问协议怎么改，C 问版本发不发。你还在回答 A，其他项目又插进来，回头处理 C 还得往上翻。跨窗口切换，可能变成同一条聊天流里找任务。
+这不是两层架构必然造成的。原文第 8.2 节已经把任务呈现、领域界面、中途接管列为开放问题。我们往前推进的判断是：除了统一入口，还要给每件事独立的上下文和决策位置，并减少真正需要人参与的决定。
+卡片、独立线程、引用回复都可能缓解，具体哪种适合，要看工作场景。
 
-<!-- 34 共享 ≠ 协作 -->
-<section class="slide" data-title="看到同一条消息不等于说好了">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>我们的思考</span></div>
-<h2 class="ttl rv">看到同一条消息，不等于说好了</h2>
-<div class="abs rv" style="--d:1;left:160px;top:700px;width:520px;height:160px;background:var(--red);color:#fff;padding:28px 30px"><div class="big2">信息可见</div><div style="font-size:22px;font-weight:700;margin-top:10px;opacity:.9">话题广播能做到这一级</div></div>
-<div class="abs rv" style="--d:3;left:680px;top:560px;width:520px;height:300px;border:3px dashed var(--ink);padding:28px 30px"><div class="big2">状态一致</div><div class="small" style="margin-top:10px">版本对得上吗？</div></div>
-<div class="abs rv" style="--d:5;left:1200px;top:420px;width:520px;height:440px;border:3px dashed var(--ink);padding:28px 30px"><div class="big2">行动协调</div><div class="small" style="margin-top:10px">谁让步？谁拍板？</div></div>
-<p class="abs cap f" data-f="1" style="left:96px;top:390px;width:1060px">Worker 之间不直接沟通时，<br>跨任务的冲突会往前台汇聚 →<br><span class="red">前台可能先卡在决策质量，而不是吞吐</span></p>
-<div class="rule b"></div><div class="foot"><span class="src">我们的看法与疑问，不是原文结论</span></div>
-<div class="notes">第二个疑问是关于多对多订阅。
-几个 Worker 订阅同一个话题，大家都能收到同样的事件，这解决的是第一级：信息可见。但信息可见之后，还有两级：状态是否一致（我看到的版本和你看到的是不是同一个），行动是否协调（两个 Worker 都想改同一处，谁让步）。
-原文的说法是 Worker「有机会」自己发现并解决冲突，少数需要跨任务协调的由前台转达。这在独立任务为主的场景下够用；但如果任务耦合变紧，冲突多了，压力就会往前台汇聚。那时前台的瓶颈可能不是每分钟能处理多少条，而是它拍板拍得对不对。
-原文自己也把「Worker 之间什么时候该直连、用什么拓扑」列为开放问题。</div>
-</section>
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div>
+</section><section class="slide" data-title="三个 PR 出现架构冲突，谁来协调？"><div class="rule"></div><div class="meta"><span><b class="no"></b>我们的思考</span></div><h2 class="ttl rv">三个 PR 出现架构冲突，谁来协调？</h2><div class="revision-body"><p class="scenario">三个 Worker 各自完成任务，却对同一个模块采用了不同方案。</p><div class="decision-rows"><div><h3>任务内可以解决</h3><p>Worker 处理局部冲突，并报告影响。</p></div><div><h3>需要深入分析几个 PR</h3><p>Router 识别问题，交给专门的协调 Worker 分析依赖与方案。</p></div><div><h3>涉及目标、授权或重大取舍</h3><p>把证据和选项交给有权决定的人。</p></div></div><p class="takeaway">前台需要多强，取决于系统留给它多少判断工作。</p></div><div class="rule b"></div><div class="foot"><span class="src">我们的场景推演 · 原文 §2、§8.1 将紧耦合任务的协作列为开放问题</span></div><div class="notes">多个 Worker 收到同一条消息，只说明信息可见，不能保证它们看到相同版本，更不能保证行动已经协调好。
+我最初担心：如果三个 PR 有架构冲突，Router 过于简单，谁能理解并拍板？这里要把能力与职责分开。原文没有主张 Router 越笨越好，而是让它不被具体执行占住。
+一种可尝试的分工是：简单问题由 Worker 或 Router 处理，需要长时间分析的交给专门协调 Worker，重大取舍交给有权决策的人。这样 Router 保留识别和协调职责，不必自己读完每个 PR 的所有细节。
+这与原文的委派思路兼容，是我们对复杂协调场景的延伸。强模型、专项 Worker 都会增加延迟和成本，不能在没有证据时无限叠加协调层。
 
-<!-- 35 Router 要多强 -->
-<section class="slide" data-title="前台要多强">
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div></section><section class="slide" data-source-slide="41" data-title="一个两分钟的改动，值得新开 Worker 吗？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>我们的思考</span></div>
-<h2 class="ttl rv">前台：脑子可以强，手上的活要少</h2>
-<div class="abs rv" style="--d:1;left:200px;top:560px;width:1520px;height:8px;background:var(--ink)"><div class="thumb"></div></div>
-<div class="abs rv" style="--d:2;left:96px;top:420px"><div class="big2">判断空间小</div><div class="small" style="margin-top:6px">→ 轻模型就够</div></div>
-<div class="abs rv" style="--d:2;right:96px;top:420px;text-align:right"><div class="big2 red">判断空间大</div><div class="small" style="margin-top:6px">→ 强模型，或者问人</div></div>
-<div class="abs rv" style="--d:3;left:96px;top:640px;width:760px"><div class="tgs"><span class="tg">代码规则过滤</span><span class="tg">按话题直送</span><span class="tg">结果格式固定</span></div></div>
-<div class="abs rv" style="--d:4;right:96px;top:640px;width:800px"><div class="tgs" style="justify-content:flex-end"><span class="tg no">猜模糊的意图</span><span class="tg no">跨任务冲突</span><span class="tg no">要不要打扰人</span><span class="tg no">转述长报告</span></div></div>
-<div class="cols" style="top:740px">
-<div class="pt f" data-f="1" style="grid-column:span 4"><div class="pk2" style="font-size:32px">简单的冲突</div><p style="margin-top:8px">前台自己判断，或者 Worker 自己解决</p></div>
-<div class="pt r f" data-f="2" style="grid-column:span 4"><div class="pk2 red" style="font-size:32px">要长时间分析</div><p style="margin-top:8px">开一个专门做协调的 Worker</p></div>
-<div class="pt f" data-f="3" style="grid-column:span 4"><div class="pk2" style="font-size:32px">重大取舍</div><p style="margin-top:8px">带着证据交给人</p></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">我们的看法与疑问，不是原文结论</span></div>
-<div class="notes">一句话：能力可以很强，执行职责要有边界。
-先公平地讲作者的动机：前台不执行、不拆解，是为了不被某件复杂的事占住，耽误处理别的消息，也避免任务上下文混进来。
-我的不同意见：前台不该被严格限制成一个简单的分发器。比如一个项目有三个 Worker 在做三个 PR，可能出现代码冲突、技术依赖、优先级调整，甚至架构分歧。要识别这些，前台得懂一定的技术背景。
-但「冲突一定要前台解决」也太绝对：（按 → 逐个）
-简单的——改不同文件没冲突，或者普通的 merge 冲突——Worker 自己或前台顺手就能处理；
-要长时间分析的——比如三个 PR 有架构层面的冲突——前台识别出来后，开一个专门做协调的 Worker，深入分析依赖和取舍，输出方案，前台继续接别的消息，不被卡住；
-重大取舍——比如两个 PR 代表两种产品方向——带着证据交给人。
-被问到「前台用强模型，会不会又变回单会话那样又慢又膨胀」：所以才要有第二级——复杂分析交给专门的协调 Worker，前台只负责识别和最后拍板。也要注意别每次都开新的协调 Worker，不然协调层级会越叠越多。延迟和成本到底增加多少，要实验验证。
-补充：我们的看法是，前台的模型能力和它承担的职责是两回事。前台的模型能力和它承担的职责是两回事。前台要多强，取决于系统留给它多少判断空间。代码规则挡掉不用判断的、话题直送绕过它、Worker 交回来的结果格式固定（结论 / 前提 / 需要你决定的事），判断空间就被压小了，轻模型够用。反过来，如果它要从一团聊天里猜意图、处理跨任务冲突、决定要不要打扰人、把长报告压成一句话，就需要强模型。
-还有一个常被忽略的成本是延迟：前台在每条消息的必经路上，它慢一点，人每说一句都要等。
-所以折中是：默认轻量，低置信度、涉及对外或不可逆动作、要合并多个结果时，升级到强模型或者问人。原文把「为前台专门训练模型」列为开放方向。</div>
-</section>
-
-<!-- 36 交接成本 -->
-<section class="slide" data-title="交接本身有成本">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>我们的思考</span></div>
-<h2 class="ttl rv">拆多细？交接本身就有成本</h2>
-<p class="sub rv" style="--d:1">一个两分钟的小改动</p>
+<h2 class="ttl rv">一个两分钟的改动，值得新开 Worker 吗？</h2>
+<p class="sub rv" style="--d:1">同样的修改，两种执行路径（示意）</p>
 <div class="abs lbl rv" style="left:96px;top:420px;font-size:30px">派给新会话</div>
 <div class="abs" style="left:520px;top:410px;width:1300px;height:64px;display:flex;gap:4px">
 <div class="hb" style="--d:1;position:relative;flex:1.2;height:64px;background:var(--ink)"></div><div class="hb" style="--d:2;position:relative;flex:2;height:64px;background:var(--ink)"></div><div class="hb" style="--d:3;position:relative;flex:1.6;height:64px;background:var(--red)"></div><div class="hb" style="--d:4;position:relative;flex:1.2;height:64px;background:var(--ink)"></div><div class="hb" style="--d:5;position:relative;flex:1.2;height:64px;background:var(--ink)"></div></div>
 <div class="abs rv" style="--d:6;left:520px;top:428px;width:1300px;display:flex;gap:4px;color:#fff;font-size:24px;font-weight:800;text-align:center"><span style="flex:1.2">派单</span><span style="flex:2">加载背景</span><span style="flex:1.6">执行</span><span style="flex:1.2">汇报</span><span style="flex:1.2">转述</span></div>
 <div class="abs lbl rv" style="--d:3;left:96px;top:540px;font-size:30px">主会话顺手做</div>
-<div class="abs" style="left:520px;top:530px;width:1300px;height:64px;display:flex;gap:4px"><div class="hb" style="--d:4;position:relative;flex:1.6;height:64px;background:var(--red)"></div><div class="rv" style="--d:6;flex:5.6;display:flex;align-items:center;padding-left:20px;font-size:26px;font-weight:800">已经做完了</div></div>
+<div class="abs" style="left:520px;top:530px;width:1300px;height:64px;display:flex;gap:4px"><div class="hb" style="--d:4;position:relative;flex:1.6;height:64px;background:var(--red)"></div><div class="rv" style="--d:6;flex:5.6;display:flex;align-items:center;padding-left:20px;font-size:26px;font-weight:800">省下交接，但可能占住入口</div></div>
 <div class="abs rv" style="--d:4;left:520px;top:548px;width:220px;color:#fff;font-size:24px;font-weight:800;text-align:center">执行</div>
 <div class="cols" style="top:690px">
-<div class="pt f" data-f="1" style="grid-column:span 6"><div class="pk2" style="font-size:36px">拆太细</div><p>交接比干活还贵，不如顺手做</p></div>
-<div class="pt f" data-f="2" style="grid-column:span 6"><div class="pk2" style="font-size:36px">拆太粗</div><p>得靠 Worker 够强，再加 Watchdog 兜底</p></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">我们的看法与疑问，不是原文结论 · 示意，不是实测</span><a class="go" href="detail/handoff.html?from=36">动画对比</a></div>
-<div class="notes">每一次交接至少包括：前台写派单，新会话读入派单和背景，执行，汇报，前台再读结果转述给人。每多一轮，就多一轮 token 和等待。
-所以有个下限：拆得太细，不如主会话顺手做掉。实验里「优先委派」的中位数 13.8 分钟和 Super-agent 接近，但长尾拉到 29 分钟，也说明委派与否本身是个要权衡的决定。
-反过来，拆得粗，一个会话负责一件完整的事，交接少，但更依赖下层能力：自己规划、自己判断做完没有，偏了也没人知道。兜底就是两件：Worker 够强，加一个看进展的 Watchdog。
-我们的原则：按完整任务拆，不按步骤拆；相关的后续回原会话，交接走代码固定的路径和固定格式。
-顺带一个常见误解：每个任务开新会话不等于放弃缓存。提示缓存按前缀命中，固定的系统提示和项目背景在新会话里照样命中；用不上的只是上个任务积累的过程上下文，而这部分在单会话里本来就越滚越贵。</div>
-</section>
+<div class="pt f" data-f="1" style="grid-column:span 6"><div class="pk2" style="font-size:36px">拆太细</div><p>固定交接开销可能超过执行时间</p></div>
+<div class="pt f" data-f="2" style="grid-column:span 6"><div class="pk2" style="font-size:36px">拆太粗</div><p>更依赖 Worker 的规划与进度反馈</p></div></div>
+<div class="rule b"></div><div class="foot"><span class="src">我们的看法与疑问，不是原文结论 · 示意，不是实测</span><a class="go" href="detail/handoff.html?from=19">动画对比</a></div>
+<div class="notes">开一个 Worker 并非没有代价：要写派单、读背景、执行、汇报，前台再理解结果。任务越小，这些固定开销越可能占主要部分。
+但直接在主会话做也有代价：如果会不断被外部消息打断，或者一做就带入大量过程，可能影响其他任务。所以要同时看执行耗时、交接成本和被打断的风险。
+我们更倾向按完整任务划分，相关后续回到原来的 Worker，减少反复交接。对于很小的工作，是否允许入口直接处理，是对严格两层设计的另一种取舍，需要验证，不是原文的结论。
+图只是示意，并没有测出“两分钟”是一个实际阈值。任务较大时需要 Worker 自己规划，也需要可观察的进度和适当监督。
 
-<!-- 37 我们的小团队 -->
-<section class="slide" data-title="我们自己的小 Agent 团队">
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div>
+</section><section class="slide" data-source-slide="42" data-title="三种实践，各自在解决什么问题？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>我们的尝试</span></div>
-<h2 class="ttl rv">对照一下：Hive 和我们的 bot 团队</h2>
-<table class="cmp abs" style="left:96px;top:350px;width:1728px">
-<tr class="rv" style="--d:1"><th></th><th class="red">DeepSeek Super-agent</th><th class="f" data-f="1">Hive <span>开源 · 本地多 Agent 工作台</span></th><th class="f" data-f="2">我们的 bot 团队 <span>日常在跑</span></th></tr>
-<tr class="rv" style="--d:2"><td>入口做什么</td><td>只派活，不拆解</td><td class="f" data-f="1">规划、拆解、验收<em>更像 Agent Team</em></td><td class="f" data-f="2">只分活，不深挖、不写代码</td></tr>
-<tr class="rv" style="--d:3"><td>后续消息</td><td>按话题，代码直送</td><td class="f" data-f="1">经 Orchestrator 派单</td><td class="f no" data-f="2">经入口读一遍再转</td></tr>
-<tr class="rv" style="--d:4"><td>卡住了谁发现</td><td>Watchdog 读内容判断</td><td class="f" data-f="1">故意不做，<b>人来判断</b></td><td class="f no" data-f="2">系统观察员，一天一次</td></tr>
-<tr class="rv" style="--d:5"><td>跑在哪</td><td>云上循环 + 端上 daemon</td><td class="f" data-f="1">本机，真实 CLI 进程</td><td class="f" data-f="2">手机发指令，Mac 上执行</td></tr></table>
-<p class="abs cap f" data-f="3" style="left:96px;top:880px;width:1728px">骨架很像；我们差在 <span class="red">直送、持续值守、主动性</span></p>
-<div class="rule b"></div><div class="foot"><span class="src">Hive：github.com/tt-a1i/hive · bot 团队规模很小，没做过对照实验</span></div>
-<div class="notes">这页拿我们自己做过的两样东西对照一下，点到为止，两分钟以内。
-一句话：骨架很像，但取舍不同；我们的 bot 团队差在直送、持续值守和主动性。
-（按 →）Hive：开源的本地多 Agent 工作台，把 Claude Code、Codex 这些 CLI 当成真实进程跑在本机，浏览器里看成一个团队。
-- 它的 Orchestrator 是真实的 CLI 进程，负责规划、派单、对整体结果负责，还要验收——这更接近原文说的 Agent Team，而不是只派活的 Router。这不是缺点：Hive 面对的是「一个人当场带一个开发小队」，不是「常驻、事件驱动、多渠道」。
-- 后续消息靠 Orchestrator 用 team send 派单、Worker 用 team report 汇报，没有按话题直送。
-- 最有意思的一点：Hive 故意不做心跳和卡死检测。设计文档的理由是：长时间思考、慢构建和真卡死，从外面看一模一样，任何启发式要么误报要么漏报，所以由人判断、手动停或重启。运行时重启后也不自动拉起 Agent，因为在免审批权限下静默恢复风险太大。
-- 和 DeepSeek 的 Watchdog 并不矛盾：Hive 拒绝的是「靠信号自动判定」，DeepSeek 做的是「让模型读工作内容来判断」。
-（按 →）我们的 bot 团队：一个入口 bot 只分活，几个各管一摊的 bot 干活，交接写文件、不走聊天，对外动作（发消息、合并、删除）每次都等人点头。
-- 对照 Super-agent，骨架几乎一一对应：入口≈Router，各 bot≈Worker，定时任务≈Trigger，共享文件≈外置状态，系统观察员≈Watchdog，手机发指令、Mac 上执行≈三分离。
-- 差距：同一话题的后续消息还要经入口读一遍再转，没有直送；观察员一天看一次，不是持续值守；主动性弱，主要是定时做固定的活。
-（按 →）还没解决的：一条不带上下文的新消息到底该归哪件事。
-别说过头：不要说「我们早就做了 Super-agent」。DeepSeek 的增量在常驻、事件驱动、直送和状态外置这些运行层面的工程整合。</div>
-</section>
+<h2 class="ttl rv">三种实践，各自在解决什么问题？</h2>
+<table class="cmp abs" style="left:96px;top:350px;width:1728px"><tr class="rv"><th>对照维度</th><th>DeepSeek Super-agent<span>设计文 · 部分能力见原型</span></th><th class="f" data-f="1">Hive<span>公开仓库说明 · 本地工作台</span></th><th class="f" data-f="2">我们的 bot 团队<span>既有实践 · 未做对照实验</span></th></tr>
+<tr class="rv"><td>组织方式</td><td>Router 派发完整任务</td><td class="f" data-f="1">Orchestrator 规划与派单</td><td class="f" data-f="2">入口分工，执行者交接</td></tr>
+<tr class="rv"><td>协作载体</td><td>Thread / Session 与订阅</td><td class="f" data-f="1">CLI 进程、任务图与报告</td><td class="f" data-f="2">消息、文件与角色约定</td></tr>
+<tr class="rv"><td>进展判断</td><td>设计独立 Watchdog 巡检</td><td class="f" data-f="1">Worker 报告，人可介入</td><td class="f" data-f="2">既有定时观察与人工跟进</td></tr>
+<tr class="rv"><td>证据范围</td><td>合成负载调度实验</td><td class="f" data-f="1">功能与机制说明</td><td class="f" data-f="2">小规模使用经验</td></tr></table>
+<p class="abs cap f" data-f="3" style="left:96px;top:880px;width:1728px">接下来值得试：<span class="red">减少消息转述，能否降低人工跟进和返工？</span></p>
+<div class="rule b"></div><div class="foot"><span class="src">设计、实现与使用经验分开看 · Hive README 核对于 2026-11-05 · 未进行三者同条件对比</span></div>
+<div class="notes">这张表比较解决问题的方式，而不是功能排名。DeepSeek 列对应设计文，不能认为公开原型已经完整实现；Hive 列来自公开 README，默认分支可能含未发布内容；bot 列沿用旧稿中的小规模实践，也不代表所有 bot 系统。
+Hive 的 Orchestrator 规划和派单，Worker 是实际 CLI 进程，通过任务图、消息和报告协作。README 明确不从进程活动猜测任务是否完成；Worker 通过 report 更新状态，人可以停止或重启。不能由此推导 Hive 永远没有监控或恢复能力。Hive 采用 BUSL-1.1，准确叫法是源码可用，不在此称 OSI 开源。
+旧稿对 bot 的观察频率和路由方式只是当时配置，不应描述成固定上限。已有的角色约定和交接记录，也不能直接等同于持续运行的事件系统。
+接下来应挑同一个实际流程，比较是否减少转述、等待和返工，而不是根据架构图宣布优劣。
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236
+https://github.com/tt-a1i/hive/blob/main/README.md
+Hive README blob: 8820fc2daa0e9d11dc6e359b2ed99af809cdc0be</div>
+</section><section class="slide" data-review="scaling" data-title="Agent 多十倍，生产力就能增长十倍吗？">
+<div class="rule"></div><div class="meta"><span><b class="no"></b>我们的思考 · 扩展性</span></div>
+<h2 class="ttl rv">Agent 多十倍，生产力就能增长十倍吗？</h2>
+<p class="sub rv">更多并发只是起点，还要让结果经过协调、验证和决策。</p>
+<div class="dg"><svg viewbox="0 0 1920 1080"><g class="ln"><path class="draw" d="M550 555 L676 555" marker-end="url(#ma)"></path><path class="draw" d="M1160 555 L1306 555" marker-end="url(#ma)"></path></g><circle class="pk" r="9"><animatemotion dur="5s" path="M550 555 L676 555" repeatcount="indefinite"></animatemotion></circle><circle class="pk" r="9"><animatemotion begin="-2.5s" dur="5s" path="M1160 555 L1306 555" repeatcount="indefinite"></animatemotion></circle></svg></div>
+<div class="abs rv scale-input" style="left:96px;top:400px;width:454px"><h3>并行执行</h3><div class="agent-grid"><span>Agent</span><span>Agent</span><span>Agent</span><span>Agent</span><span>Agent</span><span>Agent</span><span>Agent</span><span>Agent</span><span>Agent</span></div><p>独立任务可同时推进</p></div>
+<div class="abs f scale-middle" data-f="1" style="left:680px;top:400px;width:480px"><h3>协作与验收</h3><div>任务依赖 <span>等上游结果</span></div><div>冲突协调 <span>对齐修改与上下文</span></div><div>结果验证 <span>检查质量与返工</span></div></div>
+<div class="bx blk f" data-f="2" style="left:1310px;top:450px;width:514px;height:210px"><div class="k">有效产出</div><div class="t" style="font-size:42px">完成且可用的结果</div><div class="s" style="font-size:30px">仍需关键决策与人的确认</div></div>
+<p class="abs cap f" data-f="3" style="left:96px;top:850px;width:1728px">并发能力增强后，<span class="red">瓶颈可能转移到协调、验证与人的注意力。</span></p>
+<div class="rule b"></div><div class="foot"><span class="src">我们的分析框架 · 示意流程，非性能曲线或定量实验结论</span></div>
+<div class="notes">这里不提出“十倍 Agent 只能带来几倍收益”的数字，因为我们没有做过这种测量。先把并行执行能力与有效生产力分开：更多 Agent 能同时尝试更多工作，但下游还要处理任务依赖、上下文交接、修改冲突、结果验证以及人的决策。
+按右键先看中间：任务能否拆成独立单元，往往比能启动多少进程更重要。互相依赖的任务会等待；多个修改碰到同一接口要协调；看起来完成的结果还要验收。
+再看右边：有效结果是可接受、可使用的产出，不是消息量、运行时长或 PR 数。增加 Agent 也可能降低某些等待，所以不能预先断言一定出现负收益。
+最后回到人的注意力：如果每个 Worker 都找你确认，系统的执行并发上去了，人的决策吞吐却没变。这与前面的统一入口、任务粒度和交接成本是同一个问题的不同层面。
+建议用同类任务比较完成质量、返工次数、人工介入、等待与总成本。这是后续验证方向，不是 DeepSeek 已验证的规模化定律。</div></section><section class="slide" data-title="真正要验证的，是人是否更容易把事情推进"><div class="rule"></div><div class="meta"><span><b class="no"></b>回顾与讨论</span></div><h2 class="ttl rv">真正要验证的，是人是否更容易把事情推进</h2><div class="revision-body"><div class="question-list closing"><div><b>01</b><h3>系统接管会话之后，人少做了哪些工作？</h3><p>区分跟进进度、恢复背景和作出决策。</p></div><div><b>02</b><h3>任务发生冲突时，是否有人拿得出完整证据？</h3><p>看到同一条消息，还需要明确谁协调、谁决定。</p></div><div><b>03</b><h3>多花的调用与维护，换回多少有效结果？</h3><p>用真实任务比较质量、返工、人工介入和总成本。</p></div></div></div><div class="rule b"></div><div class="foot"><span class="src">我们的讨论方向 · 实验结果来自合成负载，真实收益仍需验证</span></div><div class="notes">这篇文章给出了一组值得参考的系统设计：把会话管理、事件路由和持续运行更多地交给系统。模拟实验提供了调度方面的初步证据。
+我们的判断是，下一步要把“省注意力”落实到真实工作里：到底少了哪些跟进和决策？出了冲突能否正确处理？增加的成本换回多少有效产出？
+如果继续试，可以先挑一个真实流程，记录人工介入和结果质量，再比较是否加入话题直送或独立巡检。一次只改变少量机制，才容易知道收益来自哪里。
+组织里的上下文边界、A2A、安全和长期记忆，原文也承认尚待解决，可以在讨论环节继续展开。
 
-<!-- 回顾 -->
-<section class="slide" data-title="带走三句话">
-<div class="rule"></div><div class="meta"><span><b class="no"></b>回顾</span></div>
-<h2 class="ttl rv">如果只记住三句话</h2>
-<div class="abs" style="left:96px;top:390px;width:1728px">
-<div class="rc f"><b>1</b><span>瓶颈从模型，换到了人的注意力</span><i>原文</i></div>
-<div class="rc f"><b>2</b><span>要它守的规矩，放进结构，别只写在 prompt 里</span><i>实验与原型</i></div>
-<div class="rc f" style="border-bottom:2px solid var(--g3)"><b>3</b><span>入口统一只是第一步，接下来是<em>组织交互、减少决策</em></span><i>我们的看法</i></div></div>
-<div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型 · 我们的看法</span></div>
-<div class="notes">（按 → 一条条出）最后收一下，今天只想留下三句话。
-一、瓶颈换了地方：单任务等模型，多任务等人。DeepSeek 的整套设计，都是为了少占人的注意力。
-二、规矩放进结构：实验里靠 prompt 让模型「记得委派」，5 次里有 1 次没守住；原型里「先等人确认」只写在 prompt 里，也被人挑出了问题。前台不给 Bash、话题直送、权限由宿主强制，这些才是靠得住的。顺带一提，原型里几件马上能试的小事：接话的 Agent 不给干活的工具、后续消息按话题直送、IM 回复限长、主动先从「只记录」开始。
-三、入口统一只是第一步：原文自己也把「没有会话之后人怎么协作」、上下文边界与 A2A、安全和凭证列为开放问题。我们觉得下一步值得做的，是怎么组织多任务交互、怎么减少人真正要拍板的事。</div>
-</section>
-
-<!-- 41 谢谢 -->
-<section class="slide" data-title="谢谢">
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236
+前一页进一步提出：智能能力与并发增加，不自动等于有效产出增加。我们的结论是优先验证有效生产力，在可控的协调与运行成本下，让人更容易把事情推进。</div></section><section class="slide" data-source-slide="44" data-title="谢谢，欢迎讨论">
 <div class="rule"></div>
 <div class="abs" style="left:96px;top:300px;right:96px"><h1 class="t1 rv" style="font-size:160px">谢谢<span class="red">.</span></h1>
 <div class="rv" style="--d:2;margin-top:40px;font-size:40px;font-weight:700;color:var(--g1)">欢迎一起讨论</div>
-<div class="rv small" style="--d:3;margin-top:72px;font-size:24px;line-height:1.9;color:var(--ink);border-top:2px solid var(--g3);padding-top:28px">原文：DeepSeek Harness《Exploring Super-agent Design: Towards a More Autonomous Agent System》，2026-10-31<br>开源原型：github.com/deepseek-ai/dsh-superagent-prototype（MIT，研究用途）<br>幻灯片：agent-arch-share.pages.dev</div></div>
+<div class="rv small" style="--d:3;margin-top:72px;font-size:24px;line-height:1.9;color:var(--ink);border-top:2px solid var(--g3);padding-top:28px">原文：<a href="https://x.com/DeepSeekHarness/status/2116857257245987236" rel="noopener" target="_blank">DeepSeek Harness · Exploring Super-agent Design</a>（官方英文版，2026-11-01）<br/>开源原型：<a href="https://github.com/deepseek-ai/dsh-superagent-prototype" rel="noopener" target="_blank">deepseek-ai/dsh-superagent-prototype</a>（MIT，研究用途）</div></div>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek Super-agent 设计文与开源原型</span></div>
-<div class="notes">资料都在这两个链接里。原型的 docs 目录写得很清楚，推荐先看 000-philosophy。</div>
-</section>
-</div><script src="assets/deck.js"></script></body></html>
+<div class="notes">今天的分享就到这里。文章和原型都在下面两个链接里，推荐读原文，再读原型的 philosophy 与授权文档。
+欢迎结合自己的任务讨论：统一入口以后真的更轻松了吗？遇到跨任务冲突时，最需要补的是模型能力、上下文，还是决策边界？
+
+资料：https://x.com/DeepSeekHarness/status/2116857257245987236</div>
+</section></div><script src="assets/deck.js"></script></body></html>
