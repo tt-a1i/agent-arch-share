@@ -24,6 +24,14 @@
 .dv-s{position:absolute;left:800px;top:500px;font-size:40px;font-weight:600;color:#a9a69f;line-height:1.4}
 .dv-l{position:absolute;left:800px;top:640px;display:flex;flex-wrap:wrap;gap:16px 34px;font-size:26px;font-weight:800;width:1100px}
 .dv-l span i{font-style:normal;color:var(--red);margin-right:10px}
+.cdots{opacity:0}.slide.on .cdots{animation:cdin .8s 2.8s both}@keyframes cdin{to{opacity:1}}html.shot .cdots{opacity:1!important;animation:none!important}
+.slide.on .bx.blk.rv{animation:rv .8s cubic-bezier(.2,.8,.2,1) both,pulse 2.4s 2.4s infinite;animation-delay:calc(var(--d,0)*90ms + 80ms),2.4s}
+.slide.on .ttl:not(.rv){animation:rv .8s cubic-bezier(.2,.8,.2,1) both;opacity:0}.slide.on .sub:not(.rv){animation:rv .8s .15s cubic-bezier(.2,.8,.2,1) both;opacity:0}
+.mac.rv{position:absolute}.slide.on .mac{animation:rv .8s cubic-bezier(.2,.8,.2,1) both,macoff 1s 4s forwards;animation-delay:calc(var(--d,0)*90ms + 80ms),4s}
+@keyframes macoff{to{opacity:.45;filter:grayscale(1)}}
+.slide.on .cloud{animation:rv .8s cubic-bezier(.2,.8,.2,1) both,cloudon 1.4s 4s 2;animation-delay:calc(var(--d,0)*90ms + 80ms),4s}
+@keyframes cloudon{50%{box-shadow:0 0 0 10px rgba(228,50,27,.18)}}
+html.shot .ttl,html.shot .sub,html.shot .mac,html.shot .cloud{animation:none!important;opacity:1!important;filter:none!important}
 /* fragments */
 .f{opacity:0;transform:translateY(18px);transition:opacity .55s,transform .55s cubic-bezier(.2,.8,.2,1)}
 .f.in{opacity:1;transform:none}
@@ -120,20 +128,20 @@ table.cmp{border-collapse:collapse;table-layout:fixed}
 <div class="abs" style="left:96px;top:330px;width:1000px">
 <h1 class="t1 rv" style="--d:1;font-size:116px">从单会话<br/>到 <span class="red">Super-agent</span></h1>
 <p class="lede rv" style="--d:3;margin-top:56px;color:var(--g1)">DeepSeek 的常驻 Agent 架构解读与思考</p></div>
-<div class="dg rv" style="--d:4"><svg viewbox="0 0 1920 1080">
+<div class="dg"><svg viewbox="0 0 1920 1080">
 <g class="ln thin" stroke="#cfccc4">
-<path d="M1270 368 C1350 368 1340 593 1420 593" id="c1"></path><path d="M1270 458 C1350 458 1340 593 1420 593" id="c2"></path><path d="M1270 548 C1350 548 1340 593 1420 593" id="c3"></path><path d="M1270 638 C1350 638 1340 593 1420 593" id="c4"></path><path d="M1270 728 C1350 728 1340 593 1420 593" id="c5"></path><path d="M1270 818 C1350 818 1340 593 1420 593" id="c6"></path>
-<path d="M1570 593 C1615 593 1615 463 1660 463"></path><path d="M1570 593 L1660 593"></path><path d="M1570 593 C1615 593 1615 723 1660 723"></path></g>
-<circle class="pk" r="7"><animatemotion begin="0s" dur="1.8s" path="M1270 368 C1350 368 1340 593 1420 593" repeatcount="indefinite"></animatemotion></circle>
+<path class="draw" style="--len:400;--d:10" d="M1270 368 C1350 368 1340 593 1420 593" id="c1"></path><path class="draw" style="--len:400;--d:10" d="M1270 458 C1350 458 1340 593 1420 593" id="c2"></path><path class="draw" style="--len:400;--d:10" d="M1270 548 C1350 548 1340 593 1420 593" id="c3"></path><path class="draw" style="--len:400;--d:10" d="M1270 638 C1350 638 1340 593 1420 593" id="c4"></path><path class="draw" style="--len:400;--d:10" d="M1270 728 C1350 728 1340 593 1420 593" id="c5"></path><path class="draw" style="--len:400;--d:10" d="M1270 818 C1350 818 1340 593 1420 593" id="c6"></path>
+<path class="draw" style="--len:400;--d:15" d="M1570 593 C1615 593 1615 463 1660 463"></path><path class="draw" style="--len:400;--d:15" d="M1570 593 L1660 593"></path><path class="draw" style="--len:400;--d:15" d="M1570 593 C1615 593 1615 723 1660 723"></path></g>
+<g class="cdots"><circle class="pk" r="7"><animatemotion begin="0s" dur="1.8s" path="M1270 368 C1350 368 1340 593 1420 593" repeatcount="indefinite"></animatemotion></circle>
 <circle class="pk" r="7"><animatemotion begin="-1.1s" dur="1.8s" path="M1270 548 C1350 548 1340 593 1420 593" repeatcount="indefinite"></animatemotion></circle>
 <circle class="pk" r="7"><animatemotion begin="-.5s" dur="1.8s" path="M1270 728 C1350 728 1340 593 1420 593" repeatcount="indefinite"></animatemotion></circle>
 <circle class="pk" r="7"><animatemotion begin="-1.5s" dur="1.8s" path="M1270 818 C1350 818 1340 593 1420 593" repeatcount="indefinite"></animatemotion></circle>
 <circle class="pk k" r="7"><animatemotion begin="-.3s" dur="1.2s" path="M1570 593 C1615 593 1615 463 1660 463" repeatcount="indefinite"></animatemotion></circle>
-<circle class="pk k" r="7"><animatemotion begin="-.9s" dur="1.2s" path="M1570 593 C1615 593 1615 723 1660 723" repeatcount="indefinite"></animatemotion></circle>
+<circle class="pk k" r="7"><animatemotion begin="-.9s" dur="1.2s" path="M1570 593 C1615 593 1615 723 1660 723" repeatcount="indefinite"></animatemotion></circle></g>
 </svg></div>
-<div class="rv" style="--d:4"><div class="chip" style="left:1150px;top:340px;width:120px;height:56px;justify-content:center">IM</div><div class="chip" style="left:1150px;top:430px;width:120px;height:56px;justify-content:center">PR</div><div class="chip" style="left:1150px;top:520px;width:120px;height:56px;justify-content:center">邮件</div><div class="chip" style="left:1150px;top:610px;width:120px;height:56px;justify-content:center">CI</div><div class="chip" style="left:1150px;top:700px;width:120px;height:56px;justify-content:center">群聊</div><div class="chip" style="left:1150px;top:790px;width:120px;height:56px;justify-content:center">日程</div>
-<div class="bx blk c" style="left:1420px;top:518px;width:150px;height:150px"><div class="t" style="font-size:26px">Router</div></div>
-<div class="bx c" style="left:1660px;top:413px;width:164px;height:100px"><div class="t" style="font-size:24px">Worker</div></div><div class="bx c" style="left:1660px;top:543px;width:164px;height:100px"><div class="t" style="font-size:24px">Worker</div></div><div class="bx c" style="left:1660px;top:673px;width:164px;height:100px"><div class="t" style="font-size:24px">Worker</div></div></div>
+<div><div class="chip rv" style="--d:5;left:1150px;top:340px;width:120px;height:56px;justify-content:center">IM</div><div class="chip rv" style="--d:6;left:1150px;top:430px;width:120px;height:56px;justify-content:center">PR</div><div class="chip rv" style="--d:7;left:1150px;top:520px;width:120px;height:56px;justify-content:center">邮件</div><div class="chip rv" style="--d:8;left:1150px;top:610px;width:120px;height:56px;justify-content:center">CI</div><div class="chip rv" style="--d:9;left:1150px;top:700px;width:120px;height:56px;justify-content:center">群聊</div><div class="chip rv" style="--d:10;left:1150px;top:790px;width:120px;height:56px;justify-content:center">日程</div>
+<div class="bx blk c rv" style="--d:14;left:1420px;top:518px;width:150px;height:150px"><div class="t" style="font-size:26px">Router</div></div>
+<div class="bx c rv" style="--d:18;left:1660px;top:413px;width:164px;height:100px"><div class="t" style="font-size:24px">Worker</div></div><div class="bx c rv" style="--d:19;left:1660px;top:543px;width:164px;height:100px"><div class="t" style="font-size:24px">Worker</div></div><div class="bx c rv" style="--d:20;left:1660px;top:673px;width:164px;height:100px"><div class="t" style="font-size:24px">Worker</div></div></div>
 <div class="rule b"></div><div class="foot"><span class="src">← → 翻页 · F 全屏</span></div>
 
 </section><section class="slide" data-source-slide="4" data-title="同时开五个会话，谁在帮你跟进？">
@@ -219,24 +227,24 @@ table.cmp{border-collapse:collapse;table-layout:fixed}
 <h2 class="ttl">一条外部事件，怎样找到负责的 Worker？</h2>
 <p class="sub">先按规则准入，再依据订阅关系，走模型判断或代码直送。</p>
 <div class="dg"><svg viewbox="0 0 1920 1080">
-<path class="ln draw" d="M376 505 H466" marker-end="url(#ma)"></path>
-<path class="ln draw" d="M786 505 H886 V415 H986" marker-end="url(#ma)"></path>
-<path class="ln draw" d="M1326 415 H1414 V505 H1504" marker-end="url(#ma)"></path>
-<path class="ln r draw" d="M786 505 H836 V710 H1670 V570" marker-end="url(#mr)"></path>
-<path class="ln dash" d="M626 570 V652" marker-end="url(#mg)"></path>
-<path class="ln dash" d="M1156 480 V552" marker-end="url(#mg)"></path>
-</svg></div>
-<div class="abs" style="left:1036px;top:566px;font-size:25px;color:var(--g1)">不值得：不建任务</div>
-<div class="bx" style="left:96px;top:440px;width:280px;height:130px"><div class="k">外部事件 · Trigger</div><div class="t">PR / CI / 群消息</div><div class="s">环境产生的新输入</div></div>
-<div class="bx" style="left:466px;top:440px;width:320px;height:130px"><div class="k">Fast Path · 代码</div><div class="t">规则准入</div><div class="s">来源、群组、白名单</div></div>
-<div class="abs" style="left:506px;top:671px;font-size:25px;color:var(--g1)">不符合准入规则：忽略</div>
-<div class="abs" style="left:986px;top:303px;font-size:26px;font-weight:750">没有订阅者</div>
-<div class="bx blk" style="left:986px;top:350px;width:340px;height:130px"><div class="k">Slow Path · 模型研判</div><div class="t">Router 判断、派活</div><div class="s">值不值得做、交给谁</div></div>
-<div class="abs" style="left:1360px;top:359px;font-size:23px;color:var(--g1)">值得处理</div>
-<div class="bx" style="left:1504px;top:440px;width:320px;height:130px"><div class="k">执行任务</div><div class="t">Worker</div><div class="s">订阅话题，接收后续事件</div></div>
-<div class="abs red" style="left:936px;top:646px;font-size:30px;font-weight:800">已有订阅：Pass-through 代码直送</div>
-<div class="abs" style="left:936px;top:735px;font-size:25px;color:var(--g1)">省去 Router 再次判断和转发；Router 仍可掌握事件。</div>
-<p class="abs" style="left:96px;top:850px;width:1728px;border-top:2px solid var(--g3);padding-top:24px;font-size:29px;font-weight:700">Worker 回报关键状态与结论，由 Router 协调并统一对外回复。</p>
+<path class="ln draw" style="--d:6" d="M376 505 H466" marker-end="url(#ma)"></path>
+<path class="ln draw" style="--d:10" d="M786 505 H886 V415 H986" marker-end="url(#ma)"></path>
+<path class="ln draw" style="--d:16" d="M1326 415 H1414 V505 H1504" marker-end="url(#ma)"></path>
+<path class="ln r draw" style="--d:12" d="M786 505 H836 V710 H1670 V570" marker-end="url(#mr)"></path>
+<path class="ln dash rv" style="--d:8" d="M626 570 V652" marker-end="url(#mg)"></path>
+<path class="ln dash rv" style="--d:8" d="M1156 480 V552" marker-end="url(#mg)"></path>
+<g class="cdots" style="animation-delay:3.4s"><circle class="pk k" r="8"><animateMotion dur="1.4s" repeatCount="indefinite" path="M376 505 H466"/></circle><circle class="pk k" r="8"><animateMotion dur="1.6s" begin="-.6s" repeatCount="indefinite" path="M786 505 H886 V415 H986"/></circle><circle class="pk k" r="8"><animateMotion dur="1.6s" begin="-.3s" repeatCount="indefinite" path="M1326 415 H1414 V505 H1504"/></circle><circle class="pk" r="9"><animateMotion dur="3.2s" repeatCount="indefinite" path="M786 505 H836 V710 H1670 V570"/></circle></g></svg></div>
+<div class="abs rv" style="--d:12;left:1036px;top:566px;font-size:25px;color:var(--g1)">不值得：不建任务</div>
+<div class="bx rv" style="--d:2;left:96px;top:440px;width:280px;height:130px"><div class="k">外部事件 · Trigger</div><div class="t">PR / CI / 群消息</div><div class="s">环境产生的新输入</div></div>
+<div class="bx rv" style="--d:5;left:466px;top:440px;width:320px;height:130px"><div class="k">Fast Path · 代码</div><div class="t">规则准入</div><div class="s">来源、群组、白名单</div></div>
+<div class="abs rv" style="--d:8;left:506px;top:671px;font-size:25px;color:var(--g1)">不符合准入规则：忽略</div>
+<div class="abs rv" style="--d:9;left:986px;top:303px;font-size:26px;font-weight:750">没有订阅者</div>
+<div class="bx blk rv" style="--d:9;left:986px;top:350px;width:340px;height:130px"><div class="k">Slow Path · 模型研判</div><div class="t">Router 判断、派活</div><div class="s">值不值得做、交给谁</div></div>
+<div class="abs rv" style="--d:12;left:1360px;top:359px;font-size:23px;color:var(--g1)">值得处理</div>
+<div class="bx rv" style="--d:13;left:1504px;top:440px;width:320px;height:130px"><div class="k">执行任务</div><div class="t">Worker</div><div class="s">订阅话题，接收后续事件</div></div>
+<div class="abs red rv" style="--d:15;left:936px;top:646px;font-size:30px;font-weight:800">已有订阅：Pass-through 代码直送</div>
+<div class="abs rv" style="--d:16;left:936px;top:735px;font-size:25px;color:var(--g1)">省去 Router 再次判断和转发；Router 仍可掌握事件。</div>
+<p class="abs rv" style="--d:19;left:96px;top:850px;width:1728px;border-top:2px solid var(--g3);padding-top:24px;font-size:29px;font-weight:700">Worker 回报关键状态与结论，由 Router 协调并统一对外回复。</p>
 <div class="rule b"></div><div class="foot"><span class="src">原文 §3.1–3.2 · 准入、路由与执行授权是不同职责；直送不改变权限</span></div>
 </section><section class="slide" data-mod="2" data-source-slide="16" data-title="PR 已有人接手，新评论还要前台转发吗？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>模块 2 · 事件驱动</span></div>
@@ -260,15 +268,15 @@ table.cmp{border-collapse:collapse;table-layout:fixed}
 </section><section class="slide" data-mod="2" data-source-slide="18" data-title="一次事件进入时，系统如何组织上下文？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>模块 2 · 事件驱动</span></div>
 <h2 class="ttl">一次事件进入时，系统如何组织上下文？</h2><p class="sub">系统按规则准备输入；模型发现信息不足，再通过工具读取。</p>
-<div class="abs" style="left:96px;top:420px;width:560px"><div class="context-rule"><h3>基础信息</h3><p>ID、摘要、关联对象</p></div><div class="context-rule"><h3>提前内联 · Inline</h3><p>邻近消息与关键背景</p></div><div class="context-rule"><h3>超长外置 · Spill</h3><p>完整内容在外部，留读取引用</p></div></div>
-<div class="abs" style="--d:1;left:740px;top:380px;width:860px;height:540px;border:3px solid var(--ink)"><span class="tg ok" style="position:absolute;left:-3px;top:-45px">本次上下文</span></div>
-<div class="chip b" style="--d:2;left:780px;top:420px">#T-812 · Safari 登录白屏</div>
-<div class="chip" style="left:780px;top:510px">相关：PR #42 · Worker W-3</div>
-<div class="chip" style="left:780px;top:600px">消息预览：Safari 登录没反应…</div>
-<div class="chip" style="left:780px;top:690px">被回复消息 + 邻近讨论</div>
-<div class="chip d" style="left:780px;top:810px">完整历史的读取引用</div>
-<div class="dg"><svg viewbox="0 0 1920 1080"><g><path class="ln dash" d="M1190 842 L1636 842" marker-end="url(#ma)"></path></g></svg></div>
-<div class="bx c" style="left:1640px;top:790px;width:184px;height:104px;border-style:dashed"><div class="t" style="font-size:24px">外部存储</div><div class="s">需要时读取</div></div>
+<div class="abs" style="left:96px;top:420px;width:560px"><div class="context-rule rv" style="--d:2"><h3>基础信息</h3><p>ID、摘要、关联对象</p></div><div class="context-rule rv" style="--d:4"><h3>提前内联 · Inline</h3><p>邻近消息与关键背景</p></div><div class="context-rule rv" style="--d:6"><h3>超长外置 · Spill</h3><p>完整内容在外部，留读取引用</p></div></div>
+<div class="abs rv" style="--d:3;left:740px;top:380px;width:860px;height:540px;border:3px solid var(--ink)"><span class="tg ok" style="position:absolute;left:-3px;top:-45px">本次上下文</span></div>
+<div class="chip b rv" style="--d:8;left:780px;top:420px">#T-812 · Safari 登录白屏</div>
+<div class="chip rv" style="--d:10;left:780px;top:510px">相关：PR #42 · Worker W-3</div>
+<div class="chip rv" style="--d:12;left:780px;top:600px">消息预览：Safari 登录没反应…</div>
+<div class="chip rv" style="--d:14;left:780px;top:690px">被回复消息 + 邻近讨论</div>
+<div class="chip d rv" style="--d:17;left:780px;top:810px">完整历史的读取引用</div>
+<div class="dg"><svg viewbox="0 0 1920 1080"><g><path class="ln dash draw" style="--d:19" d="M1190 842 L1636 842" marker-end="url(#ma)"></path></g></svg></div>
+<div class="bx c rv" style="--d:20;left:1640px;top:790px;width:184px;height:104px;border-style:dashed"><div class="t" style="font-size:24px">外部存储</div><div class="s">需要时读取</div></div>
 <div class="rule b"></div><div class="foot"><span class="src">原文 §3.3 · 并列的上下文构建规则，不对应三轮模型推理 · 右图内容为示意</span></div>
 
 </section><section class="slide" data-mod="2" data-source-slide="19" data-title="换个渠道问旧任务，Router 怎么找回来？">
@@ -341,25 +349,25 @@ table.cmp{border-collapse:collapse;table-layout:fixed}
 <div class="rule"></div><div class="meta"><span><b class="no"></b>模块 4 · 计算、状态、环境分开</span></div>
 <h2 class="ttl">电脑离线后，哪些工作还能继续？</h2>
 <p class="sub">场景：修复要用到 Mac 上未提交的代码，但这台 Mac 已经离线。</p>
-<div class="abs" style="left:96px;top:350px;width:800px;border-top:5px solid var(--ink);padding-top:18px">
+<div class="abs rv" style="--d:2;left:96px;top:350px;width:800px;border-top:5px solid var(--ink);padding-top:18px">
 <p class="scene-label">云端 · 计算</p><h3 class="scene-heading">Agent Loop</h3><p class="scene-copy">继续接收消息、协调任务</p></div>
-<div class="abs" style="left:1200px;top:350px;width:624px;border-top:5px solid var(--ink);padding-top:18px">
+<div class="abs rv" style="--d:3;left:1200px;top:350px;width:624px;border-top:5px solid var(--ink);padding-top:18px">
 <p class="scene-label">持久化存储 · 状态</p><h3 class="scene-heading">Session 数据库</h3><p class="scene-copy">保存会话与任务状态</p></div>
 <div class="abs" style="left:910px;top:410px;width:270px;text-align:center;font-size:24px;color:var(--g1)">读取 / 保存状态</div>
 <svg aria-label="Agent Loop 读写数据库，并通过远程工具连接本地和云端执行环境" class="archsvg" viewbox="0 0 1920 1080">
-<path class="ae" d="M900 465 H1180" marker-end="url(#ma)" marker-start="url(#ma)"></path>
-<path class="ae" d="M496 520 V610 H1414 V675" marker-end="url(#ma)"></path>
-<path class="ae d" d="M496 610 V675" stroke="#8d8a83"></path>
-</svg>
+<path class="ae draw" style="--d:5" d="M900 465 H1180" marker-end="url(#ma)" marker-start="url(#ma)"></path>
+<path class="ae draw" style="--d:8;--len:1200" d="M496 520 V610 H1414 V675" marker-end="url(#ma)"></path>
+<path class="ae d draw" style="--d:9" d="M496 610 V675" stroke="#8d8a83"></path>
+<g class="cdots" style="animation-delay:2.2s"><circle class="pk" r="8"><animateMotion dur="1.6s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;.5;1" calcMode="linear" path="M900 465 H1180"/></circle><circle class="pk k" r="8"><animateMotion dur="2.4s" repeatCount="indefinite" path="M496 520 V610 H1414 V675"/></circle></g></svg>
 <div class="abs scene-label" style="left:96px;top:562px">执行环境</div>
 <div class="abs" style="left:650px;top:562px;font-size:25px;color:var(--g1)">远程工具：下发命令，返回执行结果</div>
-<div class="abs scene-environment" style="left:96px;top:680px;width:800px;border-color:var(--red)">
+<div class="abs scene-environment mac rv" style="--d:10;left:96px;top:680px;width:800px;border-color:var(--red)">
 <div class="scene-environment-title"><h3>本地 Mac</h3><span class="red">已离线</span></div>
 <p>依赖本地代码的操作，等设备恢复连接。</p><small>BYOM：接入自己的机器，通过本地 daemon 执行</small></div>
-<div class="abs scene-environment" style="left:1004px;top:680px;width:820px">
+<div class="abs scene-environment cloud rv" style="--d:11;left:1004px;top:680px;width:820px">
 <div class="scene-environment-title"><h3>云端机器 / 沙箱</h3><span>可用</span></div>
 <p>具备所需代码与工具的其他任务，可以继续。</p><small>不会自动接替 Mac 上尚未同步的工作环境</small></div>
-<p class="abs" style="left:96px;top:905px;font-size:31px;font-weight:750">Mac 离线时，本地操作暂停，云端仍可接消息、保存状态。</p>
+<p class="abs rv" style="--d:16;left:96px;top:905px;font-size:31px;font-weight:750">Mac 离线时，本地操作暂停，云端仍可接消息、保存状态。</p>
 <div class="rule b"></div><div class="foot"><span class="src">DeepSeek 设计文 §5 · 架构示意，假设云端服务与存储正常可用</span></div>
 
 </section><section class="slide" data-mod="5" data-source-slide="26" data-title="Worker 跑了两小时，怎么知道有没有进展？">
@@ -391,11 +399,11 @@ table.cmp{border-collapse:collapse;table-layout:fixed}
 <tr><td>完成时间 · 中位数 p50</td><td>12.4 分钟</td><td>12.6 分钟</td></tr>
 <tr><td>完成时间 · p95</td><td>15.7 分钟</td><td>15.5 分钟</td></tr>
 </tbody></table>
-<p class="result-note">为何时间接近？Router 批处理可吸收额外事件；这组负载尚未压满吞吐。</p>
-<p class="takeaway">这组负载里，直送减少了额外读取和路由开销，未明显缩短完成时间。</p>
+<p class="result-note rv" style="--d:10">为何时间接近？Router 批处理可吸收额外事件；这组负载尚未压满吞吐。</p>
+<p class="takeaway rv" style="--d:14">这组负载里，直送减少了额外读取和路由开销，未明显缩短完成时间。</p>
 </div>
 <div class="rule b"></div><div class="foot"><span class="src">原文 §7 · 合成负载，每方案 5 次；编码用耗时工具模拟 · 缓存读取量为所有会话合计，不等于总费用</span></div>
-</section><section class="slide" data-title="三个 PR 出现架构冲突，谁来协调？"><div class="rule"></div><div class="meta"><span><b class="no"></b></span></div><h2 class="ttl rv">三个 PR 出现架构冲突，谁来协调？</h2><div class="revision-body"><p class="scenario">三个 Worker 各自完成任务，却对同一个模块采用了不同方案。</p><div class="decision-rows"><div><h3>任务内可以解决</h3><p>Worker 处理局部冲突，并报告影响。</p></div><div><h3>需要深入分析几个 PR</h3><p>Router 识别问题，交给专门的协调 Worker 分析依赖与方案。</p></div><div><h3>涉及目标、授权或重大取舍</h3><p>把证据和选项交给有权决定的人。</p></div></div><p class="takeaway">前台需要多强，取决于系统留给它多少判断工作。</p></div><div class="rule b"></div><div class="foot"><span class="src">我们的场景推演 · 原文 §2、§8.1 将紧耦合任务的协作列为开放问题</span></div></section><section class="slide" data-source-slide="41" data-title="一个两分钟的改动，值得新开 Worker 吗？">
+</section><section class="slide" data-title="三个 PR 出现架构冲突，谁来协调？"><div class="rule"></div><div class="meta"><span><b class="no"></b></span></div><h2 class="ttl rv">三个 PR 出现架构冲突，谁来协调？</h2><div class="revision-body"><p class="scenario rv" style="--d:2">三个 Worker 各自完成任务，却对同一个模块采用了不同方案。</p><div class="decision-rows"><div class="rv" style="--d:4"><h3>任务内可以解决</h3><p>Worker 处理局部冲突，并报告影响。</p></div><div class="rv" style="--d:8"><h3>需要深入分析几个 PR</h3><p>Router 识别问题，交给专门的协调 Worker 分析依赖与方案。</p></div><div class="rv" style="--d:12"><h3>涉及目标、授权或重大取舍</h3><p>把证据和选项交给有权决定的人。</p></div></div><p class="takeaway rv" style="--d:16">前台需要多强，取决于系统留给它多少判断工作。</p></div><div class="rule b"></div><div class="foot"><span class="src">我们的场景推演 · 原文 §2、§8.1 将紧耦合任务的协作列为开放问题</span></div></section><section class="slide" data-source-slide="41" data-title="一个两分钟的改动，值得新开 Worker 吗？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b></span></div>
 <h2 class="ttl rv">一个两分钟的改动，值得新开 Worker 吗？</h2>
 <p class="sub rv" style="--d:1">同样的修改，两种执行路径（示意）</p>
