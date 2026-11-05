@@ -555,7 +555,16 @@ Hive 的 Orchestrator 规划和派单，Worker 是实际 CLI 进程，通过任�
 资料：https://x.com/DeepSeekHarness/status/2116857257245987236
 https://github.com/tt-a1i/hive/blob/main/README.md
 Hive README blob: 8820fc2daa0e9d11dc6e359b2ed99af809cdc0be</div>
-</section><section class="slide" data-review="scaling" data-title="Agent 多十倍，生产力就能增长十倍吗？">
+</section><section class="slide" data-title="我们的实践：Grok bot 与 Hive">
+<div class="rule"></div><div class="meta"><span><b class="no"></b>我们的实践 · 界面实景</span></div>
+<h2 class="ttl rv">我们的实践：Grok bot 与 Hive</h2>
+<p class="sub rv">一个负责持续跟进，另一个把开发、审查和成员状态放在同一工作台。</p>
+<div class="abs rv" style="left:96px;top:350px;width:824px"><h3 style="font-size:36px;margin-bottom:18px">Grok bot：分工 + 定时晨报</h3><a aria-label="放大 bot 团队截图" href="assets/practice/bot-team.png" rel="noopener" target="_blank"><img alt="Bot 团队成员列表与 Hive 项目增量晨报" src="assets/practice/bot-team.png" style="display:block;width:824px;height:520px;object-fit:contain;object-position:top;background:#111;border:2px solid #111"/></a></div>
+<div class="abs rv" style="--d:2;left:1000px;top:350px;width:824px"><h3 style="font-size:36px;margin-bottom:18px">Hive：开发 + 审查 + 状态可见</h3><a aria-label="放大 Hive 工作台截图" href="assets/practice/hive-team.jpg" rel="noopener" target="_blank"><img alt="Hive v2.1.19 工作台，左侧为任务交接，右侧为开发和审查成员及运行状态" src="assets/practice/hive-team.jpg" style="display:block;width:824px;height:520px;object-fit:contain;object-position:top;background:#171717;border:2px solid #111"/></a></div>
+<div class="rule b"></div><div class="foot"><span class="src">用户提供的实际使用截图 · 点击图片可放大 · 反映截图时的状态，不代表效果评测</span></div>
+<div class="notes">前一页比较机制，这页看看实际使用形态。左边是 bot 团队的使用界面，不是 Hive 工作台。左侧不同角色有各自职责，右侧名为 Hive 的 bot 正在汇总这个项目的增量晨报。它能说明定时跟进和分工的使用方式，不能仅凭这张图证明事件直送或完全自主运行。
+右边才是 Hive v2.1.19 工作台。画面里有开发与审查角色，左侧能看到派单和报告，右侧有成员状态。运行中和空闲是界面状态，不等于任务质量或真实进展已经经过验证。
+现场只需要用二三十秒带过，具体文字可点开大图看。这些截图是实践例子，不是与 DeepSeek 的同条件实验。</div></section><section class="slide" data-review="scaling" data-title="Agent 多十倍，生产力就能增长十倍吗？">
 <div class="rule"></div><div class="meta"><span><b class="no"></b>我们的思考 · 扩展性</span></div>
 <h2 class="ttl rv">Agent 多十倍，生产力就能增长十倍吗？</h2>
 <p class="sub rv">更多并发只是起点，还要让结果经过协调、验证和决策。</p>
